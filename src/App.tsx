@@ -25,6 +25,8 @@ function App() {
 
 const encodedCredentials = btoa(`${username}:${password}`);
 
+// params = {"telegram_id": chat_id}
+
 const axiosInstance = axios.create({
  baseURL: 'https://bo.delivo.ge/delivo_test/hs/bot',
  headers: {
