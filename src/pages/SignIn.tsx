@@ -7,14 +7,12 @@ const SignIn = () => {
   const [showRegister, setShowRegister] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
+  const chat_id = 6087086146;
+  const params = { telegram_id: chat_id };
 
   const handleSignIn = async () => {
     try {
-      const chat_id = 6087086146;
-
-      const params = { telegram_id: chat_id };
       const response = await axiosInstance.get("/auth", { params });
-
       if (response.status === 200) {
         navigate("/home");
       } else {
