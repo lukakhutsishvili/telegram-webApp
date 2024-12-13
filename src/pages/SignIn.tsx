@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
-import axios from "axios";
 
 const SignIn = () => {
   const navigate = useNavigate();
