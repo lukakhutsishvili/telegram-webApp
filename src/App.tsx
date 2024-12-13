@@ -37,7 +37,7 @@ const axiosInstance = axios.create({
 
   const handleSignIn = async () => {
    try {
-     const response = await axiosInstance.get("/auth", { });
+     const response = await axiosInstance.get("/auth", {});
        console.log(response);
    } catch (error:any) {
      console.log(`Error: ${error.message}`);
