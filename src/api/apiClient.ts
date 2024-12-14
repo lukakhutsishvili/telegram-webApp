@@ -5,7 +5,7 @@ const password = "657152";
 const encodedCredentials = btoa(`${username}:${password}`);
 
 export const axiosInstance = axios.create({
-  baseURL: "https://bo.delivo.ge/delivo_test/hs/bot",
+  baseURL: "https://bo.delivo.ge/delivo_test/hs/",
   headers: {
     Authorization: `Basic ${encodedCredentials}`,
   },

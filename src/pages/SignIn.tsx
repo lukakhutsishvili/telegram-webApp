@@ -12,7 +12,7 @@ const SignIn = () => {
 
   const handleSignIn = async () => {
     try {
-      const response = await axiosInstance.get("/auth", { params });
+      const response = await axiosInstance.get("/bot/auth", { params });
       if (response.status === 200) {
         navigate("/home");
       } else {
@@ -20,19 +20,35 @@ const SignIn = () => {
       }
     } catch (error: any) {
       setShowRegister(true);
-      setError("Sign-in failed. Please register.");
+      setError("you dont have account. Please register.");
     }
   };
 
   const handleRegister = async () => {
+    if (!phoneNumber.trim()) {
+      setError("Phone number is required.");
+      return;
+    }
+
+    const authData = {
+      telegram_id: chat_id,
+      phone_number: "591081124",
+      type: "1",
+    };
+
     try {
-      if (!phoneNumber) {
-        setError("Phone number is required.");
-        return;
+      const response = await axiosInstance.post("/bot/register_bot", authData);
+      console.log(response);
+
+      if (true) {
+        console.log("Phone number processed successfully!");
+        setError("");
+      } else {
+        setError("Failed to process phone number. Please try again.");
       }
-      alert(`Registered with phone number: ${phoneNumber}`);
     } catch (err) {
-      console.log("Registration failed", err);
+      console.error("Error processing phone number:", err);
+      setError("An error occurred while processing your phone number.");
     }
   };
 
@@ -44,6 +60,7 @@ const SignIn = () => {
             {showRegister ? "Register your account" : "Sign in to your account"}
           </h2>
         </div>
+
         {!showRegister && (
           <button
             onClick={handleSignIn}
@@ -66,7 +83,7 @@ const SignIn = () => {
               onClick={handleRegister}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
-              Register
+              Send OTP
             </button>
           </div>
         )}
