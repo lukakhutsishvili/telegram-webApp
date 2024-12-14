@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar";
 
 function App() {
   const [foo, setFoo] = useState<string>("");
-  const [isAppActive, setIsAppActive] = useState();
+  // const [isAppActive, setIsAppActive] = useState();
 
   type createContextType = {
     foo: string;
