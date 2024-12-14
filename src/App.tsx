@@ -30,7 +30,7 @@ function App() {
       // Request to expand the app to full screen
       webApp.expand();
 
-      webApp.disableClosingConfirmation();
+      webApp.disableVerticalSwipes();
 
       // Set the app active state based on Telegram's API
       // setIsAppActive(webApp.initData);
