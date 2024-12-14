@@ -6,6 +6,8 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [showOtpField, setShowOtpField] = useState(false);
   const [error, setError] = useState("");
   const chat_id = 6087086146;
   const params = { telegram_id: chat_id };
@@ -20,7 +22,7 @@ const SignIn = () => {
       }
     } catch (error: any) {
       setShowRegister(true);
-      setError("you dont have account. Please register.");
+      setError("You don't have an account. Please register.");
     }
   };
 
@@ -38,17 +40,45 @@ const SignIn = () => {
 
     try {
       const response = await axiosInstance.post("/bot/register_bot", authData);
-      console.log(response);
-
-      if (true) {
-        console.log("Phone number processed successfully!");
+      if (response.data.status === true) {
+        console.log("OTP sent successfully!");
         setError("");
+        setShowOtpField(true); // Show the OTP field
       } else {
-        setError("Failed to process phone number. Please try again.");
+        setError("Failed to send OTP. Please try again.");
       }
     } catch (err) {
-      console.error("Error processing phone number:", err);
-      setError("An error occurred while processing your phone number.");
+      console.error("Error sending OTP:", err);
+      setError("An error occurred while sending OTP.");
+    }
+  };
+
+  const handleConfirmOtp = async () => {
+    if (!otp.trim()) {
+      setError("OTP is required.");
+      return;
+    }
+
+    const data = {
+      phone_number: phoneNumber,
+      otp: otp,
+      telegram_id: chat_id,
+    };
+
+    console.log(data);
+
+    try {
+      const response = await axiosInstance.get("/bot/check_otp", { data });
+
+      if (response.status === 200) {
+        console.log("OTP confirmed successfully!");
+        navigate("/home");
+      } else {
+        setError("Invalid OTP. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error confirming OTP:", err);
+      setError("An error occurred while confirming OTP.");
     }
   };
 
@@ -57,7 +87,11 @@ const SignIn = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            {showRegister ? "Register your account" : "Sign in to your account"}
+            {showRegister
+              ? showOtpField
+                ? "Confirm OTP"
+                : "Register your account"
+              : "Sign in to your account"}
           </h2>
         </div>
 
@@ -70,7 +104,7 @@ const SignIn = () => {
           </button>
         )}
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        {showRegister && (
+        {showRegister && !showOtpField && (
           <div className="space-y-4">
             <input
               type="text"
@@ -84,6 +118,23 @@ const SignIn = () => {
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
               Send OTP
+            </button>
+          </div>
+        )}
+        {showOtpField && (
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            />
+            <button
+              onClick={handleConfirmOtp}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Confirm OTP
             </button>
           </div>
         )}

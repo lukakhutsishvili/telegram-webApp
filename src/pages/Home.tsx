@@ -1,32 +1,31 @@
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faMoneyBill1  } from '@fortawesome/free-regular-svg-icons';
-import { faMoneyCheckDollar, faBox } from '@fortawesome/free-solid-svg-icons';
-import logo from '../assets/delivo-logo.jpg';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
+import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
+import logo from "../assets/delivo-logo.jpg";
 
 function Home() {
   return (
-    <div className='max-w-[540px] min-h-[100%] bg-yellow-300'>
-      <div className='flex flex-col gap-8 p-4'>
+    <div className="max-w-[540px]  bg-yellow-300">
+      <div className="flex flex-col gap-8 p-4">
         {/* logo container */}
-        <div className='min-w-[288px]  flex items-center justify-between'>
-        <h2>ზოგადი ინფორმაცია</h2>
-        <img src={logo} alt="logo" className='w-[50px]' />
+        <div className="min-w-[288px]  flex items-center justify-between">
+          <h2>ზოგადი ინფორმაცია</h2>
+          <img src={logo} alt="logo" className="w-[50px]" />
         </div>
 
         {/* info section */}
-        <section  className='flex flex-col gap-6'>
-          <div className='flex  items-center gap-6'>
+        <section className="flex flex-col gap-6">
+          <div className="flex  items-center gap-6">
             <FontAwesomeIcon icon={faUser} />
             <h2>კურიერის სახელი</h2>
           </div>
 
-          <div  className='flex flex-col gap-2 bg-[#f4e1d2] p-4 rounded-xl'>
-            <div className='flex gap-2 items-center'>
+          <div className="flex flex-col gap-2 bg-[#f4e1d2] p-4 rounded-xl">
+            <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faMoneyBill1} />
               <h3>ნაღდი ფული: </h3>
             </div>
-            <div className='flex gap-2 items-center border-b-2 border-black pb-2'>
+            <div className="flex gap-2 items-center border-b-2 border-black pb-2">
               <FontAwesomeIcon icon={faMoneyCheckDollar} />
               <h3>ბარათი: </h3>
             </div>
@@ -36,32 +35,31 @@ function Home() {
 
         {/* parcel statistic section*/}
 
-        <section className='flex flex-col gap-8'>
-          <div className='flex flex-col gap-4'>
-              <div className='flex items-center gap-5'>
-                <FontAwesomeIcon icon={faBox} />
-                <h2>შეკვეთების გამოტანა</h2>
-              </div>
-              <div className='flex flex-col gap-2'>
-                <h3>შესრულებული ვიზიტები: </h3>
-                <h3>შეუსრულებული ვიზიტები: </h3>
-                <h3>დასასრულებებლი ვიზიტები: </h3>
-              </div>
+        <section className="flex flex-col gap-8">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-5">
+              <FontAwesomeIcon icon={faBox} />
+              <h2>შეკვეთების გამოტანა</h2>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3>შესრულებული ვიზიტები: </h3>
+              <h3>შეუსრულებული ვიზიტები: </h3>
+              <h3>დასასრულებებლი ვიზიტები: </h3>
+            </div>
           </div>
 
-          <div className='flex flex-col gap-4'>
-              <div className='flex items-center gap-5'>
-                <FontAwesomeIcon icon={faBox} />
-                <h2>შეკვეთების ჩაბარება</h2>
-              </div>
-              <div className='flex flex-col gap-2'>
-                <h3>შესრულებული ვიზიტები: </h3>
-                <h3>შეუსრულებული ვიზიტები: </h3>
-                <h3>დასასრულებებლი ვიზიტები: </h3>
-              </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-5">
+              <FontAwesomeIcon icon={faBox} />
+              <h2>შეკვეთების ჩაბარება</h2>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3>შესრულებული ვიზიტები: </h3>
+              <h3>შეუსრულებული ვიზიტები: </h3>
+              <h3>დასასრულებებლი ვიზიტები: </h3>
+            </div>
           </div>
         </section>
-
       </div>
     </div>
   );

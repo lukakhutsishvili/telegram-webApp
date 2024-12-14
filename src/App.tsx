@@ -4,6 +4,7 @@ import SignIn from "./pages/SignIn";
 import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import { createContext, useEffect, useState } from "react";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [foo, setFoo] = useState<string>("");
@@ -40,6 +41,7 @@ function App() {
           <Route element={<Reciept />} path="/Reciept" />
           <Route element={<Sending />} path="/Sending" />
         </Routes>
+        <Navbar />
       </Context.Provider>
     </>
   );
