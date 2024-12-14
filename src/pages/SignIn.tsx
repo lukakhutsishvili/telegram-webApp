@@ -32,7 +32,7 @@ const SignIn = () => {
 
     const authData = {
       telegram_id: chat_id,
-      phone_number: "591081124",
+      phone_number: phoneNumber,
       type: "1",
     };
 
