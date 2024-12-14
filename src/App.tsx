@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 
 function App() {
   const [foo, setFoo] = useState<string>("");
+  const [isAppActive, setIsAppActive] = useState();
 
   type createContextType = {
     foo: string;
@@ -18,19 +19,36 @@ function App() {
     foo: "foo",
     setFoo: () => {},
   });
-
   useEffect(() => {
     // Ensure the Telegram WebApp is initialized
-    if (window.Telegram.WebApp) {
-      const webApp = window.Telegram.WebApp;
+    const webApp = window.Telegram.WebApp;
 
+    if (webApp) {
       // Notify Telegram the app is ready
       webApp.ready();
 
       // Request to expand the app to full screen
       webApp.expand();
+
+      webApp.disableClosingConfirmation();
+
+      // Set the app active state based on Telegram's API
+      // setIsAppActive(webApp.initData);
+
+      // Listen for viewport changes to track app folding/unfolding
+      // webApp.onEvent("viewportChanged", () => {
+      //   setIsAppActive(webApp.isActive);
+      // });
+
+      // Cleanup on component unmount
+      // return () => {
+      //   webApp.offEvent("viewportChanged", () => {
+      //     setIsAppActive(webApp.isActive);
+      //   });
+      // };
     }
   }, []);
+
   const location = useLocation();
 
   return (
