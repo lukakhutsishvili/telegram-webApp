@@ -6,8 +6,8 @@ import logo from '../assets/delivo-logo.jpg';
 
 function Home() {
   return (
-    <div className='max-w-[540px] min-h-[100%] bg-yellow-300'>
-      <div className='flex flex-col gap-8 p-4'>
+    <div className='max-w-[100vw] min-h-[100vh] bg-yellow-300'>
+      <div className='flex flex-col gap-8 p-20  max-sm:px-10'>
         {/* logo container */}
         <div className='min-w-[288px]  flex items-center justify-between'>
         <h2>ზოგადი ინფორმაცია</h2>
@@ -21,7 +21,7 @@ function Home() {
             <h2>კურიერის სახელი</h2>
           </div>
 
-          <div  className='flex flex-col gap-2 bg-[#f4e1d2] p-4 rounded-xl'>
+          <div  className='flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl'>
             <div className='flex gap-2 items-center'>
               <FontAwesomeIcon icon={faMoneyBill1} />
               <h3>ნაღდი ფული: </h3>

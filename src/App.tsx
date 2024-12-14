@@ -4,6 +4,7 @@ import SignIn from "./pages/SignIn";
 import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import { createContext, useEffect, useState } from "react";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [foo, setFoo] = useState<string>("");
@@ -35,11 +36,12 @@ function App() {
     <>
       <Context.Provider value={{ foo, setFoo }}>
         <Routes>
-          <Route element={<Home />} path="/home" />
           <Route element={<SignIn />} path="/" />
+          <Route element={<Home />} path="/home" />
           <Route element={<Reciept />} path="/Reciept" />
           <Route element={<Sending />} path="/Sending" />
         </Routes>
+        <Navbar/>
       </Context.Provider>
     </>
   );
