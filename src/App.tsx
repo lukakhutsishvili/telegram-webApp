@@ -6,37 +6,33 @@ import Sending from "./pages/Sending";
 import { createContext, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 
+export const Context = createContext<createContextType>({
+  userInfo: {},
+  setUserInfo: () => {},
+});
 function App() {
-  const [foo, setFoo] = useState<string>("");
+  const location = useLocation();
+  const [userInfo, setUserInfo] = useState({});
+  // const [reasons, setReasons] = useState();
 
-  type createContextType = {
-    foo: string;
-    setFoo: any;
-  };
-
-  const Context = createContext<createContextType>({
-    foo: "foo",
-    setFoo: () => {},
-  });
-
+  // Launch telegram web app
   useEffect(() => {
-    // Ensure the Telegram WebApp is initialized
     const webApp = window.Telegram.WebApp;
-    webApp;
-    console.log(webApp.version);
     if (webApp) {
       webApp.ready();
-
       webApp.expand();
       webApp.disableVerticalSwipes();
+      const userid = webApp.initDataUnsafe.user?.id;
+      if (userid) {
+        // Update user state with ID
+        setUserInfo((prevUser) => ({ ...prevUser, id: userid }));
+      }
     }
   }, []);
 
-  const location = useLocation();
-
   return (
     <>
-      <Context.Provider value={{ foo, setFoo }}>
+      <Context.Provider value={{ userInfo, setUserInfo }}>
         <Routes>
           <Route element={<SignIn />} path="/" />
           <Route element={<Home />} path="/home" />

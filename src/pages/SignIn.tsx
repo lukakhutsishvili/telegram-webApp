@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
-import { BOT_AUTH } from "../api/Constants";
+import { BOT_AUTH, CHECK_OTP } from "../api/Constants";
+import { Context } from "../App";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -12,10 +13,18 @@ const SignIn = () => {
   const [error, setError] = useState("");
   const chat_id = 6087086146;
   const params = { telegram_id: chat_id };
+  const { setUserInfo } = useContext(Context);
 
+  // sign in
   const handleSignIn = async () => {
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
+      console.log(response);
+      setUserInfo((prev: any) => ({
+        ...prev,
+        name: response.data.response.courier_name,
+      }));
+
       if (response.status === 200) {
         navigate("/home");
       } else {
@@ -27,6 +36,7 @@ const SignIn = () => {
     }
   };
 
+  // send OTP code
   const handleRegister = async () => {
     if (!phoneNumber.trim()) {
       setError("Phone number is required.");
@@ -69,7 +79,7 @@ const SignIn = () => {
     console.log(data);
 
     try {
-      const response = await axiosInstance.get("/bot/check_otp", { data });
+      const response = await axiosInstance.get(CHECK_OTP, { data });
       console.log(response.data);
 
       if (true) {

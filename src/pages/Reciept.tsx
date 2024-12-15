@@ -1,18 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarcode} from "@fortawesome/free-solid-svg-icons";
+import { faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { tabButtons } from "../Lib/helpers";
 
 function Reciept() {
-
-  const tabButtons = [
-      { name: "აქტიური",   },
-      { name: "დასრულებული",   },
-      { name: "გაუქმებული", },
-      { name: "დასადასტურებელი", },
-  ]
-
   return (
     <div className="flex flex-col h-screen bg-white">
-     
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold">გამოტანა</h1>
@@ -20,12 +12,13 @@ function Reciept() {
         {/* Tab Navigation */}
         <div className="flex mt-4 space-x-2">
           {tabButtons.map((item) => (
-          <button
-            key={item.name}
-            className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
-          >{item.name}
-          </button>
-        ))}
+            <button
+              key={item.name}
+              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
+            >
+              {item.name}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -42,9 +35,7 @@ function Reciept() {
       </div>
 
       {/* parcel info */}
-      <div >
-        
-      </div>
+      <div></div>
 
       {/* QR Code Section */}
       <div className="p-4">
@@ -53,7 +44,6 @@ function Reciept() {
           <span>კოდის სკანირება</span>
         </button>
       </div>
-
     </div>
   );
 }

@@ -2,11 +2,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
 import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.jpg";
+import { useContext } from "react";
+import { Context } from "../App";
 
 function Home() {
+  const { userInfo } = useContext(Context);
+
   return (
-    <div className='max-w-[100vw] min-h-[100vh] bg-yellow-300'>
-      <div className='flex flex-col gap-8 p-20  max-sm:px-10'>
+    <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
+      <div className="flex flex-col gap-8 p-20  max-sm:px-10">
         {/* logo container */}
         <div className="min-w-[288px]  flex items-center justify-between">
           <h2>ზოგადი ინფორმაცია</h2>
@@ -17,11 +21,11 @@ function Home() {
         <section className="flex flex-col gap-6">
           <div className="flex  items-center gap-6">
             <FontAwesomeIcon icon={faUser} />
-            <h2>კურიერის სახელი</h2>
+            <h2>{userInfo.name}</h2>
           </div>
 
-          <div  className='flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl'>
-            <div className='flex gap-2 items-center'>
+          <div className="flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl">
+            <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faMoneyBill1} />
               <h3>ნაღდი ფული: </h3>
             </div>
