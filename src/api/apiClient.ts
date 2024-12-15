@@ -1,11 +1,10 @@
 import axios from "axios";
+import { BASE_URL, password, username } from "./Constants";
 
-const username = "telegram_bot";
-const password = "657152";
 const encodedCredentials = btoa(`${username}:${password}`);
 
 export const axiosInstance = axios.create({
-  baseURL: "https://bo.delivo.ge/delivo_test/hs/",
+  baseURL: BASE_URL,
   headers: {
     Authorization: `Basic ${encodedCredentials}`,
   },

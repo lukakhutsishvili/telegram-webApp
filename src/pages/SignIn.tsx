@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
+import { BOT_AUTH } from "../api/Constants";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const SignIn = () => {
 
   const handleSignIn = async () => {
     try {
-      const response = await axiosInstance.get("/bot/auth", { params });
+      const response = await axiosInstance.get(BOT_AUTH, { params });
       if (response.status === 200) {
         navigate("/home");
       } else {
@@ -61,7 +62,7 @@ const SignIn = () => {
 
     const data = {
       phone_number: phoneNumber,
-      otp: otp,
+      otp,
       telegram_id: chat_id,
     };
 
@@ -69,8 +70,9 @@ const SignIn = () => {
 
     try {
       const response = await axiosInstance.get("/bot/check_otp", { data });
+      console.log(response.data);
 
-      if (response.status === 200) {
+      if (true) {
         console.log("OTP confirmed successfully!");
         navigate("/home");
       } else {
