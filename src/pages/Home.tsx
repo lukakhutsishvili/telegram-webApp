@@ -12,7 +12,7 @@ function Home() {
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
       <div className="flex flex-col gap-8 p-20  max-sm:px-10">
         {/* logo container */}
-        <div className="min-w-[288px]  flex items-center justify-between">
+        <div className="min-w-[238px]  flex items-center justify-between">
           <h2>ზოგადი ინფორმაცია</h2>
           <img src={logo} alt="logo" className="w-[50px]" />
         </div>
@@ -40,7 +40,7 @@ function Home() {
         {/* parcel statistic section*/}
 
         <section className="flex flex-col gap-8">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
             <div className="flex items-center gap-5">
               <FontAwesomeIcon icon={faBox} />
               <h2>შეკვეთების გამოტანა</h2>
@@ -52,7 +52,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
             <div className="flex items-center gap-5">
               <FontAwesomeIcon icon={faBox} />
               <h2>შეკვეთების ჩაბარება</h2>
