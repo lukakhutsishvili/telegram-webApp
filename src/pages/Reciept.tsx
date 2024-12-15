@@ -1,24 +1,31 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { tabButtons } from "../Lib/helpers";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
 
 function Reciept() {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
       <div className="p-4">
-        <h1 className="text-2xl font-bold">გამოტანა</h1>
+        <h1 className="text-2xl font-bold text-center">გამოტანა</h1>
 
         {/* Tab Navigation */}
-        <div className="flex mt-4 space-x-2">
-          {tabButtons.map((item) => (
-            <button
-              key={item.name}
-              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
-            >
-              {item.name}
-            </button>
-          ))}
+        <div className="mt-4">
+          <Swiper
+            spaceBetween={10} // Space between slides
+            slidesPerView={2} // Number of visible slides
+            freeMode={true} // Enables free scrolling
+          >
+            {tabButtons.map((item) => (
+              <SwiperSlide key={item.name}>
+                <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md w-full">
+                  {item.name}
+                </button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
 
@@ -34,8 +41,10 @@ function Reciept() {
         </div>
       </div>
 
-      {/* parcel info */}
-      <div></div>
+      {/* Parcel info */}
+      <div className="h-[540px] w-full overflow-y-auto py-4">
+
+      </div>
 
       {/* QR Code Section */}
       <div className="p-4">
