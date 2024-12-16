@@ -5,21 +5,33 @@ import logo from "../assets/delivo-logo.jpg";
 import { useContext, useEffect } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
-import { GET_REASONS  } from "../api/Constants";
+import { GET_REASONS, ORDER_LIST } from "../api/Constants";
 
 function Home() {
   const { userInfo, setReasons } = useContext(Context);
 
   // get undelivered reasons
-  const getOrderList = async () =>{
+  const getReasons = async () => {
     const response = await axiosInstance.get(GET_REASONS);
     setReasons(response.data.response);
-    
-  }
+  };
 
-  useEffect(()=>{
-    getOrderList();
-  },[])
+  // get order
+  const getOrders = async () => {
+    const params = {
+      device_id: userInfo.device_id,
+      pickup_task: true,
+      status: "waiting",
+    };
+    console.log(params);
+    const response = await axiosInstance.get(ORDER_LIST);
+    console.log(response.data.response);
+  };
+
+  useEffect(() => {
+    getReasons();
+    getOrders();
+  }, []);
 
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">

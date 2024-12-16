@@ -11,8 +11,8 @@ const SignIn = () => {
   const [otp, setOtp] = useState("");
   const [showOtpField, setShowOtpField] = useState(false);
   const [error, setError] = useState("");
-  const { setUserInfo, userInfo } = useContext(Context); 
-  const chat_id = userInfo.id || "6087086146"  ;
+  const { setUserInfo, userInfo } = useContext(Context);
+  const chat_id = userInfo.telegram_id || "6087086146";
   const params = { telegram_id: chat_id };
 
   // sign in
@@ -23,6 +23,7 @@ const SignIn = () => {
       setUserInfo((prev: any) => ({
         ...prev,
         name: response.data.response.courier_name,
+        device_id: response.data.response.device_id,
       }));
 
       if (response.status === 200) {
@@ -51,7 +52,7 @@ const SignIn = () => {
 
     try {
       const response = await axiosInstance.post(SEND_OTP, authData);
-      console.log(response)
+      console.log(response);
       if (true) {
         console.log("OTP sent successfully!");
         setError("");
@@ -85,8 +86,8 @@ const SignIn = () => {
       setUserInfo((prev: any) => ({
         ...prev,
         name: response.data.response.courier_name,
+        device_id: response.data.response.device_id,
       }));
-
       if (true) {
         console.log("OTP confirmed successfully!");
         navigate("/home");

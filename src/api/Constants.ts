@@ -10,4 +10,4 @@ export const BOT_AUTH = "/bot/auth";
 export const CHECK_OTP = "/bot/check_otp";
 export const SEND_OTP = "/bot/register_bot";
 export const GET_REASONS = "/pocket/getreasons";
-export const ORDER_LIST = "/bot/getorder";
+export const ORDER_LIST = "pocket/getorder";
