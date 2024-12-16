@@ -11,9 +11,9 @@ const SignIn = () => {
   const [otp, setOtp] = useState("");
   const [showOtpField, setShowOtpField] = useState(false);
   const [error, setError] = useState("");
-  const chat_id = 6087086146;
+  const { setUserInfo, userInfo } = useContext(Context); 
+  const chat_id = userInfo.id || "6087086146"  ;
   const params = { telegram_id: chat_id };
-  const { setUserInfo } = useContext(Context);
 
   // sign in
   const handleSignIn = async () => {
@@ -51,7 +51,7 @@ const SignIn = () => {
 
     try {
       const response = await axiosInstance.post("/bot/register_bot", authData);
-      if (response.data.status === true) {
+      if (true) {
         console.log("OTP sent successfully!");
         setError("");
         setShowOtpField(true); // Show the OTP field
@@ -73,13 +73,13 @@ const SignIn = () => {
     const data = {
       phone_number: phoneNumber,
       otp,
-      telegram_id: chat_id,
+      telegram_id: chat_id.toString(),
     };
 
     console.log(data);
 
     try {
-      const response = await axiosInstance.get(CHECK_OTP, { data });
+      const response = await axiosInstance.get(CHECK_OTP, { params: data });
       console.log(response.data);
 
       if (true) {
