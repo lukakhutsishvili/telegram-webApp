@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
-import { BOT_AUTH, CHECK_OTP } from "../api/Constants";
+import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
 import { Context } from "../App";
 
 const SignIn = () => {
@@ -50,7 +50,7 @@ const SignIn = () => {
     };
 
     try {
-      const response = await axiosInstance.post("/bot/register_bot", authData);
+      const response = await axiosInstance.post(SEND_OTP, authData);
       console.log(response)
       if (true) {
         console.log("OTP sent successfully!");
