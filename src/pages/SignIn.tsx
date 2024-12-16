@@ -82,6 +82,10 @@ const SignIn = () => {
     try {
       const response = await axiosInstance.get(CHECK_OTP, { params: data });
       console.log(response.data);
+      setUserInfo((prev: any) => ({
+        ...prev,
+        name: response.data.response.courier_name,
+      }));
 
       if (true) {
         console.log("OTP confirmed successfully!");
