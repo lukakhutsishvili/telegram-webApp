@@ -2,13 +2,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
 import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.jpg";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "../App";
+import { axiosInstance } from "../api/apiClient";
+import { GET_REASONS  } from "../api/Constants";
 
 function Home() {
-  const { userInfo } = useContext(Context);
+  const { userInfo, setReasons } = useContext(Context);
 
-  
+  // get undelivered reasons
+  const getOrderList = async () =>{
+    const response = await axiosInstance.get(GET_REASONS);
+    setReasons(response.data.response);
+    
+  }
+
+  useEffect(()=>{
+    getOrderList();
+  },[])
 
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">

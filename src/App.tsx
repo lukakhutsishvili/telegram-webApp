@@ -9,11 +9,13 @@ import Navbar from "./components/Navbar";
 export const Context = createContext<createContextType>({
   userInfo: {},
   setUserInfo: () => {},
+  reasons: [],
+  setReasons: () => {}
 });
 function App() {
   const location = useLocation();
   const [userInfo, setUserInfo] = useState({});
-  // const [reasons, setReasons] = useState();
+  const [reasons, setReasons] = useState();
 
   // Launch telegram web app
   useEffect(() => {
@@ -32,7 +34,7 @@ function App() {
 
   return (
     <>
-      <Context.Provider value={{ userInfo, setUserInfo }}>
+      <Context.Provider value={{ userInfo, setUserInfo, reasons, setReasons  }}>
         <Routes>
           <Route element={<SignIn />} path="/" />
           <Route element={<Home />} path="/home" />

@@ -19,4 +19,6 @@ type createContextType = {
     name?: string;
   };
   setUserInfo: any;
+  reasons: undefined | string[];
+  setReasons: any;
 };

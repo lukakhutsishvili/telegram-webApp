@@ -9,3 +9,5 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const BOT_AUTH = "/bot/auth";
 export const CHECK_OTP = "/bot/check_otp";
 export const SEND_OTP = "/bot/register_bot";
+export const GET_REASONS = "/pocket/getreasons";
+export const ORDER_LIST = "/bot/getorder";
