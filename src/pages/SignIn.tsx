@@ -51,6 +51,7 @@ const SignIn = () => {
 
     try {
       const response = await axiosInstance.post("/bot/register_bot", authData);
+      console.log(response)
       if (true) {
         console.log("OTP sent successfully!");
         setError("");
