@@ -11,7 +11,7 @@ const SignIn = () => {
   const [otp, setOtp] = useState("");
   const [showOtpField, setShowOtpField] = useState(false);
   const [error, setError] = useState("");
-  const chat_id = '';
+  const chat_id = 6087086146;
   const params = { telegram_id: chat_id };
   const { setUserInfo } = useContext(Context);
 
