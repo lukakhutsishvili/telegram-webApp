@@ -2,13 +2,13 @@ import { useContext } from "react";
 import { Context } from "../App";
 
 const Order = () => {
-  const { recieptTasks } = useContext(Context);
+  const { sendingTasks } = useContext(Context);
 
-  console.log(recieptTasks);
+  console.log(sendingTasks);
 
   return (
     <div className="px-4">
-      {recieptTasks.map((item: any, index: number) => {
+      {sendingTasks.map((item: any, index: number) => {
         return (
           <div
             key={index}
