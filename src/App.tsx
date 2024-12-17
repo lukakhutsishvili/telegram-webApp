@@ -15,6 +15,8 @@ export const Context = createContext<createContextType>({
   setRecieptTasks: () => {},
   sendingTasks: [],
   setSendingTasks: () => {},
+  tabButtons: "Waiting",
+  setTabButtons: () => {},
 });
 function App() {
   const location = useLocation();
@@ -22,6 +24,7 @@ function App() {
   const [reasons, setReasons] = useState();
   const [recieptTasks, setRecieptTasks] = useState();
   const [sendingTasks, setSendingTasks] = useState();
+  const [tabButtons, setTabButtons] = useState("Waiting");
 
   // Launch telegram web app
   useEffect(() => {
@@ -50,6 +53,8 @@ function App() {
           setRecieptTasks,
           sendingTasks,
           setSendingTasks,
+          tabButtons,
+          setTabButtons,
         }}
       >
         <Routes>

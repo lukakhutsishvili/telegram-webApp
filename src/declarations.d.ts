@@ -26,4 +26,6 @@ type createContextType = {
   setRecieptTasks: any;
   sendingTasks: Array;
   setSendingTasks: any;
+  tabButtons: string,
+  setTabButtons: any,
 };
