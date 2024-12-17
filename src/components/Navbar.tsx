@@ -1,13 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faTruckFast, faBox } from "@fortawesome/free-solid-svg-icons";
+import { buttons } from "../Lib/helpers";
+
 
 function Navbar() {
-  const buttons = [
-    { name: "Home", path: "/home", icon: faHome },
-    { name: "Sending", path: "/Sending", icon: faTruckFast },
-    { name: "Receipt", path: "/Reciept", icon: faBox },
-  ];
+
 
   return (
     <div className="fixed bottom-0 w-full bg-gray-800 text-white shadow-md">

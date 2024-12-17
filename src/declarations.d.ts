@@ -22,4 +22,8 @@ type createContextType = {
   setUserInfo: any;
   reasons: undefined | string[];
   setReasons: any;
+  recieptTasks: Array;
+  setRecieptTasks: any;
+  sendingTasks: Array;
+  setSendingTasks: any;
 };

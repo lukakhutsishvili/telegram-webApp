@@ -42,9 +42,7 @@ function Reciept() {
       </div>
 
       {/* Parcel info */}
-      <div className="h-[440px] w-full overflow-y-auto py-4">
-
-      </div>
+      <div className="h-[440px] w-full overflow-y-auto py-4"></div>
 
       {/* QR Code Section */}
       <div className="p-4">

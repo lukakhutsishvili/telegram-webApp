@@ -11,8 +11,8 @@ function Sending() {
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">მიწოდება</h1>
 
-       {/* Tab Navigation */}
-       <div className="mt-4">
+        {/* Tab Navigation */}
+        <div className="mt-4">
           <Swiper
             spaceBetween={10} // Space between slides
             slidesPerView={2} // Number of visible slides
@@ -42,9 +42,7 @@ function Sending() {
       </div>
 
       {/* parcel info */}
-      <div className="h-[440px] w-full overflow-y-auto py-4">
-
-      </div>
+      <div className="h-[440px] w-full overflow-y-auto py-4"></div>
 
       {/* QR Code Section */}
       <div className="p-4 ">

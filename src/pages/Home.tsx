@@ -8,7 +8,8 @@ import { axiosInstance } from "../api/apiClient";
 import { GET_REASONS, ORDER_LIST } from "../api/Constants";
 
 function Home() {
-  const { userInfo, setReasons } = useContext(Context);
+  const { userInfo, setReasons, setRecieptTasks, setSendingTasks } =
+    useContext(Context);
 
   // get undelivered reasons
   const getReasons = async () => {
@@ -16,49 +17,59 @@ function Home() {
     setReasons(response.data.response);
   };
 
- 
+  //get reciept tasks
+  const getRecieptTasks = async () => {
+    // Define parameters dynamically
+    const params = {
+      device_id: userInfo.device_id, // Example dynamic device ID
+      pickup_task: true, // Dynamic pickup_task
+      status: ["Waiting", "Accepted", "Completed", "Canceled"], // Dynamic status
+    };
 
+    // Safe Base64 Encoding
+    const jsonData = JSON.stringify(params);
+    const base64Data = btoa(jsonData);
 
-
-
-  //get tasks
-
-
-const getTasks = async () => {
-  // Define parameters dynamically
-  const params = { 
-    device_id: userInfo.device_id, // Example dynamic device ID
-    pickup_task: false, // Dynamic pickup_task
-    status: ["waiting"], // Dynamic status
+    try {
+      // Send GET request with encoded parameters
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: { tasklist_data: base64Data },
+      });
+      setRecieptTasks(response.data.response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  console.log("Request Data:", params);
+  //get sending tasks
+  const getSendingTasks = async () => {
+    // Define parameters dynamically
+    const params = {
+      device_id: userInfo.device_id, // Example dynamic device ID
+      pickup_task: false, // Dynamic pickup_task
+      status: ["Waiting", "Accepted", "Completed", "Canceled"], // Dynamic status
+    };
 
-  // Safe Base64 Encoding
-  const jsonData = JSON.stringify(params);
- 
-  const base64Data = btoa((jsonData));
-  console.log(base64Data)
+    // Safe Base64 Encoding
+    const jsonData = JSON.stringify(params);
+    const base64Data = btoa(jsonData);
 
-  console.log(atob(base64Data));
+    try {
+      // Send GET request with encoded parameters
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: { tasklist_data: base64Data },
+      });
+      setSendingTasks(response.data.response);
+      // Log response
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  try {
-    // Send GET request with encoded parameters
-    const response = await axiosInstance.get(ORDER_LIST, { 
-      params: { tasklist_data: base64Data }
-    });
-
-    // Log response
-    console.log("Response Data:", response.data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-  
   useEffect(() => {
     getReasons();
-    getTasks();
+    getRecieptTasks();
+    getSendingTasks();
   }, []);
 
   return (

@@ -10,12 +10,18 @@ export const Context = createContext<createContextType>({
   userInfo: {},
   setUserInfo: () => {},
   reasons: [],
-  setReasons: () => {}
+  setReasons: () => {},
+  recieptTasks: [],
+  setRecieptTasks: () => {},
+  sendingTasks: [],
+  setSendingTasks: () => {},
 });
 function App() {
   const location = useLocation();
   const [userInfo, setUserInfo] = useState({});
   const [reasons, setReasons] = useState();
+  const [recieptTasks, setRecieptTasks] = useState();
+  const [sendingTasks, setSendingTasks] = useState();
 
   // Launch telegram web app
   useEffect(() => {
@@ -34,7 +40,18 @@ function App() {
 
   return (
     <>
-      <Context.Provider value={{ userInfo, setUserInfo, reasons, setReasons  }}>
+      <Context.Provider
+        value={{
+          userInfo,
+          setUserInfo,
+          reasons,
+          setReasons,
+          recieptTasks,
+          setRecieptTasks,
+          sendingTasks,
+          setSendingTasks,
+        }}
+      >
         <Routes>
           <Route element={<SignIn />} path="/" />
           <Route element={<Home />} path="/home" />
