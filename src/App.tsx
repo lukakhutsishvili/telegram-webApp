@@ -5,6 +5,7 @@ import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import { createContext, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
+import QRBarcodeScanner from "./components/Scanner";
 
 export const Context = createContext<createContextType>({
   userInfo: {},
@@ -62,6 +63,7 @@ function App() {
           <Route element={<Home />} path="/home" />
           <Route element={<Reciept />} path="/Reciept" />
           <Route element={<Sending />} path="/Sending" />
+          <Route path="/scanner" element={<QRBarcodeScanner />} />
         </Routes>
         {location.pathname !== "/" && <Navbar />}
       </Context.Provider>
