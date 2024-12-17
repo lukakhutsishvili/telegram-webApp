@@ -16,21 +16,49 @@ function Home() {
     setReasons(response.data.response);
   };
 
-  // get order
-  const getOrders = async () => {
-    const params = {
-      device_id: userInfo.device_id,
-      pickup_task: true,
-      status: "waiting",
-    };
-    console.log(params);
-    const response = await axiosInstance.get(ORDER_LIST);
-    console.log(response.data.response);
+ 
+
+
+
+
+  //get tasks
+
+
+const getTasks = async () => {
+  // Define parameters dynamically
+  const params = { 
+    device_id: userInfo.device_id, // Example dynamic device ID
+    pickup_task: false, // Dynamic pickup_task
+    status: ["waiting"], // Dynamic status
   };
 
+  console.log("Request Data:", params);
+
+  // Safe Base64 Encoding
+  const jsonData = JSON.stringify(params);
+ 
+  const base64Data = btoa((jsonData));
+  console.log(base64Data)
+
+  console.log(atob(base64Data));
+
+  try {
+    // Send GET request with encoded parameters
+    const response = await axiosInstance.get(ORDER_LIST, { 
+      params: { tasklist_data: base64Data }
+    });
+
+    // Log response
+    console.log("Response Data:", response.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  
   useEffect(() => {
     getReasons();
-    getOrders();
+    getTasks();
   }, []);
 
   return (
