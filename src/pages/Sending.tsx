@@ -4,8 +4,16 @@ import { tabButtons } from "../Lib/helpers";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import Order from "../components/Order";
+import { useNavigate } from "react-router-dom";
 
 function Sending() {
+
+  const navigate = useNavigate();
+
+  const handleScanClick = () => {
+    navigate("/scanner"); 
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white pt-16">
       {/* Header */}
@@ -43,11 +51,16 @@ function Sending() {
       </div>
 
       {/* parcel info */}
-      <Order />
+      <div className="h-[440px] w-full overflow-y-auto py-4">
+        <Order />
+      </div>
 
       {/* QR Code Section */}
       <div className="p-4 ">
-        <button className="w-full flex items-center justify-center gap-2 bg-yellow-400 py-4 rounded-lg text-black font-semibold text-lg shadow-md">
+        <button 
+        onClick={handleScanClick}
+        className="w-full flex items-center justify-center gap-2 bg-yellow-400 py-4 rounded-lg text-black font-semibold 
+        text-lg shadow-md">
           <FontAwesomeIcon icon={faBarcode} />
           <span>კოდის სკანირება</span>
         </button>
