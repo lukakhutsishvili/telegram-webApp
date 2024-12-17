@@ -17,7 +17,7 @@ type createContextType = {
   userInfo: {
     telegram_id?: string;
     name?: string;
-
+    device_id?: string;
   };
   setUserInfo: any;
   reasons: undefined | string[];
