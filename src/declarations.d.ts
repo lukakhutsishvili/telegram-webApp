@@ -15,8 +15,9 @@ declare module "*.jpeg" {
 
 type createContextType = {
   userInfo: {
-    id?: string;
+    telegram_id?: string;
     name?: string;
+
   };
   setUserInfo: any;
   reasons: undefined | string[];

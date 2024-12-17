@@ -14,8 +14,10 @@ function Home() {
   const getOrderList = async () =>{
     const response = await axiosInstance.get(GET_REASONS);
     setReasons(response.data.response);
-    
   }
+
+
+ 
 
   useEffect(()=>{
     getOrderList();

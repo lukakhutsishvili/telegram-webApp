@@ -12,17 +12,17 @@ const SignIn = () => {
   const [showOtpField, setShowOtpField] = useState(false);
   const [error, setError] = useState("");
   const { setUserInfo, userInfo } = useContext(Context); 
-  const chat_id = userInfo.id || "6087086146"  ;
+  const chat_id = userInfo.telegram_id || "6087086146"  ;
   const params = { telegram_id: chat_id };
 
   // sign in
   const handleSignIn = async () => {
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
-      console.log(response);
       setUserInfo((prev: any) => ({
         ...prev,
         name: response.data.response.courier_name,
+        device_id:response.data.response.device_id,
       }));
 
       if (response.status === 200) {
