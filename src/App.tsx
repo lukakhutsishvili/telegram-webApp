@@ -68,7 +68,7 @@ const App = () => {
 
       if (userId) {
         console.log("User ID:", userId);
-        setUserInfo((prev) => ({ ...prev, id: userId })); // Save the ID to state
+        setUserInfo((prev) => ({ ...prev, telegram_id: userId })); // Save the ID to state
       } else {
         console.error("User ID not found in initDataUnsafe.");
       }
