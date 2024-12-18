@@ -34,7 +34,7 @@ function App() {
       webApp.ready();
       webApp.expand();
       webApp.disableVerticalSwipes();
-      const userid = webApp.initDataUnsafe.user?.id;
+      const userid = webApp.initDataUnsafe.chat;
       if (userid) {
         // Update user state with ID
         setUserInfo((prevUser) => ({ ...prevUser, id: userid }));
