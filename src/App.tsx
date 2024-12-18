@@ -47,7 +47,6 @@ const App = () => {
   const [tabButtons, setTabButtons] = useState<string>("Waiting");
 
   // Initialize Telegram Web App
-  // Initialize Telegram Web App
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
 
