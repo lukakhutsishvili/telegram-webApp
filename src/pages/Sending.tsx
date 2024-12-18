@@ -51,7 +51,7 @@ function Sending() {
       </div>
 
       {/* parcel info */}
-      <div className="h-[440px] w-full overflow-y-auto py-4">
+      <div className="h-[340px] w-full overflow-y-auto py-4">
         <Order />
       </div>
 
