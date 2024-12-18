@@ -7,9 +7,10 @@ const QRBarcodeScanner = () => {
 
   useEffect(() => {
     const config = {
-      fps: 10,
-      qrbox: { width: 250, height: 250 }, 
-      aspectRatio: 1.0, 
+      fps: 15,
+      qrbox: window.innerWidth < 420 ? { width: 200, height: 200 } : { width: 250, height: 250 },
+      aspectRatio: 1.0,
+      facingMode: { exact: "environment" },
     };
 
     const html5QrcodeScanner = new Html5QrcodeScanner("scanner", config, false);
@@ -17,15 +18,23 @@ const QRBarcodeScanner = () => {
     html5QrcodeScanner.render(
       (decodedText) => {
         setScannedData(decodedText);
-        html5QrcodeScanner.clear(); 
+        setErrorMessage(null);
       },
-      (error) => {
-        setErrorMessage(error || "Scanning failed");
+      (error: unknown) => {
+        // Type guard to ensure error is an object with name/message
+        if (typeof error === "object" && error !== null && "name" in error && "message" in error) {
+          const err = error as Error;
+          setErrorMessage(`Error (${err.name}): ${err.message}`);
+        } else {
+          setErrorMessage("An unknown error occurred during scanning.");
+        }
       }
     );
 
     return () => {
-      html5QrcodeScanner.clear().catch((err) => console.error("Cleanup error:", err));
+      html5QrcodeScanner.clear().catch((err) =>
+        console.error("Cleanup error:", err)
+      );
     };
   }, []);
 
