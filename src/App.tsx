@@ -47,16 +47,33 @@ const App = () => {
   const [tabButtons, setTabButtons] = useState<string>("Waiting");
 
   // Initialize Telegram Web App
+  // Initialize Telegram Web App
   useEffect(() => {
-    const webApp = window.Telegram.WebApp;
+    const webApp = (window as any)?.Telegram?.WebApp;
+
     if (webApp) {
+      // Prepare the Web App
       webApp.ready();
       webApp.expand();
       webApp.disableVerticalSwipes();
-      const userId = webApp.initDataUnsafe?.user?.id; // Corrected key for user ID
+
+      // Log the initDataUnsafe to understand its structure
+      console.log(
+        "Telegram WebApp Initialized. initDataUnsafe:",
+        webApp.initDataUnsafe
+      );
+
+      // Extract the user ID
+      const userId = webApp.initDataUnsafe?.user?.id;
+
       if (userId) {
-        setUserInfo((prev) => ({ ...prev, id: userId }));
+        console.log("User ID:", userId);
+        setUserInfo((prev) => ({ ...prev, id: userId })); // Save the ID to state
+      } else {
+        console.error("User ID not found in initDataUnsafe.");
       }
+    } else {
+      console.error("Telegram WebApp is not available.");
     }
   }, []);
 
