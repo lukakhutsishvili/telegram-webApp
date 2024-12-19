@@ -66,10 +66,25 @@ const BarcodeScanner = () => {
       setIsModalOpen(true); // Show the modal
     } catch (error: any) {
       console.error("Error fetching details:", error);
-      setError(error.message || "An error occurred");
-      setResponseData(null); // Clear response data on error
-      setIsModalOpen(true); // Show the modal
+    
+      let errorMessage = "An error occurred";
+    
+      if (error.response && error.response.data) {
+        // Проверяем, содержит ли ответ нужные поля
+        if (error.response.data.response) {
+          // Если есть поле response, берём его
+          errorMessage = error.response.data.response;
+        } else if (error.response.data.message) {
+          // Или если вдруг есть message
+          errorMessage = error.response.data.message;
+        }
+      }
+    
+      setError(errorMessage);
+      setResponseData(null);
+      setIsModalOpen(true);
     }
+    
   };
 
   useEffect(() => {
