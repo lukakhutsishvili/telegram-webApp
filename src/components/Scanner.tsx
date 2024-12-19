@@ -65,6 +65,7 @@ const BarcodeScanner = () => {
       setError(null); // Clear error if the request is successful
       setIsModalOpen(true); // Show the modal
     } catch (error: any) {
+      console.log(error);
       console.error("Error fetching details:", error);
 
       if (error.response) {
