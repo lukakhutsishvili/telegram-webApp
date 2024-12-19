@@ -66,16 +66,20 @@ const BarcodeScanner = () => {
       setIsModalOpen(true); // Show the modal
     } catch (error: any) {
       console.error("Error fetching details:", error);
+      
+      if (error.response) {
+        console.log("Error response:", error.response);
+        console.log("Error response data:", error.response.data);
+      }
     
       let errorMessage = "An error occurred";
     
       if (error.response && error.response.data) {
-        // Проверяем, содержит ли ответ нужные поля
+        // Посмотрите, что именно возвращается:
+        // Возможно придется подстроиться под фактическую структуру
         if (error.response.data.response) {
-          // Если есть поле response, берём его
           errorMessage = error.response.data.response;
         } else if (error.response.data.message) {
-          // Или если вдруг есть message
           errorMessage = error.response.data.message;
         }
       }
@@ -84,6 +88,7 @@ const BarcodeScanner = () => {
       setResponseData(null);
       setIsModalOpen(true);
     }
+    
     
   };
 
