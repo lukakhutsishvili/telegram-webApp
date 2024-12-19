@@ -1,10 +1,17 @@
 import { useZxing } from "react-zxing";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import axios from "axios"; // Import axios for API requests
+import { Context } from "../App";
+import { GET_DETAILS_BY_SCANNER } from "../api/Constants";
 
 const BarcodeScanner = () => {
   const [result, setResult] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(true);
-  const hasLoggedResult = useRef(false); // Track if result has been logged
+  const [responseData, setResponseData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const hasLoggedResult = useRef(false);
+  const { userInfo } = useContext(Context);
 
   const {
     ref,
@@ -12,11 +19,14 @@ const BarcodeScanner = () => {
   } = useZxing({
     onDecodeResult: (decodedResult) => {
       if (!result) {
-        // Stop processing further results once a barcode is read
-        setResult(decodedResult.getText()); // Capture scanned result
+        const scannedText = decodedResult.getText();
+        setResult(scannedText); // Capture scanned result
         setIsScanning(false); // Stop scanning
         stopCamera(); // Stop the camera
         if (isOn) off(); // Turn off the torch if it is on
+
+        // Send GET request with the scanned text
+        sendGetRequest(scannedText);
       }
     },
   });
@@ -30,12 +40,48 @@ const BarcodeScanner = () => {
     }
   };
 
+  const sendGetRequest = async (trackingCode: string) => {
+    try {
+      // Create request data
+      const requestData = {
+        device_id: userInfo.device_id,
+        tracking_code: trackingCode,
+      };
+
+      // Encode the request data to Base64
+      const jsonData = JSON.stringify(requestData);
+      const base64Data = btoa(jsonData); // Base64 encode JSON data
+
+      // Define parameters for the GET request
+      const params = { tracking_code_data: base64Data };
+
+      // Send GET request
+      const response = await axios.get(GET_DETAILS_BY_SCANNER, {
+        params,
+      });
+
+      console.log("API Response:", response.data);
+      setResponseData(response.data);
+      setError(null); // Clear error if the request is successful
+      setIsModalOpen(true); // Show the modal
+    } catch (error: any) {
+      console.error("Error fetching details:", error);
+      setError(error.message || "An error occurred");
+      setResponseData(null); // Clear response data on error
+      setIsModalOpen(true); // Show the modal
+    }
+  };
+
   useEffect(() => {
     if (result && !hasLoggedResult.current) {
       console.log("Scanned Result:", result); // Log result once
       hasLoggedResult.current = true; // Mark as logged
     }
   }, [result]);
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "50vh" }}>
@@ -71,7 +117,65 @@ const BarcodeScanner = () => {
             alignItems: "center",
           }}
         >
-          <p>Scanned Result: {result}</p>
+          <div>
+            <p>Scanned Result: {result}</p>
+            {responseData && (
+              <div>
+                <h3>Response Data:</h3>
+                <pre>{JSON.stringify(responseData, null, 2)}</pre>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "10px",
+              textAlign: "center",
+              width: "90%",
+              maxWidth: "500px",
+            }}
+          >
+            <h3>{responseData ? "API Response" : "Error"}</h3>
+            <pre>
+              {responseData
+                ? JSON.stringify(responseData, null, 2)
+                : error || "An error occurred"}
+            </pre>
+            <button
+              onClick={closeModal}
+              style={{
+                marginTop: "20px",
+                padding: "10px 20px",
+                backgroundColor: "#007BFF",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </div>
