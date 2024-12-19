@@ -7,3 +7,9 @@
   padding: 0px;
   box-sizing: border-box;
 }
+#scanner {
+  margin: 0 auto;
+  max-width: 100%;
+  height: 400px; /* Adjust height for better visibility */
+  border: 1px solid #ccc;
+}
