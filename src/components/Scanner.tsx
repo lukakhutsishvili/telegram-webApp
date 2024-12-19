@@ -66,14 +66,14 @@ const BarcodeScanner = () => {
       setIsModalOpen(true); // Show the modal
     } catch (error: any) {
       console.error("Error fetching details:", error);
-      
+
       if (error.response) {
         console.log("Error response:", error.response);
         console.log("Error response data:", error.response.data);
       }
-    
+
       let errorMessage = "An error occurred";
-    
+
       if (error.response && error.response.data) {
         // Посмотрите, что именно возвращается:
         // Возможно придется подстроиться под фактическую структуру
@@ -83,13 +83,12 @@ const BarcodeScanner = () => {
           errorMessage = error.response.data.message;
         }
       }
-    
+      errorMessage = errorMessage + error.response.data;
+
       setError(errorMessage);
       setResponseData(null);
       setIsModalOpen(true);
     }
-    
-    
   };
 
   useEffect(() => {
