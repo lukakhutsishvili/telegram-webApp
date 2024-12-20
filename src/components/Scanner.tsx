@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { Context } from "../App";
 import { GET_DETAILS_BY_SCANNER } from "../api/Constants";
 import { axiosInstance } from "../api/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const BarcodeScanner = () => {
   const [result, setResult] = useState<string | null>(null);
@@ -12,6 +13,7 @@ const BarcodeScanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const hasLoggedResult = useRef(false);
   const { userInfo } = useContext(Context);
+  const navigate = useNavigate();
 
   const {
     ref,
@@ -74,10 +76,7 @@ const BarcodeScanner = () => {
       }
 
       let errorMessage = "An error occurred";
-
       if (error.response && error.response.data) {
-        // Посмотрите, что именно возвращается:
-        // Возможно придется подстроиться под фактическую структуру
         if (error.response.data.response) {
           errorMessage = error.response.data.response;
         } else if (error.response.data.message) {
@@ -85,7 +84,6 @@ const BarcodeScanner = () => {
         }
       }
       errorMessage = errorMessage + error.response.data;
-
       setError(errorMessage);
       setResponseData(null);
       setIsModalOpen(true);
@@ -98,10 +96,13 @@ const BarcodeScanner = () => {
       hasLoggedResult.current = true; // Mark as logged
     }
   }, [result]);
+
   console.log(userInfo.device_id);
 
   const closeModal = () => {
-    setIsModalOpen(false); // Close the modal
+    setIsModalOpen(false);
+    // Navigate to /home page
+    navigate("/home");
   };
 
   return (
