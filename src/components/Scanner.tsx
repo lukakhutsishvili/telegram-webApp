@@ -98,6 +98,7 @@ const BarcodeScanner = () => {
       hasLoggedResult.current = true; // Mark as logged
     }
   }, [result]);
+  console.log(userInfo.device_id);
 
   const closeModal = () => {
     setIsModalOpen(false); // Close the modal
