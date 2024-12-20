@@ -13,7 +13,7 @@ const BarcodeScanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
   const navigate = useNavigate();
-  // const [info, setInfo] = useState();
+  const [info, setInfo] = useState();
   // const tracking_codes = [];
 
   const sendGetRequest = async (trackingCode: string) => {
@@ -33,6 +33,8 @@ const BarcodeScanner = () => {
         params,
       });
       setResponseData(response.data);
+
+      setInfo(responseData.response.tracking_code);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
@@ -92,7 +94,7 @@ const BarcodeScanner = () => {
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
             )}
-            {/* <p>{info}</p> */}
+            <p>{info}</p>
             <button
               onClick={() => {
                 setIsModalOpen(false);
