@@ -61,9 +61,7 @@ const BarcodeScanner = () => {
       setError(null);
       setIsModalOpen(true);
     } catch (error: any) {
-      console.log(error);
       console.error("Error fetching details:", error);
-
       let errorMessage = "An error occurred";
       if (error.response && error.response.data) {
         if (error.response.data.response) {
@@ -86,55 +84,35 @@ const BarcodeScanner = () => {
     }
   }, [result]);
 
-  console.log(userInfo.device_id);
-
   const closeModal = () => {
     setIsModalOpen(false);
     navigate("/home");
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div className="flex flex-col">
       {isScanning ? (
-        <div
-          style={{
-            flex: 1,
-            backgroundColor: "black",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "50vh",
-          }}
-        >
-          <video
-            ref={ref}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+        <div className="flex-1 bg-black flex justify-center items-center h-[50vh] relative">
+          <video ref={ref} className="w-full h-full object-cover" />
           {isAvailable && (
             <button
               onClick={() => (isOn ? off() : on())}
-              style={{ position: "absolute", bottom: "10px", zIndex: 1 }}
+              className="absolute bottom-10 bg-blue-500 text-white py-2 px-4 rounded-md z-10"
             >
               {isOn ? "Turn off" : "Turn on"} torch
             </button>
           )}
         </div>
       ) : (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
+        <div className="flex-1 flex justify-center items-center h-screen">
           <div>
-            <p>Scanned Result: {result}</p>
+            <p className="text-lg font-bold">Scanned Result: {result}</p>
             {responseData && (
               <div>
-                <h3>Response Data:</h3>
-                <pre>{JSON.stringify(responseData, null, 2)}</pre>
+                <h3 className="text-xl font-semibold">Response Data:</h3>
+                <pre className="bg-gray-100 p-4 rounded-md mt-2">
+                  {JSON.stringify(responseData, null, 2)}
+                </pre>
               </div>
             )}
           </div>
@@ -142,47 +120,19 @@ const BarcodeScanner = () => {
       )}
 
       {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "10px",
-              textAlign: "center",
-              width: "100vw",
-              maxWidth: "500px",
-            }}
-          >
-            <h3>{responseData ? "API Response" : "Error"}</h3>
-            <pre>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg text-center max-w-md w-full">
+            <h3 className="text-xl font-semibold">
+              {responseData ? "API Response" : "Error"}
+            </h3>
+            <pre className="bg-gray-100 p-4 rounded-md mt-4 text-sm">
               {responseData
                 ? JSON.stringify(responseData, null, 2)
                 : error || "An error occurred"}
             </pre>
             <button
               onClick={closeModal}
-              style={{
-                marginTop: "20px",
-                padding: "10px 20px",
-                backgroundColor: "#007BFF",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+              className="mt-4 bg-blue-500 text-white py-2 px-6 rounded-md"
             >
               Close
             </button>
