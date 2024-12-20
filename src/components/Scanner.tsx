@@ -103,7 +103,7 @@ const BarcodeScanner = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "100vh",
+            height: "50vh",
           }}
         >
           <video
@@ -162,7 +162,7 @@ const BarcodeScanner = () => {
               padding: "20px",
               borderRadius: "10px",
               textAlign: "center",
-              width: "90%",
+              width: "100vw",
               maxWidth: "500px",
             }}
           >
