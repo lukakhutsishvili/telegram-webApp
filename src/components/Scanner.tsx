@@ -161,27 +161,32 @@ const BarcodeScanner = () => {
         if (result) {
           setBarcode(result.getText());
           setIsModalOpen(true);
-          reader.current.reset(); // Stop the scanning
+          reader.current.reset();
         }
         if (error) console.error(error);
       }
     );
 
     return () => {
-      reader.current.reset(); // Cleanup when component unmounts
+      reader.current.reset();
     };
   }, []);
 
   return (
-    <div className="barcode-scanner">
-      {!isModalOpen && <video ref={videoRef} style={{ width: "100%" }} />}
+    <div className="barcode-scanner relative">
+      {!isModalOpen && <video ref={videoRef} className="w-full h-auto" />}
 
       {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Barcode Scanned</h2>
-            <p>{barcode}</p>
-            <button onClick={() => setIsModalOpen(false)}>Close</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-xl font-bold mb-4">Barcode Scanned</h2>
+            <p className="mb-6 text-gray-700">{barcode}</p>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -190,53 +195,3 @@ const BarcodeScanner = () => {
 };
 
 export default BarcodeScanner;
-
-// CSS for the modal
-const styles = `
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .modal-content h2 {
-    margin-bottom: 10px;
-  }
-
-  .modal-content p {
-    margin-bottom: 20px;
-  }
-
-  .modal-content button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .modal-content button:hover {
-    background-color: #0056b3;
-  }
-`;
-
-// Append styles to the document head
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
