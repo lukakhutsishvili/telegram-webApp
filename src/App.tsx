@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn";
 import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
+import OrderPage from "./pages/OrderPage";
 
 // Define the context type
 
@@ -90,6 +91,7 @@ const App = () => {
         <Route element={<Reciept />} path="/reciept" />
         <Route element={<Sending />} path="/sending" />
         <Route element={<QRBarcodeScanner />} path="/scanner" />
+        <Route path="/order/:id" element={<OrderPage />} />
       </Routes>
       {location.pathname !== "/" && <Navbar />}
     </Context.Provider>
