@@ -21,13 +21,14 @@ type createContextType = {
   };
   setUserInfo: any;
   reasons: undefined | string[];
-  setReasons: any;
-  recieptTasks: Array;
-  setRecieptTasks: any;
-  sendingTasks: Array;
-  setSendingTasks: any;
-  tabButtons: string,
-  setTabButtons: any,
+  setReasons: React.Dispatch<React.SetStateAction<string[]>>;
+  recieptTasks: any[];
+  setRecieptTasks: React.Dispatch<React.SetStateAction<any[]>>;
+  sendingTasks: any[];
+  setSendingTasks: React.Dispatch<React.SetStateAction<any[]>>;
+  tabButtons: string;
+  setTabButtons: React.Dispatch<React.SetStateAction<string>>;
+  navbarButtons: string;
+  setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
+  
 };
-
-

@@ -8,21 +8,9 @@ import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
 
 // Define the context type
-interface ContextType {
-  userInfo: Record<string, any>;
-  setUserInfo: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-  reasons: string[];
-  setReasons: React.Dispatch<React.SetStateAction<string[]>>;
-  recieptTasks: any[];
-  setRecieptTasks: React.Dispatch<React.SetStateAction<any[]>>;
-  sendingTasks: any[];
-  setSendingTasks: React.Dispatch<React.SetStateAction<any[]>>;
-  tabButtons: string;
-  setTabButtons: React.Dispatch<React.SetStateAction<string>>;
-}
 
 // Default context value
-const defaultContextValue: ContextType = {
+const defaultContextValue: createContextType = {
   userInfo: {},
   setUserInfo: () => {},
   reasons: [],
@@ -33,15 +21,18 @@ const defaultContextValue: ContextType = {
   setSendingTasks: () => {},
   tabButtons: "Waiting",
   setTabButtons: () => {},
+  navbarButtons: "Home",
+  setNavbarButtons: () => {},
 };
 
 // Create context
-export const Context = createContext<ContextType>(defaultContextValue);
+export const Context = createContext(defaultContextValue);
 
 const App = () => {
   const location = useLocation();
   const [userInfo, setUserInfo] = useState<Record<string, any>>({});
   const [reasons, setReasons] = useState<string[]>([]);
+  const [navbarButtons, setNavbarButtons] = useState<string>("Home");
   const [recieptTasks, setRecieptTasks] = useState<any[]>([]);
   const [sendingTasks, setSendingTasks] = useState<any[]>([]);
   const [tabButtons, setTabButtons] = useState<string>("Waiting");
@@ -89,6 +80,8 @@ const App = () => {
         setSendingTasks,
         tabButtons,
         setTabButtons,
+        navbarButtons,
+        setNavbarButtons,
       }}
     >
       <Routes>
