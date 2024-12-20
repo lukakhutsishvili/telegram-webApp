@@ -3,6 +3,7 @@ import { faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { tabButtons } from "../Lib/helpers";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
+import ReceiptOrders from "../components/ReceiptOrders";
 
 function Reciept() {
   return (
@@ -42,7 +43,9 @@ function Reciept() {
       </div>
 
       {/* Parcel info */}
-      <div className="h-[440px] w-full overflow-y-auto py-4"></div>
+      <div className="h-[440px] w-full overflow-y-auto py-4">
+        <ReceiptOrders/>
+      </div>
 
       {/* QR Code Section */}
       <div className="p-4">
