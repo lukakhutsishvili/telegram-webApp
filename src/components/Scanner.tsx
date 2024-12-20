@@ -13,6 +13,7 @@ const BarcodeScanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
   const navigate = useNavigate();
+  const tracking_codes: string[] = [];
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
@@ -30,8 +31,27 @@ const BarcodeScanner = () => {
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
-
       setResponseData(response.data);
+
+      const responseTrackingCodes = responseData.tracking_codes;
+
+      // Check if tracking_codes exist and is an array
+      if (Array.isArray(responseTrackingCodes)) {
+        responseTrackingCodes.forEach((code) => {
+          if (code.tracking_code) {
+            tracking_codes.push(code.tracking_code);
+          }
+        });
+      }
+      // const data_to_send = {
+      //   device_id: userInfo.device_id,
+      //   registry_tracking_code: responseData.registry_tracking_code,
+      //   successfully: "True",
+      //   payment_type: "None",
+      //   reason_id: "",
+      //   reason_commentary: "",
+      //   tracking_codes: responseData.tracking_codes,
+      // };
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
@@ -91,6 +111,8 @@ const BarcodeScanner = () => {
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
             )}
+
+            <p>{tracking_codes}</p>
 
             <button
               onClick={() => {
