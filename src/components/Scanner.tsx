@@ -1,8 +1,8 @@
 import { useZxing } from "react-zxing";
 import { useState, useEffect, useRef, useContext } from "react";
-import axios from "axios"; // Import axios for API requests
 import { Context } from "../App";
 import { GET_DETAILS_BY_SCANNER } from "../api/Constants";
+import { axiosInstance } from "../api/apiClient";
 
 const BarcodeScanner = () => {
   const [result, setResult] = useState<string | null>(null);
@@ -56,7 +56,7 @@ const BarcodeScanner = () => {
       const params = { tracking_code_data: base64Data };
 
       // Send GET request
-      const response = await axios.get(GET_DETAILS_BY_SCANNER, {
+      const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
 
