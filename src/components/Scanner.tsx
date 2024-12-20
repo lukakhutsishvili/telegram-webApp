@@ -10,7 +10,7 @@ const BarcodeScanner = () => {
   const [isScanning, setIsScanning] = useState(true);
   const [responseData, setResponseData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const hasLoggedResult = useRef(false);
   const { userInfo } = useContext(Context);
   const navigate = useNavigate();
@@ -22,12 +22,10 @@ const BarcodeScanner = () => {
     onDecodeResult: (decodedResult) => {
       if (!result) {
         const scannedText = decodedResult.getText();
-        setResult(scannedText); // Capture scanned result
-        setIsScanning(false); // Stop scanning
-        stopCamera(); // Stop the camera
-        if (isOn) off(); // Turn off the torch if it is on
-
-        // Send GET request with the scanned text
+        setResult(scannedText);
+        setIsScanning(false);
+        stopCamera();
+        if (isOn) off();
         sendGetRequest(scannedText);
       }
     },
@@ -37,43 +35,34 @@ const BarcodeScanner = () => {
     const videoElement = ref.current;
     if (videoElement && videoElement.srcObject) {
       const stream = videoElement.srcObject as MediaStream;
-      stream.getTracks().forEach((track) => track.stop()); // Stop all media tracks
-      videoElement.srcObject = null; // Clear the video source
+      stream.getTracks().forEach((track) => track.stop());
+      videoElement.srcObject = null;
     }
   };
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
-      // Create request data
       const requestData = {
         device_id: userInfo.device_id,
         tracking_code: trackingCode,
       };
 
-      // Encode the request data to Base64
       const jsonData = JSON.stringify(requestData);
-      const base64Data = btoa(jsonData); // Base64 encode JSON data
+      const base64Data = btoa(jsonData);
 
-      // Define parameters for the GET request
       const params = { tracking_code_data: base64Data };
 
-      // Send GET request
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
 
       console.log("API Response:", response.data);
       setResponseData(response.data);
-      setError(null); // Clear error if the request is successful
-      setIsModalOpen(true); // Show the modal
+      setError(null);
+      setIsModalOpen(true);
     } catch (error: any) {
       console.log(error);
       console.error("Error fetching details:", error);
-
-      if (error.response) {
-        console.log("Error response:", error.response);
-        console.log("Error response data:", error.response.data);
-      }
 
       let errorMessage = "An error occurred";
       if (error.response && error.response.data) {
@@ -83,7 +72,7 @@ const BarcodeScanner = () => {
           errorMessage = error.response.data.message;
         }
       }
-      errorMessage = errorMessage + error.response.data;
+      errorMessage = errorMessage + (error.response?.data || "");
       setError(errorMessage);
       setResponseData(null);
       setIsModalOpen(true);
@@ -92,8 +81,8 @@ const BarcodeScanner = () => {
 
   useEffect(() => {
     if (result && !hasLoggedResult.current) {
-      console.log("Scanned Result:", result); // Log result once
-      hasLoggedResult.current = true; // Mark as logged
+      console.log("Scanned Result:", result);
+      hasLoggedResult.current = true;
     }
   }, [result]);
 
@@ -101,12 +90,11 @@ const BarcodeScanner = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    // Navigate to /home page
     navigate("/home");
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "50vh" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       {isScanning ? (
         <div
           style={{
@@ -115,6 +103,7 @@ const BarcodeScanner = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            height: "100vh",
           }}
         >
           <video
@@ -137,6 +126,7 @@ const BarcodeScanner = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            height: "100vh",
           }}
         >
           <div>
@@ -151,7 +141,6 @@ const BarcodeScanner = () => {
         </div>
       )}
 
-      {/* Modal */}
       {isModalOpen && (
         <div
           style={{
@@ -164,7 +153,7 @@ const BarcodeScanner = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 1000,
+            zIndex: 9999,
           }}
         >
           <div
