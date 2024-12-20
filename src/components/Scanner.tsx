@@ -1,5 +1,5 @@
 import { useZxing } from "react-zxing";
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useContext } from "react";
 import { Context } from "../App";
 import { GET_DETAILS_BY_SCANNER } from "../api/Constants";
 import { axiosInstance } from "../api/apiClient";
@@ -11,7 +11,6 @@ const BarcodeScanner = () => {
   const [responseData, setResponseData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const hasLoggedResult = useRef(false);
   const { userInfo } = useContext(Context);
   const navigate = useNavigate();
 
@@ -77,13 +76,6 @@ const BarcodeScanner = () => {
     }
   };
 
-  useEffect(() => {
-    if (result && !hasLoggedResult.current) {
-      console.log("Scanned Result:", result);
-      hasLoggedResult.current = true;
-    }
-  }, [result]);
-
   const closeModal = () => {
     setIsModalOpen(false);
     navigate("/home");
@@ -119,7 +111,7 @@ const BarcodeScanner = () => {
         </div>
       )}
 
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg text-center max-w-md w-full">
             <h3 className="text-xl font-semibold">
@@ -138,7 +130,7 @@ const BarcodeScanner = () => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
