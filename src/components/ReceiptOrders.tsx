@@ -1,18 +1,32 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faBarcode } from "@fortawesome/free-solid-svg-icons";
 
-const ReceiptOrders = () => {
+const ReceiptOrders = ({ status }: { status: string | null }) => {
+  
   const { recieptTasks } = useContext(Context);
   const navigate = useNavigate(); 
+  const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
 
+  
+  // Filter tasks based on status
+  useEffect(() => {
+    const tasks = status
+      ? recieptTasks.filter((task: any) => task.Status === status)
+      : recieptTasks;
+
+    setFilteredTasks(tasks);
+  }, [status, recieptTasks]);
+
+
+    console.log(filteredTasks)
 
 
   return (
     <div className="px-4">
-      {recieptTasks.map((item: any, index: number) => {
+      {filteredTasks.map((item: any, index: number) => {
         return (
           <div
             key={index}
