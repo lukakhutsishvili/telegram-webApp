@@ -47,6 +47,10 @@ const OrderPage = () => {
           <span>თანხა :</span>
           <span className="font-medium">{order.sum} ₾</span>
         </div>
+        <div className="p-4 flex justify-between">
+          <span>სტატუსი :</span>
+          <span className="font-medium">{order.Status}</span>
+        </div>
       </div>
 
         {/* ღილაკები */}
