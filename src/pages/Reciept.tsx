@@ -16,7 +16,7 @@ function Reciept() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white pt-16">
+    <div className="flex flex-col h-screen bg-white pt-16 pb-[104px]">
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">გამოტანა</h1>

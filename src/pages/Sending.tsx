@@ -19,7 +19,7 @@ function Sending() {
   console.log(selectedStatus)
 
   return (
-    <div className="flex flex-col h-screen bg-white pt-16">
+    <div className="flex flex-col h-screen bg-white pt-16 pb-[104px]">
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">მიწოდება</h1>
         <div className="mt-4">
@@ -56,7 +56,7 @@ function Sending() {
         </div>
       </div>
 
-      <div className="h-[340px] w-full overflow-y-auto py-4">
+      <div className="h-[440px] w-full overflow-y-auto py-4">
         <Order status={selectedStatus} />
       </div>
 
