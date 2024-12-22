@@ -4,17 +4,20 @@ import { Context } from "../App";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>(); // 'id' now holds the tracking_code
-  const { sendingTasks , recieptTasks } = useContext(Context);
+  const { sendingTasks, recieptTasks } = useContext(Context);
 
   // Find the order using tracking_code
-  const order = sendingTasks.find((task) => task.tracking_code === id) || recieptTasks.find((task) => task.tracking_code === id);
+  const order =
+    sendingTasks.find((task) => task.tracking_code === id) ||
+    recieptTasks.find((task) => task.tracking_code === id);
 
   if (!order) {
     return <div className="p-4">Order not found</div>;
   }
 
+
   return (
-    <div className="min-h-screen bg-white px-4 py-6">
+    <div className="min-h-screen bg-white px-4 pt-12">
 
       <header className="flex items-center mb-6">
         <button
@@ -55,14 +58,22 @@ const OrderPage = () => {
 
         {/* ღილაკები */}
 
-        <div className="flex justify-between p-8">
-            <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md ">
-                ჩაბარება
+        <div className="flex justify-center p-8">
+        {order.Status === "Waiting" ? (
+          <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md">
+            მიღება
+          </button>
+        ) : (
+          <div className="flex space-x-4">
+            <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md">
+              ჩაბარება
             </button>
-            <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md ">
-                გაუქმება
+            <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md">
+              გაუქმება
             </button>
-        </div>
+          </div>
+        )}
+      </div>
 
     </div>
   );
