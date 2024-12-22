@@ -15,7 +15,6 @@ const OrderPage = () => {
     return <div className="p-4">Order not found</div>;
   }
 
-
   return (
     <div className="min-h-screen bg-white px-4 pt-12">
 
@@ -56,14 +55,19 @@ const OrderPage = () => {
         </div>
       </div>
 
-        {/* ღილაკები */}
-
-        <div className="flex justify-center p-8">
-        {order.Status === "Waiting" ? (
+      {/* Buttons */}
+      <div className="flex justify-center p-8">
+        {order.Status === "Waiting" && (
           <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md">
             მიღება
           </button>
-        ) : (
+        )}
+        {order.Status === "Canceled" && (
+          <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md">
+            აღდგენა
+          </button>
+        )}
+        {order.Status === "Accepted" && (
           <div className="flex space-x-4">
             <button className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md">
               ჩაბარება
@@ -73,6 +77,7 @@ const OrderPage = () => {
             </button>
           </div>
         )}
+        {/* No buttons for "Completed" */}
       </div>
 
     </div>
