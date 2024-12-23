@@ -77,7 +77,7 @@ const BarcodeScanner = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-xl font-bold mb-4">Barcode Scanned</h2>
+            <h2 className="text-xl font-bold mb-4">{info}</h2>
             {isLoading ? (
               <p className="mb-6 text-gray-700">Loading...</p>
             ) : responseData ? (
