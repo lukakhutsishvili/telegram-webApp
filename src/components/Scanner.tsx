@@ -82,7 +82,7 @@ const BarcodeScanner = () => {
               <p className="mb-6 text-gray-700">Loading...</p>
             ) : responseData ? (
               responseData.error ? (
-                <p className="mb-6 text-red-500">{}</p>
+                <p className="mb-6 text-red-500">{info}</p>
               ) : (
                 <div>
                   <p className="mb-4 text-gray-700">Details:</p>
@@ -94,7 +94,6 @@ const BarcodeScanner = () => {
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
             )}
-            <p>{info}</p>
             <button
               onClick={() => {
                 setIsModalOpen(false);
