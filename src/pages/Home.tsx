@@ -17,20 +17,20 @@ function Home() {
   };
 
   // get order
-  const getOrders = async () => {
+  const getOrderList = async () => {
     const params = {
       device_id: userInfo.device_id,
       pickup_task: true,
       status: "waiting",
     };
     console.log(params);
-    const response = await axiosInstance.get(ORDER_LIST);
+    const response = await axiosInstance.get(ORDER_LIST, { params });
     console.log(response.data.response);
   };
 
   useEffect(() => {
     getReasons();
-    getOrders();
+    getOrderList();
   }, []);
 
   return (
