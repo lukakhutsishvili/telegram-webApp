@@ -24,7 +24,6 @@ const SignIn = () => {
         name: response.data.response.courier_name,
         device_id: response.data.response.device_id,
       }));
-
       if (response.status === 200) {
         navigate("/home");
       } else {
