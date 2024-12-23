@@ -8,8 +8,15 @@ import { axiosInstance } from "../api/apiClient";
 import { GET_REASONS, ORDER_LIST } from "../api/Constants";
 
 function Home() {
-  const { userInfo, setReasons, setRecieptTasks, setSendingTasks, recieptTasks, sendingTasks } =
-    useContext(Context);
+  const {
+    userInfo,
+    setReasons,
+    setRecieptTasks,
+    setSendingTasks,
+    recieptTasks,
+    sendingTasks,
+    reasons,
+  } = useContext(Context);
 
   // get undelivered reasons
   const getReasons = async () => {
@@ -66,28 +73,9 @@ function Home() {
     }
   };
 
-  useEffect(() => {
-    getReasons();
-    getRecieptTasks();
-    getSendingTasks();
-    taskCounter()
-  }, []);
+  console.log(recieptTasks);
 
-  console.log(recieptTasks)
-
-const [taskAmounts, setTaskAmounts]=useState({
-  receiptAccepted: 0,
-  receiptCompleted: 0,
-  receiptCanceled: 0, 
-  receiptWaiting: 0,
-  sendingAccepted: 0,
-  sendingCompleted: 0,
-  sendingCanceled: 0, 
-  sendingWaiting: 0,
-})
-
-const taskCounter = () => {
-  const newTaskAmounts = {
+  const [taskAmounts, setTaskAmounts] = useState({
     receiptAccepted: 0,
     receiptCompleted: 0,
     receiptCanceled: 0,
@@ -96,38 +84,54 @@ const taskCounter = () => {
     sendingCompleted: 0,
     sendingCanceled: 0,
     sendingWaiting: 0,
+  });
+
+  const taskCounter = () => {
+    const newTaskAmounts = {
+      receiptAccepted: 0,
+      receiptCompleted: 0,
+      receiptCanceled: 0,
+      receiptWaiting: 0,
+      sendingAccepted: 0,
+      sendingCompleted: 0,
+      sendingCanceled: 0,
+      sendingWaiting: 0,
+    };
+
+    recieptTasks.forEach((task) => {
+      if (task.Status === "Accepted") {
+        newTaskAmounts.receiptAccepted++;
+      } else if (task.Status === "Completed") {
+        newTaskAmounts.receiptCompleted++;
+      } else if (task.Status === "Canceled") {
+        newTaskAmounts.receiptCanceled++;
+      } else {
+        newTaskAmounts.receiptWaiting++;
+      }
+    });
+
+    sendingTasks.forEach((task) => {
+      if (task.Status === "Accepted") {
+        newTaskAmounts.sendingAccepted++;
+      } else if (task.Status === "Completed") {
+        newTaskAmounts.sendingCompleted++;
+      } else if (task.Status === "Canceled") {
+        newTaskAmounts.sendingCanceled++;
+      } else {
+        newTaskAmounts.sendingWaiting++;
+      }
+    });
+
+    setTaskAmounts(newTaskAmounts);
   };
 
-  recieptTasks.forEach((task) => {
-    if (task.Status === "Accepted") {
-      newTaskAmounts.receiptAccepted++;
-    } else if (task.Status === "Completed") {
-      newTaskAmounts.receiptCompleted++;
-    } else if (task.Status === "Canceled") {
-      newTaskAmounts.receiptCanceled++;
-    } else {
-      newTaskAmounts.receiptWaiting++;
-    }
-  });
-
-  sendingTasks.forEach((task) => {
-    if (task.Status === "Accepted") {
-      newTaskAmounts.sendingAccepted++;
-    } else if (task.Status === "Completed") {
-      newTaskAmounts.sendingCompleted++;
-    } else if (task.Status === "Canceled") {
-      newTaskAmounts.sendingCanceled++;
-    } else {
-      newTaskAmounts.sendingWaiting++;
-    }
-  });
-
-  setTaskAmounts(newTaskAmounts);
-};
-
-useEffect(() => {
-  taskCounter()
-}, []);
+  useEffect(() => {
+    getReasons();
+    getRecieptTasks();
+    getSendingTasks();
+    taskCounter();
+    taskCounter();
+  }, [recieptTasks, sendingTasks, reasons]);
 
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
@@ -166,23 +170,23 @@ useEffect(() => {
               <FontAwesomeIcon icon={faBox} />
               <h2>შეკვეთების გამოტანა</h2>
             </div>
-              <ul className="flex flex-col gap-2">
-                <li className="flex justify-between">
-                  <span>დასრულებული ვიზიტები:</span>
-                  <span>{taskAmounts.receiptCompleted}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>გაუქმებული ვიზიტები:</span>
-                  <span>{taskAmounts.receiptCanceled}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>აქტიური ვიზიტები:</span>
-                  <span>{taskAmounts.receiptAccepted}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>მოლოდინში:</span>
-                  <span>{taskAmounts.receiptWaiting}</span>
-                </li>
+            <ul className="flex flex-col gap-2">
+              <li className="flex justify-between">
+                <span>დასრულებული ვიზიტები:</span>
+                <span>{taskAmounts.receiptCompleted}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>გაუქმებული ვიზიტები:</span>
+                <span>{taskAmounts.receiptCanceled}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>აქტიური ვიზიტები:</span>
+                <span>{taskAmounts.receiptAccepted}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>მოლოდინში:</span>
+                <span>{taskAmounts.receiptWaiting}</span>
+              </li>
             </ul>
           </div>
 
@@ -192,22 +196,22 @@ useEffect(() => {
               <h2>შეკვეთების ჩაბარება</h2>
             </div>
             <ul className="flex flex-col gap-2">
-                <li className="flex justify-between">
-                  <span>დასრულებული ვიზიტები:</span>
-                  <span>{taskAmounts.sendingCompleted}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>გაუქმებული ვიზიტები:</span>
-                  <span>{taskAmounts.sendingCanceled}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>აქტიური ვიზიტები:</span>
-                  <span>{taskAmounts.sendingAccepted}</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>მოლოდინში:</span>
-                  <span>{taskAmounts.sendingWaiting}</span>
-                </li>
+              <li className="flex justify-between">
+                <span>დასრულებული ვიზიტები:</span>
+                <span>{taskAmounts.sendingCompleted}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>გაუქმებული ვიზიტები:</span>
+                <span>{taskAmounts.sendingCanceled}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>აქტიური ვიზიტები:</span>
+                <span>{taskAmounts.sendingAccepted}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>მოლოდინში:</span>
+                <span>{taskAmounts.sendingWaiting}</span>
+              </li>
             </ul>
           </div>
         </section>
