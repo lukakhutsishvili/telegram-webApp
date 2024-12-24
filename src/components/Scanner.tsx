@@ -32,8 +32,12 @@ const BarcodeScanner = () => {
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
-      setResponseData(response.data.response.value.tracking_codes);
 
+      const trackingCodes = response.data.response.value.tracking_codes.map(
+        (item: { tracking_code: string }) => item.tracking_code
+      );
+
+      setResponseData(trackingCodes);
       setInfo("true");
     } catch (error) {
       console.error("Error fetching barcode details:", error);
