@@ -45,7 +45,6 @@ const BarcodeScanner = () => {
 
   useEffect(() => {
     if (!videoRef.current) return;
-
     reader.current.decodeFromConstraints(
       {
         audio: false,
