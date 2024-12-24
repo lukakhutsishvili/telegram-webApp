@@ -13,7 +13,7 @@ const BarcodeScanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
   const navigate = useNavigate();
-  const [info, setInfo] = useState("false");
+  const [info, setInfo] = useState([]);
   // const tracking_codes = [];
 
   const sendGetRequest = async (trackingCode: string) => {
@@ -32,9 +32,9 @@ const BarcodeScanner = () => {
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
-      setResponseData(response.data.response.value);
-      console.log(response.data.response.value);
-      setInfo("true");
+      setResponseData(response.data);
+
+      setInfo(responseData.response.value.tracking_code);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
@@ -45,6 +45,7 @@ const BarcodeScanner = () => {
 
   useEffect(() => {
     if (!videoRef.current) return;
+
     reader.current.decodeFromConstraints(
       {
         audio: false,
@@ -81,7 +82,7 @@ const BarcodeScanner = () => {
               <p className="mb-6 text-gray-700">Loading...</p>
             ) : responseData ? (
               responseData.error ? (
-                <p className="mb-6 text-red-500">barcode scanned</p>
+                <p className="mb-6 text-red-500">{info}</p>
               ) : (
                 <div>
                   <p className="mb-4 text-gray-700">Details:</p>
