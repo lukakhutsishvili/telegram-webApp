@@ -34,7 +34,7 @@ const BarcodeScanner = () => {
       });
       setResponseData(response.data);
 
-      setInfo(responseData.response.value.tracking_code);
+      setInfo(response.data.response.value.tracking_code);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
