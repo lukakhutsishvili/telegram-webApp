@@ -73,8 +73,6 @@ function Home() {
     }
   };
 
-  console.log(recieptTasks);
-
   const [taskAmounts, setTaskAmounts] = useState({
     receiptAccepted: 0,
     receiptCompleted: 0,

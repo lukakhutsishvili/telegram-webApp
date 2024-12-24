@@ -49,14 +49,11 @@ const SignIn = () => {
     };
 
     try {
-      const response = await axiosInstance.post(SEND_OTP, authData);
-      console.log(response);
+      await axiosInstance.post(SEND_OTP, authData);
       if (true) {
         console.log("OTP sent successfully!");
         setError("");
         setShowOtpField(true); // Show the OTP field
-      } else {
-        setError("Failed to send OTP. Please try again.");
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
@@ -76,21 +73,15 @@ const SignIn = () => {
       telegram_id: chat_id?.toString(),
     };
 
-    console.log(data);
-
     try {
       const response = await axiosInstance.get(CHECK_OTP, { params: data });
-      console.log(response.data);
       setUserInfo((prev: any) => ({
         ...prev,
         name: response.data.response.courier_name,
         device_id: response.data.response.device_id,
       }));
       if (true) {
-        console.log("OTP confirmed successfully!");
         navigate("/home");
-      } else {
-        setError("Invalid OTP. Please try again.");
       }
     } catch (err) {
       console.error("Error confirming OTP:", err);

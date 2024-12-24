@@ -9,31 +9,29 @@ import { useState } from "react";
 
 function Sending() {
   const navigate = useNavigate();
-  
-  const [selectedStatus, setSelectedStatus] = useState<string | null>('Accepted');
+
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(
+    "Accepted"
+  );
 
   const handleScanClick = () => {
     navigate("/scanner");
   };
-
-  console.log(selectedStatus)
 
   return (
     <div className="flex flex-col h-screen bg-white pt-16 pb-[104px]">
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">მიწოდება</h1>
         <div className="mt-4">
-          <Swiper
-            spaceBetween={10}
-            slidesPerView={2}
-            freeMode={true}
-          >
+          <Swiper spaceBetween={10} slidesPerView={2} freeMode={true}>
             {tabButtons.map((item) => (
               <SwiperSlide key={item.name}>
                 <button
                   onClick={() => setSelectedStatus(item.status)}
                   className={`px-4 py-2 ${
-                    selectedStatus === item.status ? "bg-yellow-600" : "bg-yellow-400"
+                    selectedStatus === item.status
+                      ? "bg-yellow-600"
+                      : "bg-yellow-400"
                   } text-black font-semibold rounded-md w-full`}
                 >
                   {item.name}
@@ -43,9 +41,9 @@ function Sending() {
           </Swiper>
         </div>
       </div>
-      
-         {/* Search Input */}
-         <div className="flex items-center px-4 py-2">
+
+      {/* Search Input */}
+      <div className="flex items-center px-4 py-2">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
