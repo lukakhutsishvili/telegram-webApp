@@ -13,7 +13,7 @@ const BarcodeScanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
   const navigate = useNavigate();
-  const [info, setInfo] = useState([]);
+  const [info, setInfo] = useState("false");
   // const tracking_codes = [];
 
   const sendGetRequest = async (trackingCode: string) => {
@@ -32,9 +32,8 @@ const BarcodeScanner = () => {
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
-      setResponseData(response.data);
-
-      setInfo(response.data.response.value.tracking_code);
+      setResponseData(response.data.response.value.tracking_code);
+      setInfo("true");
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
@@ -77,7 +76,7 @@ const BarcodeScanner = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-xl font-bold mb-4">{info}</h2>
+            <h2 className="text-xl font-bold mb-4">{responseData}</h2>
             {isLoading ? (
               <p className="mb-6 text-gray-700">Loading...</p>
             ) : responseData ? (
