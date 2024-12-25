@@ -9,3 +9,10 @@ export const axiosInstance = axios.create({
     Authorization: `Basic ${encodedCredentials}`,
   },
 });
+
+
+export const axiosTelegram = axios.create({
+  headers: {
+    Authorization: `Basic ${encodedCredentials}`,
+  },
+});

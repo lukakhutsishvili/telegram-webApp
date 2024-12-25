@@ -2,13 +2,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
 import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.jpg";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
 import { GET_REASONS, ORDER_LIST } from "../api/Constants";
 
 function Home() {
-  const { userInfo, setReasons } = useContext(Context);
+  const { userInfo, setReasons, setRecieptTasks, setSendingTasks, recieptTasks, sendingTasks } =
+    useContext(Context);
 
   // get undelivered reasons
   const getReasons = async () => {
@@ -16,26 +17,121 @@ function Home() {
     setReasons(response.data.response);
   };
 
-  // get order
-  const getOrderList = async () => {
+  //get reciept tasks
+  const getRecieptTasks = async () => {
+    // Define parameters dynamically
     const params = {
-      device_id: userInfo.device_id,
-      pickup_task: true,
-      status: "waiting",
+      device_id: userInfo.device_id, // Example dynamic device ID
+      pickup_task: true, // Dynamic pickup_task
+      status: ["Waiting", "Accepted", "Completed", "Canceled"], // Dynamic status
     };
-    console.log(params);
-    const response = await axiosInstance.get(ORDER_LIST, { params });
-    console.log(response.data.response);
+
+    // Safe Base64 Encoding
+    const jsonData = JSON.stringify(params);
+    const base64Data = btoa(jsonData);
+
+    try {
+      // Send GET request with encoded parameters
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: { tasklist_data: base64Data },
+      });
+      setRecieptTasks(response.data.response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //get sending tasks
+  const getSendingTasks = async () => {
+    // Define parameters dynamically
+    const params = {
+      device_id: userInfo.device_id, // Example dynamic device ID
+      pickup_task: false, // Dynamic pickup_task
+      status: ["Waiting", "Accepted", "Completed", "Canceled"], // Dynamic status
+    };
+
+    // Safe Base64 Encoding
+    const jsonData = JSON.stringify(params);
+    const base64Data = btoa(jsonData);
+
+    try {
+      // Send GET request with encoded parameters
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: { tasklist_data: base64Data },
+      });
+      setSendingTasks(response.data.response);
+      // Log response
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     getReasons();
-    getOrderList();
+    getRecieptTasks();
+    getSendingTasks();
+    taskCounter()
   }, []);
+
+  console.log(recieptTasks)
+
+const [taskAmounts, setTaskAmounts]=useState({
+  receiptAccepted: 0,
+  receiptCompleted: 0,
+  receiptCanceled: 0, 
+  receiptWaiting: 0,
+  sendingAccepted: 0,
+  sendingCompleted: 0,
+  sendingCanceled: 0, 
+  sendingWaiting: 0,
+})
+
+const taskCounter = () => {
+  const newTaskAmounts = {
+    receiptAccepted: 0,
+    receiptCompleted: 0,
+    receiptCanceled: 0,
+    receiptWaiting: 0,
+    sendingAccepted: 0,
+    sendingCompleted: 0,
+    sendingCanceled: 0,
+    sendingWaiting: 0,
+  };
+
+  recieptTasks.forEach((task) => {
+    if (task.Status === "Accepted") {
+      newTaskAmounts.receiptAccepted++;
+    } else if (task.Status === "Completed") {
+      newTaskAmounts.receiptCompleted++;
+    } else if (task.Status === "Canceled") {
+      newTaskAmounts.receiptCanceled++;
+    } else {
+      newTaskAmounts.receiptWaiting++;
+    }
+  });
+
+  sendingTasks.forEach((task) => {
+    if (task.Status === "Accepted") {
+      newTaskAmounts.sendingAccepted++;
+    } else if (task.Status === "Completed") {
+      newTaskAmounts.sendingCompleted++;
+    } else if (task.Status === "Canceled") {
+      newTaskAmounts.sendingCanceled++;
+    } else {
+      newTaskAmounts.sendingWaiting++;
+    }
+  });
+
+  setTaskAmounts(newTaskAmounts);
+};
+
+useEffect(() => {
+  taskCounter()
+}, []);
 
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
-      <div className="flex flex-col gap-8 p-20  max-sm:px-10">
+      <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px]  max-sm:px-10">
         {/* logo container */}
         <div className="min-w-[238px]  flex items-center justify-between">
           <h2>ზოგადი ინფორმაცია</h2>
@@ -70,11 +166,24 @@ function Home() {
               <FontAwesomeIcon icon={faBox} />
               <h2>შეკვეთების გამოტანა</h2>
             </div>
-            <div className="flex flex-col gap-2">
-              <h3>შესრულებული ვიზიტები: </h3>
-              <h3>შეუსრულებული ვიზიტები: </h3>
-              <h3>დასასრულებებლი ვიზიტები: </h3>
-            </div>
+              <ul className="flex flex-col gap-2">
+                <li className="flex justify-between">
+                  <span>დასრულებული ვიზიტები:</span>
+                  <span>{taskAmounts.receiptCompleted}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>გაუქმებული ვიზიტები:</span>
+                  <span>{taskAmounts.receiptCanceled}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>აქტიური ვიზიტები:</span>
+                  <span>{taskAmounts.receiptAccepted}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>მოლოდინში:</span>
+                  <span>{taskAmounts.receiptWaiting}</span>
+                </li>
+            </ul>
           </div>
 
           <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
@@ -82,11 +191,24 @@ function Home() {
               <FontAwesomeIcon icon={faBox} />
               <h2>შეკვეთების ჩაბარება</h2>
             </div>
-            <div className="flex flex-col gap-2">
-              <h3>შესრულებული ვიზიტები: </h3>
-              <h3>შეუსრულებული ვიზიტები: </h3>
-              <h3>დასასრულებებლი ვიზიტები: </h3>
-            </div>
+            <ul className="flex flex-col gap-2">
+                <li className="flex justify-between">
+                  <span>დასრულებული ვიზიტები:</span>
+                  <span>{taskAmounts.sendingCompleted}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>გაუქმებული ვიზიტები:</span>
+                  <span>{taskAmounts.sendingCanceled}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>აქტიური ვიზიტები:</span>
+                  <span>{taskAmounts.sendingAccepted}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>მოლოდინში:</span>
+                  <span>{taskAmounts.sendingWaiting}</span>
+                </li>
+            </ul>
           </div>
         </section>
       </div>

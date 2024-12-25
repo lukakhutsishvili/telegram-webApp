@@ -19,7 +19,6 @@ const SignIn = () => {
   const handleSignIn = async () => {
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
-      console.log(response);
       setUserInfo((prev: any) => ({
         ...prev,
         name: response.data.response.courier_name,
@@ -75,7 +74,7 @@ const SignIn = () => {
     const data = {
       phone_number: phoneNumber,
       otp,
-      telegram_id: chat_id.toString(),
+      telegram_id: chat_id?.toString(),
     };
 
     console.log(data);
