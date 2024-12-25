@@ -13,8 +13,6 @@ const BarcodeScanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
   const navigate = useNavigate();
-  const [info, setInfo] = useState("false");
-  // const tracking_codes = [];
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
@@ -33,10 +31,11 @@ const BarcodeScanner = () => {
         params,
       });
       setResponseData(response.data);
-      setInfo("true");
+      setIsModalOpen(true); // Open modal after data is fetched
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
+      setIsModalOpen(true); // Open modal even on error
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +55,6 @@ const BarcodeScanner = () => {
       (result, error) => {
         if (result) {
           const scannedBarcode = result.getText();
-          setIsModalOpen(true);
           reader.current.reset();
           sendGetRequest(scannedBarcode);
         }
@@ -76,12 +74,16 @@ const BarcodeScanner = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-xl font-bold mb-4">{responseData}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {responseData && typeof responseData === "object"
+                ? responseData.error || "Scan Successful!"
+                : responseData}
+            </h2>
             {isLoading ? (
               <p className="mb-6 text-gray-700">Loading...</p>
             ) : responseData ? (
               responseData.error ? (
-                <p className="mb-6 text-red-500">{info}</p>
+                <p className="mb-6 text-red-500">{responseData.error}</p>
               ) : (
                 <div>
                   <p className="mb-4 text-gray-700">Details:</p>
@@ -96,7 +98,9 @@ const BarcodeScanner = () => {
             <button
               onClick={() => {
                 setIsModalOpen(false);
-                navigate("/" + navbarButtons);
+                if (navbarButtons) {
+                  navigate("/" + navbarButtons);
+                }
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
