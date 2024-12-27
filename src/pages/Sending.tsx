@@ -29,28 +29,14 @@ function Sending() {
                 <button
                   onClick={() => setSelectedStatus(item.status)}
                   className={`px-4 py-2 ${
-                    selectedStatus === item.status
-                      ? "bg-yellow-600"
-                      : "bg-yellow-400"
-                  } text-black font-semibold rounded-md w-full`}
+                    selectedStatus === item.status ? "bg-yellow-600" : "bg-yellow-400"
+                  } text-black font-semibold text-[14px] rounded-md w-full`}
                 >
                   {item.name}
                 </button>
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
-      </div>
-
-      {/* Search Input */}
-      <div className="flex items-center px-4 py-2">
-        <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
-          <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
-          <input
-            type="text"
-            placeholder="ძიება"
-            className="w-full focus:outline-none"
-          />
         </div>
       </div>
 
@@ -61,7 +47,7 @@ function Sending() {
       <div className="p-4">
         <button
           onClick={handleScanClick}
-          className="w-full flex items-center justify-center gap-2 bg-yellow-400 py-4 rounded-lg text-black font-semibold text-lg shadow-md"
+          className="w-full flex items-center justify-center gap-2 bg-yellow-400 py-4 rounded-lg text-black font-semibold text-base shadow-md"
         >
           <FontAwesomeIcon icon={faBarcode} />
           <span>კოდის სკანირება</span>
