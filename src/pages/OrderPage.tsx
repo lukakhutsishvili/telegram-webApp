@@ -15,9 +15,16 @@ const OrderPage = () => {
     return <div className="p-4">Order not found</div>;
   }
 
+  // if (order) {
+  //   const orderParams = {
+  //     device_id: userInfo.device_id,
+  //     status: "accepted",
+  //     orders: trackingCodes,
+  //   };
+  // }
+
   return (
     <div className="min-h-screen bg-white px-4 pt-12">
-
       <header className="flex items-center mb-6">
         <button
           onClick={() => window.history.back()}
@@ -39,7 +46,9 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>ტელეფონი :</span>
-          <span className="font-medium text-blue-500">{order.client_phone}</span>
+          <span className="font-medium text-blue-500">
+            {order.client_phone}
+          </span>
         </div>
         <div className="p-4 flex justify-between">
           <span>ბარკოდი :</span>
@@ -79,7 +88,6 @@ const OrderPage = () => {
         )}
         {/* No buttons for "Completed" */}
       </div>
-
     </div>
   );
 };
