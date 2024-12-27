@@ -92,24 +92,16 @@ const BarcodeScanner = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-xl font-bold mb-4">
-              {responseData && typeof responseData === "object"
-                ? responseData.error || "Scan Successful!"
-                : responseData}
-            </h2>
             {isLoading ? (
               <p className="mb-6 text-gray-700">Loading...</p>
-            ) : secRes ? (
-              responseData.error ? (
-                <p className="mb-6 text-red-500">{responseData.error}</p>
-              ) : (
-                <div>
-                  <p className="mb-4 text-gray-700">Details:</p>
-                  <pre className="text-left bg-gray-100 p-4 rounded">
-                    {JSON.stringify(secRes, null, 2)}
-                  </pre>
-                </div>
-              )
+            ) : secRes && secRes.status ? (
+              <h2 className="text-xl font-bold mb-4 text-green-600">
+                Scan Successful!
+              </h2>
+            ) : responseData && responseData.error ? (
+              <h2 className="text-xl font-bold mb-4 text-red-600">
+                {responseData.error}
+              </h2>
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
             )}
