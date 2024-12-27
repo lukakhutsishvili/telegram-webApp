@@ -30,8 +30,12 @@ const BarcodeScanner = () => {
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
-      setResponseData(response.data.response.value.tracking_codes);
-      setIsModalOpen(true); // Open modal after data is fetched
+      const trackingCodes = response.data.response.value.tracking_codes.map(
+        (item: { tracking_code: string }) => item.tracking_code
+      );
+
+      setResponseData(trackingCodes);
+      setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setResponseData({ error: "Failed to fetch details" });
