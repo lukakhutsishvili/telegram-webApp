@@ -2,7 +2,10 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
-import { GET_DETAILS_BY_SCANNER, changeOrderStatus } from "../api/Constants";
+import {
+  GET_DETAILS_BY_SCANNER,
+  changeStatusesOfOrder,
+} from "../api/Constants";
 import { useNavigate } from "react-router-dom";
 
 const BarcodeScanner = () => {
@@ -44,7 +47,7 @@ const BarcodeScanner = () => {
       };
 
       const secResponse = await axiosInstance.post(
-        changeOrderStatus,
+        changeStatusesOfOrder,
         orderParams
       );
       setSecRes(secResponse);
