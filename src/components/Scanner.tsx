@@ -98,7 +98,7 @@ const BarcodeScanner = () => {
             </h2>
             {isLoading ? (
               <p className="mb-6 text-gray-700">Loading...</p>
-            ) : responseData ? (
+            ) : secRes ? (
               responseData.error ? (
                 <p className="mb-6 text-red-500">{responseData.error}</p>
               ) : (
