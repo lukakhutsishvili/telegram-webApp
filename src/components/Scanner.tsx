@@ -43,8 +43,8 @@ const BarcodeScanner = () => {
         orders: trackingCodes,
       };
 
-      const secResponse = await axiosInstance.get(changeOrderStatus, {
-        params: orderParams,
+      const secResponse = await axiosInstance.post(changeOrderStatus, {
+        orderParams,
       });
       setSecRes(secResponse);
       setIsModalOpen(true);
