@@ -48,6 +48,7 @@ const BarcodeScanner = () => {
         orderParams
       );
       setSecRes(secResponse);
+      console.log(secResponse.data);
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
