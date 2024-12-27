@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
-import { GET_DETAILS_BY_SCANNER } from "../api/Constants";
+import { GET_DETAILS_BY_SCANNER, changeOrderStatus } from "../api/Constants";
 import { useNavigate } from "react-router-dom";
 
 const BarcodeScanner = () => {
@@ -12,6 +12,7 @@ const BarcodeScanner = () => {
   const [responseData, setResponseData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
+  const [secRes, setSecRes] = useState<any>();
   const navigate = useNavigate();
 
   const sendGetRequest = async (trackingCode: string) => {
@@ -35,6 +36,17 @@ const BarcodeScanner = () => {
       );
 
       setResponseData(trackingCodes);
+
+      const orderParams = {
+        device_id: userInfo.device_id,
+        status: "accepted",
+        orders: trackingCodes,
+      };
+
+      const secResponse = await axiosInstance.get(changeOrderStatus, {
+        params: orderParams,
+      });
+      setSecRes(secResponse);
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
@@ -92,7 +104,7 @@ const BarcodeScanner = () => {
                 <div>
                   <p className="mb-4 text-gray-700">Details:</p>
                   <pre className="text-left bg-gray-100 p-4 rounded">
-                    {JSON.stringify(responseData, null, 2)}
+                    {JSON.stringify(secRes, null, 2)}
                   </pre>
                 </div>
               )

@@ -11,4 +11,5 @@ export const CHECK_OTP = "/bot/check_otp";
 export const SEND_OTP = "/bot/register_bot";
 export const GET_REASONS = "/pocket/getreasons";
 export const ORDER_LIST = "/bot/gettask";
-export const GET_DETAILS_BY_SCANNER = "/pocket/getDetailsByTrackCode"
+export const GET_DETAILS_BY_SCANNER = "/pocket/getDetailsByTrackCode";
+export const changeOrderStatus = "/pocket/changetaskstatus"
