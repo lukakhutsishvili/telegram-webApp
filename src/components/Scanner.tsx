@@ -9,7 +9,7 @@ const BarcodeScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reader = useRef(new BrowserMultiFormatReader());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [responseData, setResponseData] = useState<any>(null);
+  const [orderTrackingCodes, setOrderTrackingCodes] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo, navbarButtons } = useContext(Context);
   const [secRes, setSecRes] = useState<any>();
@@ -35,7 +35,7 @@ const BarcodeScanner = () => {
         (item: { tracking_code: string }) => item.tracking_code
       );
 
-      setResponseData(trackingCodes);
+      setOrderTrackingCodes(trackingCodes);
 
       const orderParams = {
         device_id: userInfo.device_id,
@@ -52,7 +52,7 @@ const BarcodeScanner = () => {
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching barcode details:", error);
-      setResponseData({ error: "Failed to fetch details" });
+      setOrderTrackingCodes({ error: "Failed to fetch details" });
       setIsModalOpen(true); // Open modal even on error
     } finally {
       setIsLoading(false);
@@ -98,9 +98,9 @@ const BarcodeScanner = () => {
               <h2 className="text-xl font-bold mb-4 text-green-600">
                 Scan Successful!
               </h2>
-            ) : responseData && responseData.error ? (
+            ) : orderTrackingCodes && orderTrackingCodes.error ? (
               <h2 className="text-xl font-bold mb-4 text-red-600">
-                {responseData.error}
+                {orderTrackingCodes.error}
               </h2>
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
