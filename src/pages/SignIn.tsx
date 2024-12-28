@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
 import { Context } from "../App";
+import { useTranslation } from "react-i18next";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -14,6 +15,11 @@ const SignIn = () => {
   const { setUserInfo, userInfo } = useContext(Context);
   const chat_id = userInfo.telegram_id || "6087086146";
   const params = { telegram_id: chat_id };
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   // sign in
   const handleSignIn = async () => {
@@ -31,14 +37,14 @@ const SignIn = () => {
       }
     } catch (error: any) {
       setShowRegister(true);
-      setError("You don't have an account. Please register.");
+      setError(t("no_account_register"));
     }
   };
 
   // send OTP code
   const handleRegister = async () => {
     if (!phoneNumber.trim()) {
-      setError("Phone number is required.");
+      setError(t("phone_number_required"));
       return;
     }
 
@@ -57,13 +63,13 @@ const SignIn = () => {
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
-      setError("An error occurred while sending OTP.");
+      setError(t("error_sending_otp"));
     }
   };
 
   const handleConfirmOtp = async () => {
     if (!otp.trim()) {
-      setError("OTP is required.");
+      setError(t("otp_required"));
       return;
     }
 
@@ -85,20 +91,22 @@ const SignIn = () => {
       }
     } catch (err) {
       console.error("Error confirming OTP:", err);
-      setError("An error occurred while confirming OTP.");
+      setError(t("error_confirming_otp"));
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    
+      
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             {showRegister
               ? showOtpField
-                ? "Confirm OTP"
-                : "Register your account"
-              : "Sign in to your account"}
+                ? t("confirm_otp")
+                : t("register_account")
+              : t("sign_in")}
           </h2>
         </div>
 
@@ -107,7 +115,7 @@ const SignIn = () => {
             onClick={handleSignIn}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Sign in
+           {t("sign_in_button")}
           </button>
         )}
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
@@ -124,7 +132,7 @@ const SignIn = () => {
               onClick={handleRegister}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
-              Send OTP
+              {t("send_otp")}
             </button>
           </div>
         )}
@@ -132,7 +140,7 @@ const SignIn = () => {
           <div className="space-y-4">
             <input
               type="text"
-              placeholder="Enter OTP"
+              placeholder={t("enter_otp")}
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
@@ -141,10 +149,17 @@ const SignIn = () => {
               onClick={handleConfirmOtp}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Confirm OTP
+              {t("confirm_otp_button")}
             </button>
           </div>
         )}
+      </div>
+
+        {/* Language Switcher */}
+        <div className="flex gap-4 mb-4">
+        <button onClick={() => changeLanguage("ge")} className="px-3 py-1 border rounded">ქართული</button>
+        <button onClick={() => changeLanguage("en")} className="px-3 py-1 border rounded">English</button>
+        <button onClick={() => changeLanguage("ru")} className="px-3 py-1 border rounded">Русский</button>
       </div>
     </div>
   );
