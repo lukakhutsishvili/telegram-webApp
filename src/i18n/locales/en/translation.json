@@ -1,0 +1,26 @@
+{
+    "General Information": "General Information",
+    "Cash": "Cash",
+    "Bank": "Bank",
+    "Total Amount": "Total Amount",
+    "Receipt orders": "Receipt orders",
+    "Sending orders": "Sending orders",
+    "Completed Visits": "Completed Visits",
+    "Canceled Visits": "Canceled Visits",
+    "Active Visits": "Active Visits",
+    "Waiting": "Waiting",
+    "sign_in": "Sign in to your account",
+    "register_account": "Register your account",
+    "confirm_otp": "Confirm OTP",
+    "enter_phone_number": "Enter your phone number",
+    "send_otp": "Send OTP",
+    "enter_otp": "Enter OTP",
+    "confirm_otp_button": "Confirm OTP",
+    "sign_in_button": "Sign in",
+    "phone_number_required": "Phone number is required.",
+    "otp_required": "OTP is required.",
+    "error_sending_otp": "An error occurred while sending OTP.",
+    "error_confirming_otp": "An error occurred while confirming OTP.",
+    "no_account_register": "You don't have an account. Please register."
+    
+}
