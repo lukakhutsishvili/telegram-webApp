@@ -6,11 +6,10 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
 import { GET_REASONS, ORDER_LIST } from "../api/Constants";
-import { useTranslation } from 'react-i18next';
+import { t } from "i18next";
 
 function Home() {
 
-  const { t } = useTranslation();
 
   const {
     userInfo,

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { buttons } from "../Lib/helpers";
 import { useContext } from "react";
 import { Context } from "../App";
+import { t } from "i18next";
 
 function Navbar() {
   const { setNavbarButtons } = useContext(Context);
@@ -23,7 +24,7 @@ function Navbar() {
           >
             <div className="flex flex-col items-center gap-1">
               <FontAwesomeIcon icon={item.icon} size="lg" />
-              <span>{item.name}</span>
+              <span>{t(item.name)}</span>
             </div>
           </NavLink>
         ))}

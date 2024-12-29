@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { t } from "i18next";
 
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks } = useContext(Context);
@@ -51,7 +52,7 @@ const Order = ({ status }: { status: string | null }) => {
    };
  
    if (!sendingTasks || sendingTasks.length === 0) {
-     return <p className="text-center text-gray-500">არაა დავალება</p>;
+     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
    }
 
   return (
@@ -82,7 +83,7 @@ const Order = ({ status }: { status: string | null }) => {
             onChange={(e) => handleCheckAllChange(e.target.checked)}
             className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
           />
-          <span>მონიშნე ყველა</span>
+          <span>{t("select all")}</span>
         </div>
       )}
 
