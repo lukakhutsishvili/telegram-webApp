@@ -1,7 +1,7 @@
 import { faHome, faTruckFast, faBox } from "@fortawesome/free-solid-svg-icons";
 
 // sending and reciept tab buttons
-export const tabButtons = [
+export const TAB_BUTTONS = [
   { name: "accepted" , status: "Accepted"},
   { name: "completed", status: "Completed" },
   { name: "canceled", status: "Canceled" },

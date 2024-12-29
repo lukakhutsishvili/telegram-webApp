@@ -1,19 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarcode } from "@fortawesome/free-solid-svg-icons";
-import { tabButtons } from "../Lib/helpers";
+import { TAB_BUTTONS } from "../Lib/helpers";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import Order from "../components/Order";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext } from "react";
 import { t } from "i18next";
+import { Context } from "../App";
 
 function Sending() {
   const navigate = useNavigate();
-
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(
-    "Accepted"
-  );
+  const { tabButtons, setTabButtons } = useContext(Context);
 
   const handleScanClick = () => {
     navigate("/scanner");
@@ -22,15 +20,17 @@ function Sending() {
   return (
     <div className="flex flex-col h-screen bg-white pt-16 pb-[104px]">
       <div className="p-4">
-        <h1 className="text-2xl font-bold text-center">{t('delivery')}</h1>
+        <h1 className="text-2xl font-bold text-center">{t("delivery")}</h1>
         <div className="mt-4">
           <Swiper spaceBetween={10} slidesPerView={2} freeMode={true}>
-            {tabButtons.map((item) => (
+            {TAB_BUTTONS.map((item) => (
               <SwiperSlide key={item.name}>
                 <button
-                  onClick={() => setSelectedStatus(item.status)}
+                  onClick={() => setTabButtons(item.status)}
                   className={`px-4 py-2 ${
-                    selectedStatus === item.status ? "bg-yellow-600" : "bg-yellow-400"
+                    tabButtons === item.status
+                      ? "bg-yellow-600"
+                      : "bg-yellow-400"
                   } text-black font-semibold text-[14px] rounded-md w-full`}
                 >
                   {t(item.name)}
@@ -42,7 +42,7 @@ function Sending() {
       </div>
 
       <div className="h-[440px] w-full overflow-y-auto py-4">
-        <Order status={selectedStatus} />
+        <Order status={tabButtons} />
       </div>
 
       <div className="p-4">
