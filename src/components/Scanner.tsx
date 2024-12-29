@@ -78,7 +78,6 @@ const BarcodeScanner = () => {
           reader.current.reset();
           sendGetRequest(scannedBarcode);
         }
-        if (error) console.error(error);
       }
     );
 

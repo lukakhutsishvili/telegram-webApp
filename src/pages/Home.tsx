@@ -9,8 +9,6 @@ import { GET_REASONS, ORDER_LIST } from "../api/Constants";
 import { t } from "i18next";
 
 function Home() {
-
-
   const {
     userInfo,
     setReasons,
@@ -139,7 +137,7 @@ function Home() {
       <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px]  max-sm:px-10">
         {/* logo container */}
         <div className="min-w-[238px]  flex items-center justify-between">
-          <h2>{t('General Information')}</h2>
+          <h2>{t("General Information")}</h2>
           <img src={logo} alt="logo" className="w-[50px]" />
         </div>
 
@@ -153,13 +151,13 @@ function Home() {
           <div className="flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl">
             <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faMoneyBill1} />
-              <h3>{t('Cash')}: </h3>
+              <h3>{t("Cash")}: </h3>
             </div>
             <div className="flex gap-2 items-center border-b-2 border-black pb-2">
               <FontAwesomeIcon icon={faMoneyCheckDollar} />
-              <h3>{t('Bank')}: </h3>
+              <h3>{t("Bank")}: </h3>
             </div>
-            <h3>{t('Total Amount')}: </h3>
+            <h3>{t("Total Amount")}: </h3>
           </div>
         </section>
 
@@ -169,23 +167,23 @@ function Home() {
           <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
             <div className="flex items-center gap-5">
               <FontAwesomeIcon icon={faBox} />
-              <h2>{t('Receipt orders')}</h2>
+              <h2>{t("Receipt orders")}</h2>
             </div>
             <ul className="flex flex-col gap-2">
               <li className="flex justify-between">
-                <span>{t('Completed Visits')}:</span>
+                <span>{t("Completed Visits")}:</span>
                 <span>{taskAmounts.receiptCompleted}</span>
               </li>
               <li className="flex justify-between">
-                <span>{t('Canceled Visits')}:</span>
+                <span>{t("Canceled Visits")}:</span>
                 <span>{taskAmounts.receiptCanceled}</span>
               </li>
               <li className="flex justify-between">
-                <span>{t('Active Visits')}:</span>
+                <span>{t("Active Visits")}:</span>
                 <span>{taskAmounts.receiptAccepted}</span>
               </li>
               <li className="flex justify-between">
-                <span>{t('Waiting')}:</span>
+                <span>{t("Waiting")}:</span>
                 <span>{taskAmounts.receiptWaiting}</span>
               </li>
             </ul>
@@ -194,23 +192,23 @@ function Home() {
           <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
             <div className="flex items-center gap-5">
               <FontAwesomeIcon icon={faBox} />
-              <h2>{t('Sending orders')}</h2>
+              <h2>{t("Sending orders")}</h2>
             </div>
             <ul className="flex flex-col gap-2">
               <li className="flex justify-between">
-                <span>{t('Completed Visits')}:</span>
+                <span>{t("Completed Visits")}:</span>
                 <span>{taskAmounts.sendingCompleted}</span>
               </li>
               <li className="flex justify-between">
-                <span>{t('Canceled Visits')}:</span>
+                <span>{t("Canceled Visits")}:</span>
                 <span>{taskAmounts.sendingCanceled}</span>
               </li>
               <li className="flex justify-between">
-                <span>{t('Active Visits')}:</span>
+                <span>{t("Active Visits")}:</span>
                 <span>{taskAmounts.sendingAccepted}</span>
               </li>
               <li className="flex justify-between">
-                <span>{t('Waiting')}:</span>
+                <span>{t("Waiting")}:</span>
                 <span>{taskAmounts.sendingWaiting}</span>
               </li>
             </ul>
