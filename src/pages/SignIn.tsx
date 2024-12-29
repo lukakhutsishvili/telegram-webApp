@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
@@ -16,10 +16,18 @@ const SignIn = () => {
   const chat_id = userInfo.telegram_id || "6087086146";
   const params = { telegram_id: chat_id };
   const { t, i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    setSelectedLanguage(lng);
+    localStorage.setItem("selectedLanguage", lng); 
   };
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    changeLanguage(savedLanguage);
+  }, []);
 
   // sign in
   const handleSignIn = async () => {
@@ -155,12 +163,33 @@ const SignIn = () => {
         )}
       </div>
 
-        {/* Language Switcher */}
-        <div className="flex gap-4 mb-4">
-        <button onClick={() => changeLanguage("ge")} className="px-3 py-1 border rounded">ქართული</button>
-        <button onClick={() => changeLanguage("en")} className="px-3 py-1 border rounded">English</button>
-        <button onClick={() => changeLanguage("ru")} className="px-3 py-1 border rounded">Русский</button>
-      </div>
+         {/* Language Switcher */}
+         <div className="flex gap-4 mb-4">
+          <button
+            onClick={() => changeLanguage("ge")}
+            className={`px-3 py-1 border-black border rounded ${
+              selectedLanguage === "ge" ? "bg-yellow-600" : "bg-yellow-400"
+            }`}
+          >
+            ქართული
+          </button>
+          <button
+            onClick={() => changeLanguage("en")}
+            className={`px-3 py-1 border-black border rounded ${
+              selectedLanguage === "en" ? "bg-yellow-600" : "bg-yellow-400"
+            }`}
+          >
+            English
+          </button>
+          <button
+            onClick={() => changeLanguage("ru")}
+            className={`px-3 py-1 border-black border rounded ${
+              selectedLanguage === "ru" ? "bg-yellow-600" : "bg-yellow-400"
+            }`}
+          >
+            Русский
+          </button>
+        </div>
     </div>
   );
 };

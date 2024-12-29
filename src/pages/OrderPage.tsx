@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Context } from "../App";
 import { changeOrderStatus } from "../api/requestHandlers";
 import { changeStatusesOfOrder } from "../api/Constants"; 
+import { t } from "i18next";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>(); // 'id' now holds the tracking_code
@@ -54,34 +55,34 @@ const OrderPage = () => {
         >
           <span>&larr;</span>
         </button>
-        <h1 className="text-lg font-bold mx-auto">ამანათის დეტალები</h1>
+        <h1 className="text-lg font-bold mx-auto">{t('order details')}</h1>
       </header>
 
       <div className="border rounded-lg divide-y divide-gray-200 text-gray-700">
         <div className="p-4 flex justify-between">
-          <span>სახელი :</span>
+          <span>{t('name')} :</span>
           <span className="font-medium">{order.client_name}</span>
         </div>
         <div className="p-4 flex justify-between">
-          <p>მისამართი:</p>
+          <p>{t('address')}:</p>
           <p className="font-medium text-right">{order.client_address}</p>
         </div>
         <div className="p-4 flex justify-between">
-          <span>ტელეფონი :</span>
+          <span>{t('phone')} :</span>
           <span className="font-medium text-blue-500">
             {order.client_phone}
           </span>
         </div>
         <div className="p-4 flex justify-between">
-          <span>ბარკოდი :</span>
+          <span>{t('barcode')} :</span>
           <span className="font-medium">{order.tracking_code}</span>
         </div>
         <div className="p-4 flex justify-between">
-          <span>თანხა :</span>
+          <span>{t('sum')} :</span>
           <span className="font-medium">{order.sum} ₾</span>
         </div>
         <div className="p-4 flex justify-between">
-          <span>სტატუსი :</span>
+          <span>{t('status')} :</span>
           <span className="font-medium">{order.Status}</span>
         </div>
       </div>
@@ -93,7 +94,7 @@ const OrderPage = () => {
             onClick={() => handleStatusChange("Accepted")}
             className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
           >
-            მიღება
+            {t('accept')}
           </button>
         )}
         {order.Status === "Canceled" && (
@@ -101,7 +102,7 @@ const OrderPage = () => {
             onClick={() => handleStatusChange("Accepted")}
             className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
           >
-            აღდგენა
+            {t('restore')}
           </button>
         )}
         {order.Status === "Accepted" && (
@@ -110,13 +111,13 @@ const OrderPage = () => {
               onClick={() => handleStatusChange("Completed")}
               className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
             >
-              ჩაბარება
+              {t('hand over')}
             </button>
             <button
               onClick={() => handleStatusChange("Canceled")}
               className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
             >
-              გაუქმება
+              {t('cancellation')}
             </button>
           </div>
         )}

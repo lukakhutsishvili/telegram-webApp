@@ -6,6 +6,7 @@ import "swiper/swiper-bundle.css";
 import ReceiptOrders from "../components/ReceiptOrders";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { t } from "i18next";
 
 function Reciept() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function Reciept() {
     <div className="flex flex-col h-screen bg-white pt-16 pb-[104px]">
       {/* Header */}
       <div className="p-4">
-        <h1 className="text-2xl font-bold text-center">გამოტანა</h1>
+        <h1 className="text-2xl font-bold text-center">{t("pick up")}</h1>
 
         {/* Tab Navigation */}
         <div className="mt-4">
@@ -36,7 +37,7 @@ function Reciept() {
                     selectedStatus === item.status ? "bg-yellow-600" : "bg-yellow-400"
                   } text-black font-semibold text-[14px] rounded-md w-full`}
                 >
-                  {item.name}
+                  {t(item.name)}
                 </button>
               </SwiperSlide>
             ))}
@@ -55,7 +56,7 @@ function Reciept() {
         onClick={handleScanClick}
         className="w-full flex items-center justify-center gap-2 bg-yellow-400 py-4 rounded-lg text-black font-semibold text-base shadow-md">
           <FontAwesomeIcon icon={faBarcode} />
-          <span>კოდის სკანირება</span>
+          <span>{t('scan the code')}</span>
         </button>
       </div>
     </div>
