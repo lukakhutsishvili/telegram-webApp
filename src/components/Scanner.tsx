@@ -34,6 +34,7 @@ const BarcodeScanner = () => {
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
+
       const trackingCodes = response.data.response.value.tracking_codes.map(
         (item: { tracking_code: string }) => item.tracking_code
       );
@@ -63,7 +64,6 @@ const BarcodeScanner = () => {
 
   useEffect(() => {
     if (!videoRef.current) return;
-
     reader.current.decodeFromConstraints(
       {
         audio: false,
@@ -88,7 +88,7 @@ const BarcodeScanner = () => {
   }, []);
 
   return (
-    <div className="barcode-scanner relative">
+    <div className=" relative">
       {!isModalOpen && <video ref={videoRef} className="w-full h-100vh" />}
 
       {isModalOpen && (
