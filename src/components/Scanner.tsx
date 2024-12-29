@@ -72,7 +72,7 @@ const BarcodeScanner = () => {
         },
       },
       videoRef.current,
-      (result, error) => {
+      (result) => {
         if (result) {
           const scannedBarcode = result.getText();
           reader.current.reset();
