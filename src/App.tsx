@@ -93,7 +93,9 @@ const App = () => {
         <Route element={<QRBarcodeScanner />} path="/scanner" />
         <Route path="/order/:id" element={<OrderPage />} />
       </Routes>
-      {location.pathname !== "/" && <Navbar />}
+      {location.pathname !== "/" && location.pathname !== "/scanner" && (
+        <Navbar />
+      )}
     </Context.Provider>
   );
 };
