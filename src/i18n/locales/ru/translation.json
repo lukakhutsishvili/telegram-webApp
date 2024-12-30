@@ -44,5 +44,7 @@
     "sending": "Отправка",
     "receipt": "Получение",
     "you have no task": "У вас нет задач",
-    "select all": "Выбрать все"
+    "select all": "Выбрать все",
+    "accept all": "Принять все",
+    "Order not found": "Заказ не найден"
 }

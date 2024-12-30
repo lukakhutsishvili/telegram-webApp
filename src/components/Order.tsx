@@ -4,13 +4,12 @@ import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
+import { changeOrderStatus } from "../api/requestHandlers";
 
 const Order = ({ status }: { status: string | null }) => {
-  const { sendingTasks } = useContext(Context);
+  const { sendingTasks , userInfo } = useContext(Context);
   const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [selectedOrders, setSelectedOrders] = useState<{[key: string]: boolean;}>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -53,6 +52,41 @@ const Order = ({ status }: { status: string | null }) => {
     setCheckAll(checked);
   };
 
+   const handleAllStatusChange = async (newStatus: string) => {
+      // Get all selected tracking codes
+      const selectedTrackingCodes = Object.keys(selectedOrders).filter(
+        (trackingCode) => selectedOrders[trackingCode]
+      );
+    
+      if (selectedTrackingCodes.length === 0) {
+        alert(t("No orders selected!"));
+        return;
+      }
+    
+      const params = {
+        device_id: userInfo.device_id, 
+        status: newStatus,
+        orders: selectedTrackingCodes, 
+      };
+    
+      try {
+        const response = await changeOrderStatus(params);
+        console.log("Order statuses updated successfully:", response);
+    
+        // Reset selections
+        setSelectedOrders({});
+        setCheckAll(false);
+    
+        alert(t("Selected orders updated successfully!"));
+      } catch (error: any) {
+        console.error("Failed to update order statuses:", error);
+        console.log("Error details:", error);
+    
+        alert(t("Failed to update orders. Please try again."));
+      }
+    };
+    
+
   if (!sendingTasks || sendingTasks.length === 0) {
     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
   }
@@ -76,13 +110,19 @@ const Order = ({ status }: { status: string | null }) => {
       {/* "Check All" Checkbox */}
       {status === "Waiting" && filteredTasks.length > 0 && (
         <div className="flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500 border-l-0 border-r-0">
-          <input
+          <div>
+            <input
             type="checkbox"
             checked={checkAll}
             onChange={(e) => handleCheckAllChange(e.target.checked)}
-            className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
-          />
-          <span>{t("select all")}</span>
+            className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"/>
+            <span>{t("select all")}</span>
+          </div>
+          <button 
+          onClick={() => handleAllStatusChange("Accepted")}
+          className="px-4 py-2 bg-yellow-400 text-black text-[14px] font-semibold rounded-md">
+            {t('accept all')}
+          </button>
         </div>
       )}
 

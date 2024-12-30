@@ -44,5 +44,7 @@
     "sending": "მიწოდება",
     "receipt": "გამოტანა",
     "you have no task": "თქვენ არ გაქვთ დავალება",
-    "select all": "ყველას მონიშვნა"
+    "select all": "ყველას მონიშვნა",
+    "accept all": "მიიღე ყველა",
+    "Order not found": "ამანათი არ არის"
 }

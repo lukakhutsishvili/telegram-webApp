@@ -1,40 +1,57 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context } from "../App";
 import { changeOrderStatus } from "../api/requestHandlers";
 import { t } from "i18next";
 
 const OrderPage = () => {
-  const { id } = useParams<{ id: string }>(); // 'id' now holds the tracking_code
-  const { sendingTasks, recieptTasks, userInfo } = useContext(Context);
+  const { id } = useParams<{ id: string }>();
+  const { sendingTasks, recieptTasks, userInfo, reasons } = useContext(Context);
 
-  // Find the order using tracking_code
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedReason, setSelectedReason] = useState<string>("");
+  const [selectedReasonText, setSelectedReasonText] = useState<string>("");
+
   const order =
     sendingTasks.find((task) => task.tracking_code === id) ||
     recieptTasks.find((task) => task.tracking_code === id);
 
   if (!order) {
-    return <div className="p-4">Order not found</div>;
+    return <div className="p-4">{t("Order not found")}</div>;
   }
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatus: string, reason?: string) => {
     const params = {
       device_id: userInfo.device_id,
       status: newStatus,
       orders: [order.tracking_code],
+      ...(reason && { reason }),
     };
     try {
       const response = await changeOrderStatus(params);
       console.log("Order status updated successfully:", response);
+      window.history.back();
     } catch (error: any) {
       console.error("Failed to update order status:", error);
+    }
+  };
 
-      console.log("Error details:", error);
+  const openCancellationModal = () => setIsModalOpen(true);
+  const closeCancellationModal = () => setIsModalOpen(false);
+
+  const confirmCancellation = () => {
+    if (selectedReason || selectedReasonText) {
+      const reasonToSend = selectedReasonText || selectedReason;
+      handleStatusChange("Canceled", reasonToSend);
+      closeCancellationModal();
+    } else {
+      alert(t("Please select or modify a reason for cancellation"));
     }
   };
 
   return (
     <div className="min-h-screen bg-white px-4 pt-12">
+      {/* Header */}
       <header className="flex items-center mb-6">
         <button
           onClick={() => window.history.back()}
@@ -45,14 +62,15 @@ const OrderPage = () => {
         <h1 className="text-lg font-bold mx-auto">{t("order details")}</h1>
       </header>
 
+      {/* Order Details */}
       <div className="border rounded-lg divide-y divide-gray-200 text-gray-700">
         <div className="p-4 flex justify-between">
           <span>{t("name")} :</span>
           <span className="font-medium">{order.client_name}</span>
         </div>
         <div className="p-4 flex justify-between">
-          <p>{t("address")}:</p>
-          <p className="font-medium text-right">{order.client_address}</p>
+          <span>{t("address")}:</span>
+          <span className="font-medium text-right">{order.client_address}</span>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
@@ -74,24 +92,8 @@ const OrderPage = () => {
         </div>
       </div>
 
-      {/* Buttons */}
+      {/* Action Buttons */}
       <div className="flex justify-center p-8">
-        {order.Status === "Waiting" && (
-          <button
-            onClick={() => handleStatusChange("Accepted")}
-            className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
-          >
-            {t("accept")}
-          </button>
-        )}
-        {order.Status === "Canceled" && (
-          <button
-            onClick={() => handleStatusChange("Accepted")}
-            className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
-          >
-            {t("restore")}
-          </button>
-        )}
         {order.Status === "Accepted" && (
           <div className="flex space-x-4">
             <button
@@ -101,15 +103,71 @@ const OrderPage = () => {
               {t("hand over")}
             </button>
             <button
-              onClick={() => handleStatusChange("Canceled")}
+              onClick={openCancellationModal}
               className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
             >
               {t("cancellation")}
             </button>
           </div>
         )}
-        {/* No buttons for "Completed" */}
       </div>
+
+      {/* Modal for Cancellation Reasons */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-1/2">
+            <h2 className="text-lg font-bold mb-4 text-center">{t("Select Reason")}</h2>
+
+            {/* Cancellation Reason Dropdown */}
+            <select
+              name="cancellationReason"
+              value={selectedReason}
+              onChange={(e) => {
+                setSelectedReason(e.target.value);
+                const selectedReasonObject = reasons.find(
+                  (reason) => reason.reason_code === e.target.value
+                );
+                setSelectedReasonText(selectedReasonObject?.reason_text || "");
+              }}
+              className="w-full border p-2 rounded-md"
+            >
+              <option value="" disabled>
+                {t("Choose a reason")}
+              </option>
+              {reasons?.map((reason) => (
+                <option key={reason.reason_code} value={reason.reason_code}>
+                  {reason.reason_description}
+                </option>
+              ))}
+            </select>
+
+            {/* Input for modifying reason text */}
+            <div className="mt-4">
+              <textarea
+                value={selectedReasonText}
+                onChange={(e) => setSelectedReasonText(e.target.value)}
+                placeholder={t("Modify reason text")}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                onClick={closeCancellationModal}
+                className="px-4 py-2 bg-gray-300 text-black font-semibold rounded-md"
+              >
+                {t("Cancel")}
+              </button>
+              <button
+                onClick={confirmCancellation}
+                className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
+              >
+                {t("Confirm")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

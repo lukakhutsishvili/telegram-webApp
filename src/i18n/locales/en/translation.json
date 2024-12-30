@@ -44,5 +44,7 @@
     "sending": "Sending",
     "receipt": "Receipt",
     "you have no task":"You have no task",
-    "select all": "Select all"
+    "select all": "Select all",
+    "accept all": "Accept all",
+    "Order not found": "Order not found"
 }
