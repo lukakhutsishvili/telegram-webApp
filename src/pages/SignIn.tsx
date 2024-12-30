@@ -21,7 +21,7 @@ const SignIn = () => {
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setSelectedLanguage(lng);
-    localStorage.setItem("selectedLanguage", lng); 
+    localStorage.setItem("selectedLanguage", lng);
   };
 
   useEffect(() => {
@@ -103,10 +103,10 @@ const SignIn = () => {
     }
   };
 
+  console.log("signIN");
+
   return (
     <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-    
-      
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
@@ -123,7 +123,7 @@ const SignIn = () => {
             onClick={handleSignIn}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-           {t("sign_in_button")}
+            {t("sign_in_button")}
           </button>
         )}
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
@@ -163,33 +163,33 @@ const SignIn = () => {
         )}
       </div>
 
-         {/* Language Switcher */}
-         <div className="flex gap-4 mb-4">
-          <button
-            onClick={() => changeLanguage("ge")}
-            className={`px-3 py-1 border-black border rounded ${
-              selectedLanguage === "ge" ? "bg-yellow-600" : "bg-yellow-400"
-            }`}
-          >
-            ქართული
-          </button>
-          <button
-            onClick={() => changeLanguage("en")}
-            className={`px-3 py-1 border-black border rounded ${
-              selectedLanguage === "en" ? "bg-yellow-600" : "bg-yellow-400"
-            }`}
-          >
-            English
-          </button>
-          <button
-            onClick={() => changeLanguage("ru")}
-            className={`px-3 py-1 border-black border rounded ${
-              selectedLanguage === "ru" ? "bg-yellow-600" : "bg-yellow-400"
-            }`}
-          >
-            Русский
-          </button>
-        </div>
+      {/* Language Switcher */}
+      <div className="flex gap-4 mb-4">
+        <button
+          onClick={() => changeLanguage("ge")}
+          className={`px-3 py-1 border-black border rounded ${
+            selectedLanguage === "ge" ? "bg-yellow-600" : "bg-yellow-400"
+          }`}
+        >
+          ქართული
+        </button>
+        <button
+          onClick={() => changeLanguage("en")}
+          className={`px-3 py-1 border-black border rounded ${
+            selectedLanguage === "en" ? "bg-yellow-600" : "bg-yellow-400"
+          }`}
+        >
+          English
+        </button>
+        <button
+          onClick={() => changeLanguage("ru")}
+          className={`px-3 py-1 border-black border rounded ${
+            selectedLanguage === "ru" ? "bg-yellow-600" : "bg-yellow-400"
+          }`}
+        >
+          Русский
+        </button>
+      </div>
     </div>
   );
 };

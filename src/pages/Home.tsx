@@ -16,7 +16,6 @@ function Home() {
     setSendingTasks,
     recieptTasks,
     sendingTasks,
-    reasons,
   } = useContext(Context);
 
   // get undelivered reasons
@@ -125,13 +124,19 @@ function Home() {
   };
 
   useEffect(() => {
-    getReasons();
-    getRecieptTasks();
-    getSendingTasks();
-    taskCounter();
-    taskCounter();
-  }, [recieptTasks, sendingTasks, reasons]);
+    const fetchData = async () => {
+      await getReasons();
+      await getRecieptTasks();
+      await getSendingTasks();
+    };
+    fetchData();
+  }, []);
 
+  useEffect(() => {
+    taskCounter(); // Call taskCounter whenever tasks change
+  }, [recieptTasks, sendingTasks]);
+
+  console.log("render");
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
       <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px]  max-sm:px-10">
