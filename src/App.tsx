@@ -8,10 +8,28 @@ import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
 import OrderPage from "./pages/OrderPage";
 
-// Define the context type
+interface Reason {
+  reason_code: string;
+  reason_description: string;
+  reason_text?: string;
+}
 
-// Default context value
-const defaultContextValue: createContextType = {
+interface ContextType {
+  userInfo: Record<string, any>;
+  setUserInfo: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  reasons: Reason[];
+  setReasons: React.Dispatch<React.SetStateAction<Reason[]>>;
+  recieptTasks: any[];
+  setRecieptTasks: React.Dispatch<React.SetStateAction<any[]>>;
+  sendingTasks: any[];
+  setSendingTasks: React.Dispatch<React.SetStateAction<any[]>>;
+  tabButtons: string;
+  setTabButtons: React.Dispatch<React.SetStateAction<string>>;
+  navbarButtons: string;
+  setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const defaultContextValue: ContextType = {
   userInfo: {},
   setUserInfo: () => {},
   reasons: [],
@@ -26,45 +44,31 @@ const defaultContextValue: createContextType = {
   setNavbarButtons: () => {},
 };
 
-// Create context
 export const Context = createContext(defaultContextValue);
 
 const App = () => {
   const location = useLocation();
   const [userInfo, setUserInfo] = useState<Record<string, any>>({});
-  const [reasons, setReasons] = useState<string[]>([]);
+  const [reasons, setReasons] = useState<Reason[]>([]);
   const [navbarButtons, setNavbarButtons] = useState<string>("Home");
   const [recieptTasks, setRecieptTasks] = useState<any[]>([]);
   const [sendingTasks, setSendingTasks] = useState<any[]>([]);
   const [tabButtons, setTabButtons] = useState<string>("Waiting");
 
-  // Initialize Telegram Web App
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
 
     if (webApp) {
-      // Prepare the Web App
       webApp.ready();
       webApp.expand();
       webApp.disableVerticalSwipes();
 
-      // Log the initDataUnsafe to understand its structure
-      console.log(
-        "Telegram WebApp Initialized. initDataUnsafe:",
-        webApp.initDataUnsafe
-      );
-
-      // Extract the user ID
+      console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
       const userId = webApp.initDataUnsafe?.user?.id;
 
       if (userId) {
-        console.log("User ID:", userId);
-        setUserInfo((prev) => ({ ...prev, telegram_id: userId })); // Save the ID to state
-      } else {
-        console.error("User ID not found in initDataUnsafe.");
+        setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
       }
-    } else {
-      console.error("Telegram WebApp is not available.");
     }
   }, []);
 
