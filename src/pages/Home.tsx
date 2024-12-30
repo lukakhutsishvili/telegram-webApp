@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
 import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.jpg";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
 import { GET_REASONS, ORDER_LIST } from "../api/Constants";
@@ -18,73 +18,46 @@ function Home() {
     sendingTasks,
   } = useContext(Context);
 
-  // get undelivered reasons
-  const getReasons = async () => {
-    const response = await axiosInstance.get(GET_REASONS);
-    setReasons(response.data.response);
-  };
-
-  //get reciept tasks
-  const getRecieptTasks = async () => {
-    // Define parameters dynamically
-    const params = {
-      device_id: userInfo.device_id, // Example dynamic device ID
-      pickup_task: true, // Dynamic pickup_task
-      status: ["Waiting", "Accepted", "Completed", "Canceled"], // Dynamic status
-    };
-
-    // Safe Base64 Encoding
-    const jsonData = JSON.stringify(params);
-    const base64Data = btoa(jsonData);
-
+  // Fetch all required data
+  const fetchData = async () => {
     try {
-      // Send GET request with encoded parameters
-      const response = await axiosInstance.get(ORDER_LIST, {
-        params: { tasklist_data: base64Data },
-      });
-      setRecieptTasks(response.data.response);
+      const [reasonsResponse, recieptResponse, sendingResponse] =
+        await Promise.all([
+          axiosInstance.get(GET_REASONS),
+          axiosInstance.get(ORDER_LIST, {
+            params: {
+              tasklist_data: btoa(
+                JSON.stringify({
+                  device_id: userInfo.device_id,
+                  pickup_task: true,
+                  status: ["Waiting", "Accepted", "Completed", "Canceled"],
+                })
+              ),
+            },
+          }),
+          axiosInstance.get(ORDER_LIST, {
+            params: {
+              tasklist_data: btoa(
+                JSON.stringify({
+                  device_id: userInfo.device_id,
+                  pickup_task: false,
+                  status: ["Waiting", "Accepted", "Completed", "Canceled"],
+                })
+              ),
+            },
+          }),
+        ]);
+
+      setReasons(reasonsResponse.data.response);
+      setRecieptTasks(recieptResponse.data.response);
+      setSendingTasks(sendingResponse.data.response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  //get sending tasks
-  const getSendingTasks = async () => {
-    // Define parameters dynamically
-    const params = {
-      device_id: userInfo.device_id, // Example dynamic device ID
-      pickup_task: false, // Dynamic pickup_task
-      status: ["Waiting", "Accepted", "Completed", "Canceled"], // Dynamic status
-    };
-
-    // Safe Base64 Encoding
-    const jsonData = JSON.stringify(params);
-    const base64Data = btoa(jsonData);
-
-    try {
-      // Send GET request with encoded parameters
-      const response = await axiosInstance.get(ORDER_LIST, {
-        params: { tasklist_data: base64Data },
-      });
-      setSendingTasks(response.data.response);
-      // Log response
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const [taskAmounts, setTaskAmounts] = useState({
-    receiptAccepted: 0,
-    receiptCompleted: 0,
-    receiptCanceled: 0,
-    receiptWaiting: 0,
-    sendingAccepted: 0,
-    sendingCompleted: 0,
-    sendingCanceled: 0,
-    sendingWaiting: 0,
-  });
-
-  const taskCounter = () => {
+  // Calculate task amounts using useMemo
+  const taskAmounts = useMemo(() => {
     const newTaskAmounts = {
       receiptAccepted: 0,
       receiptCompleted: 0,
@@ -97,58 +70,40 @@ function Home() {
     };
 
     recieptTasks.forEach((task) => {
-      if (task.Status === "Accepted") {
-        newTaskAmounts.receiptAccepted++;
-      } else if (task.Status === "Completed") {
-        newTaskAmounts.receiptCompleted++;
-      } else if (task.Status === "Canceled") {
-        newTaskAmounts.receiptCanceled++;
-      } else {
-        newTaskAmounts.receiptWaiting++;
-      }
+      if (task.Status === "Accepted") newTaskAmounts.receiptAccepted++;
+      else if (task.Status === "Completed") newTaskAmounts.receiptCompleted++;
+      else if (task.Status === "Canceled") newTaskAmounts.receiptCanceled++;
+      else newTaskAmounts.receiptWaiting++;
     });
 
     sendingTasks.forEach((task) => {
-      if (task.Status === "Accepted") {
-        newTaskAmounts.sendingAccepted++;
-      } else if (task.Status === "Completed") {
-        newTaskAmounts.sendingCompleted++;
-      } else if (task.Status === "Canceled") {
-        newTaskAmounts.sendingCanceled++;
-      } else {
-        newTaskAmounts.sendingWaiting++;
-      }
+      if (task.Status === "Accepted") newTaskAmounts.sendingAccepted++;
+      else if (task.Status === "Completed") newTaskAmounts.sendingCompleted++;
+      else if (task.Status === "Canceled") newTaskAmounts.sendingCanceled++;
+      else newTaskAmounts.sendingWaiting++;
     });
 
-    setTaskAmounts(newTaskAmounts);
-  };
+    return newTaskAmounts;
+  }, [recieptTasks, sendingTasks]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getReasons();
-      await getRecieptTasks();
-      await getSendingTasks();
-    };
     fetchData();
   }, []);
 
-  useEffect(() => {
-    taskCounter(); // Call taskCounter whenever tasks change
-  }, [recieptTasks, sendingTasks]);
-
   console.log("render");
+
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
-      <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px]  max-sm:px-10">
-        {/* logo container */}
-        <div className="min-w-[238px]  flex items-center justify-between">
+      <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px] max-sm:px-10">
+        {/* Logo container */}
+        <div className="min-w-[238px] flex items-center justify-between">
           <h2>{t("General Information")}</h2>
           <img src={logo} alt="logo" className="w-[50px]" />
         </div>
 
-        {/* info section */}
+        {/* Info section */}
         <section className="flex flex-col gap-6">
-          <div className="flex  items-center gap-6">
+          <div className="flex items-center gap-6">
             <FontAwesomeIcon icon={faUser} />
             <h2>{userInfo.name}</h2>
           </div>
@@ -166,8 +121,7 @@ function Home() {
           </div>
         </section>
 
-        {/* parcel statistic section*/}
-
+        {/* Parcel statistics section */}
         <section className="flex flex-col gap-8">
           <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
             <div className="flex items-center gap-5">
