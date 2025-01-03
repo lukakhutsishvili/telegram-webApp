@@ -27,6 +27,8 @@ interface ContextType {
   setTabButtons: React.Dispatch<React.SetStateAction<string>>;
   navbarButtons: string;
   setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
+  amount: any;
+  setAmount: any;
 }
 
 const defaultContextValue: ContextType = {
@@ -42,6 +44,8 @@ const defaultContextValue: ContextType = {
   setTabButtons: () => {},
   navbarButtons: "Home",
   setNavbarButtons: () => {},
+  amount: [{ cash: 0, bank: 0, sum: 0 }],
+  setAmount: () => {},
 };
 
 export const Context = createContext(defaultContextValue);
@@ -54,6 +58,7 @@ const App = () => {
   const [recieptTasks, setRecieptTasks] = useState<any[]>([]);
   const [sendingTasks, setSendingTasks] = useState<any[]>([]);
   const [tabButtons, setTabButtons] = useState<string>("Waiting");
+  const [amount, setAmount] = useState([{ cash: 0, bank: 0, sum: 0 }]);
 
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
@@ -87,6 +92,8 @@ const App = () => {
         setTabButtons,
         navbarButtons,
         setNavbarButtons,
+        amount,
+        setAmount,
       }}
     >
       <Routes>

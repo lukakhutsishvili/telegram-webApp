@@ -5,7 +5,7 @@ import logo from "../assets/delivo-logo.jpg";
 import { useContext, useEffect, useMemo } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
-import { GET_REASONS, ORDER_LIST } from "../api/Constants";
+import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 import { t } from "i18next";
 
 function Home() {
@@ -16,38 +16,53 @@ function Home() {
     setSendingTasks,
     recieptTasks,
     sendingTasks,
+    amount,
+    setAmount,
   } = useContext(Context);
 
   // Fetch all required data
   const fetchData = async () => {
     try {
-      const [reasonsResponse, recieptResponse, sendingResponse] =
-        await Promise.all([
-          axiosInstance.get(GET_REASONS),
-          axiosInstance.get(ORDER_LIST, {
-            params: {
-              tasklist_data: btoa(
-                JSON.stringify({
-                  device_id: userInfo.device_id,
-                  pickup_task: true,
-                  status: ["Waiting", "Accepted", "Completed", "Canceled"],
-                })
-              ),
-            },
-          }),
-          axiosInstance.get(ORDER_LIST, {
-            params: {
-              tasklist_data: btoa(
-                JSON.stringify({
-                  device_id: userInfo.device_id,
-                  pickup_task: false,
-                  status: ["Waiting", "Accepted", "Completed", "Canceled"],
-                })
-              ),
-            },
-          }),
-        ]);
-
+      const [
+        reasonsResponse,
+        amountResponse,
+        recieptResponse,
+        sendingResponse,
+      ] = await Promise.all([
+        axiosInstance.get(GET_REASONS),
+        axiosInstance.get(AMOUNT, {
+          params: {
+            cashregistry_data: btoa(
+              JSON.stringify({
+                device_id: userInfo.device_id,
+              })
+            ),
+          },
+        }),
+        axiosInstance.get(ORDER_LIST, {
+          params: {
+            tasklist_data: btoa(
+              JSON.stringify({
+                device_id: userInfo.device_id,
+                pickup_task: true,
+                status: ["Waiting", "Accepted", "Completed", "Canceled"],
+              })
+            ),
+          },
+        }),
+        axiosInstance.get(ORDER_LIST, {
+          params: {
+            tasklist_data: btoa(
+              JSON.stringify({
+                device_id: userInfo.device_id,
+                pickup_task: false,
+                status: ["Waiting", "Accepted", "Completed", "Canceled"],
+              })
+            ),
+          },
+        }),
+      ]);
+      setAmount(amountResponse.data.response);
       setReasons(reasonsResponse.data.response);
       setRecieptTasks(recieptResponse.data.response);
       setSendingTasks(sendingResponse.data.response);
@@ -90,8 +105,7 @@ function Home() {
     fetchData();
   }, []);
 
-  console.log("render");
-
+  console.log(amount);
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
       <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px] max-sm:px-10">
@@ -111,11 +125,14 @@ function Home() {
           <div className="flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl">
             <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faMoneyBill1} />
-              <h3>{t("Cash")}: </h3>
+              <div></div>
+              <h3>{t("Cash")}:</h3>
+              <p className="ml-auto">{amount?.[0]?.cash}</p>
             </div>
             <div className="flex gap-2 items-center border-b-2 border-black pb-2">
               <FontAwesomeIcon icon={faMoneyCheckDollar} />
               <h3>{t("Bank")}: </h3>
+              <p className="ml-auto">{amount?.[0]?.bank}</p>
             </div>
             <h3>{t("Total Amount")}: </h3>
           </div>
