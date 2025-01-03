@@ -20,13 +20,13 @@ const OrderPage = () => {
     return <div className="p-4">{t("Order not found")}</div>;
   }
 
-  const handleStatusChange = async (newStatus: string, reason?: string) => {
+  const handleStatusChange = async (newStatus: string) => {
     const params = {
       device_id: userInfo.device_id,
       status: newStatus,
-      orders: [order.tracking_code],
-      ...(reason && { reason }),
+      orders: [id],
     };
+
     try {
       const response = await changeOrderStatus(params);
       console.log("Order status updated successfully:", response);
@@ -41,8 +41,8 @@ const OrderPage = () => {
 
   const confirmCancellation = () => {
     if (selectedReason || selectedReasonText) {
-      const reasonToSend = selectedReasonText || selectedReason;
-      handleStatusChange("Canceled", reasonToSend);
+      // const reasonToSend = selectedReasonText || selectedReason;
+      handleStatusChange("canceled");
       closeCancellationModal();
     } else {
       alert(t("Please select or modify a reason for cancellation"));
@@ -116,7 +116,9 @@ const OrderPage = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-1/2">
-            <h2 className="text-lg font-bold mb-4 text-center">{t("Select Reason")}</h2>
+            <h2 className="text-lg font-bold mb-4 text-center">
+              {t("Select Reason")}
+            </h2>
 
             {/* Cancellation Reason Dropdown */}
             <select

@@ -7,6 +7,7 @@ import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
 import OrderPage from "./pages/OrderPage";
+import PaymentModal from "./components/deliveryConfirm";
 
 interface Reason {
   reason_code: string;
@@ -103,6 +104,10 @@ const App = () => {
         <Route element={<Sending />} path="/sending" />
         <Route element={<QRBarcodeScanner />} path="/scanner" />
         <Route path="/order/:id" element={<OrderPage />} />
+        <Route
+          path="delivery"
+          element={<PaymentModal isOpen={true} onClose={() => {}} />}
+        />
       </Routes>
       {location.pathname !== "/" && location.pathname !== "/scanner" && (
         <Navbar />
