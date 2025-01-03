@@ -29,13 +29,13 @@ const OrderPage = () => {
     return <div className="p-4">{t("Order not found")}</div>;
   }
 
-  const handleStatusChange = async (newStatus: string, reason?: string) => {
+  const handleStatusChange = async (newStatus: string) => {
     const params = {
       device_id: userInfo.device_id,
       status: newStatus,
-      orders: [order.tracking_code],
-      ...(reason && { reason }),
+      orders: [id],
     };
+
     try {
       const response = await changeOrderStatus(params);
       console.log("Order status updated successfully:", response);
