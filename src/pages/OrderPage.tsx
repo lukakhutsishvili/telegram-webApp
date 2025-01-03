@@ -5,21 +5,19 @@ import { changeOrderStatus } from "../api/requestHandlers";
 import { t } from "i18next";
 import CancelModal from "../components/CancelModal";
 import Button from "../components/Button";
-import ConfirmModal from "../components/ConfirmModal";
+import PaymentModal from "../components/deliveryConfirm";
+
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
   const { sendingTasks, recieptTasks, userInfo } = useContext(Context);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const openCancellationModal = () => setIsModalOpen(true);
   const closeCancellationModal = () => setIsModalOpen(false);
+  const [confirmModal, setConfirmModal] = useState(false);
 
-
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-
-  const openConfirmModal = () => setIsConfirmModalOpen(true);
-  const closeConfirmModal = () => setIsConfirmModalOpen(false);
 
   const order =
     sendingTasks.find((task) => task.tracking_code === id) ||
@@ -45,27 +43,38 @@ const OrderPage = () => {
     }
   };
 
-  const handleConfirmHandOver = async (
-    paymentMethod: string,
-    confirmationMethod: string,
-    confirmationValue: string
-  ) => {
-    const params = {
-      device_id: userInfo.device_id,
-      status: "Completed",
-      orders: [order.tracking_code],
-      payment_method: paymentMethod,
-      confirmation_method: confirmationMethod,
-      confirmation_value: confirmationValue,
-    };
-    try {
-      const response = await changeOrderStatus(params);
-      console.log("Handover confirmed successfully:", response);
-      window.history.back();
-    } catch (error: any) {
-      console.error("Failed to confirm handover:", error);
-    }
-  };
+// <<<<<<< fixstatuschange
+//   const handleConfirmHandOver = async (
+//     paymentMethod: string,
+//     confirmationMethod: string,
+//     confirmationValue: string
+//   ) => {
+//     const params = {
+//       device_id: userInfo.device_id,
+//       status: "Completed",
+//       orders: [order.tracking_code],
+//       payment_method: paymentMethod,
+//       confirmation_method: confirmationMethod,
+//       confirmation_value: confirmationValue,
+//     };
+//     try {
+//       const response = await changeOrderStatus(params);
+//       console.log("Handover confirmed successfully:", response);
+//       window.history.back();
+//     } catch (error: any) {
+//       console.error("Failed to confirm handover:", error);
+// =======
+
+//   const confirmCancellation = () => {
+//     if (selectedReason || selectedReasonText) {
+//       // const reasonToSend = selectedReasonText || selectedReason;
+//       handleStatusChange("Undelivered");
+//       closeCancellationModal();
+//     } else {
+//       alert(t("Please select or modify a reason for cancellation"));
+// >>>>>>> main
+//     }
+//   };
 
   return (
     <div className="min-h-screen bg-white px-4 pt-12">
@@ -132,7 +141,7 @@ const OrderPage = () => {
           <div className="flex space-x-4">
             <Button
               onClick={() => handleStatusChange("Accepted")}
-              className="bg-yellow-400 text-black"
+              className="bg-yellow-400 text-black
             >
               {t("accept")}
             </Button>

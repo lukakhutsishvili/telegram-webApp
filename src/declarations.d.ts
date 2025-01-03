@@ -30,5 +30,11 @@ type createContextType = {
   setTabButtons: React.Dispatch<React.SetStateAction<string>>;
   navbarButtons: string;
   setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
+  amount: {
+    cash: number;
+    bank: number;
+    sum: number;
+}[];
+  setAmount: any;
   
 };
