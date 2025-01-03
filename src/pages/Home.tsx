@@ -20,56 +20,84 @@ function Home() {
     setAmount,
   } = useContext(Context);
 
-  // Fetch all required data
-  const fetchData = async () => {
+  // Fetch reasons
+  const fetchReasons = async () => {
     try {
-      const [
-        reasonsResponse,
-        amountResponse,
-        recieptResponse,
-        sendingResponse,
-      ] = await Promise.all([
-        axiosInstance.get(GET_REASONS),
-        axiosInstance.get(AMOUNT, {
-          params: {
-            cashregistry_data: btoa(
-              JSON.stringify({
-                device_id: userInfo.device_id,
-              })
-            ),
-          },
-        }),
-        axiosInstance.get(ORDER_LIST, {
-          params: {
-            tasklist_data: btoa(
-              JSON.stringify({
-                device_id: userInfo.device_id,
-                pickup_task: true,
-                status: ["Waiting", "Accepted", "Completed", "Canceled"],
-              })
-            ),
-          },
-        }),
-        axiosInstance.get(ORDER_LIST, {
-          params: {
-            tasklist_data: btoa(
-              JSON.stringify({
-                device_id: userInfo.device_id,
-                pickup_task: false,
-                status: ["Waiting", "Accepted", "Completed", "Canceled"],
-              })
-            ),
-          },
-        }),
-      ]);
-      setAmount(amountResponse.data.response);
-      setReasons(reasonsResponse.data.response);
-      setRecieptTasks(recieptResponse.data.response);
-      setSendingTasks(sendingResponse.data.response);
+      const response = await axiosInstance.get(GET_REASONS);
+      setReasons(response.data.response);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching reasons:", error);
     }
   };
+
+  // Fetch amount
+  const fetchAmount = async () => {
+    try {
+      const response = await axiosInstance.get(AMOUNT, {
+        params: {
+          cashregistry_data: btoa(
+            JSON.stringify({
+              device_id: userInfo.device_id,
+            })
+          ),
+        },
+      });
+      setAmount(response.data.response);
+    } catch (error) {
+      console.error("Error fetching amount:", error);
+    }
+  };
+
+  // Fetch receipt tasks
+  const fetchRecieptTasks = async () => {
+    try {
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(
+            JSON.stringify({
+              device_id: userInfo.device_id,
+              pickup_task: true,
+              status: ["Waiting", "Accepted", "Completed", "Canceled"],
+            })
+          ),
+        },
+      });
+      setRecieptTasks(response.data.response);
+    } catch (error) {
+      console.error("Error fetching receipt tasks:", error);
+    }
+  };
+
+  // Fetch sending tasks
+  const fetchSendingTasks = async () => {
+    try {
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(
+            JSON.stringify({
+              device_id: userInfo.device_id,
+              pickup_task: false,
+              status: ["Waiting", "Accepted", "Completed", "Canceled"],
+            })
+          ),
+        },
+      });
+      setSendingTasks(response.data.response);
+    } catch (error) {
+      console.error("Error fetching sending tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      await fetchReasons();
+      await fetchAmount();
+      await fetchRecieptTasks();
+      await fetchSendingTasks();
+    };
+
+    fetchAllData();
+  }, []);
 
   // Calculate task amounts using useMemo
   const taskAmounts = useMemo(() => {
@@ -101,11 +129,6 @@ function Home() {
     return newTaskAmounts;
   }, [recieptTasks, sendingTasks]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  console.log(amount);
   return (
     <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
       <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px] max-sm:px-10">
@@ -125,7 +148,6 @@ function Home() {
           <div className="flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl">
             <div className="flex gap-2 items-center">
               <FontAwesomeIcon icon={faMoneyBill1} />
-              <div></div>
               <h3>{t("Cash")}:</h3>
               <p className="ml-auto">{amount?.[0]?.cash}</p>
             </div>
