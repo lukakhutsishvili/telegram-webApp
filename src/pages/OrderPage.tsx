@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Context } from "../App";
 import { changeOrderStatus } from "../api/requestHandlers";
 import { t } from "i18next";
+import PaymentModal from "../components/deliveryConfirm";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +12,7 @@ const OrderPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedReasonText, setSelectedReasonText] = useState<string>("");
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const order =
     sendingTasks.find((task) => task.tracking_code === id) ||
@@ -42,7 +44,7 @@ const OrderPage = () => {
   const confirmCancellation = () => {
     if (selectedReason || selectedReasonText) {
       // const reasonToSend = selectedReasonText || selectedReason;
-      handleStatusChange("canceled");
+      handleStatusChange("Undelivered");
       closeCancellationModal();
     } else {
       alert(t("Please select or modify a reason for cancellation"));
@@ -168,6 +170,10 @@ const OrderPage = () => {
               </button>
             </div>
           </div>
+          <PaymentModal
+            isOpen={confirmModal}
+            onClose={() => setConfirmModal(false)}
+          />
         </div>
       )}
     </div>
