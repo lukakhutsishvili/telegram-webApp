@@ -3,14 +3,23 @@ import { useParams } from "react-router-dom";
 import { Context } from "../App";
 import { changeOrderStatus } from "../api/requestHandlers";
 import { t } from "i18next";
+import CancelModal from "../components/CancelModal";
+import Button from "../components/Button";
+import ConfirmModal from "../components/ConfirmModal";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { sendingTasks, recieptTasks, userInfo, reasons } = useContext(Context);
+  const { sendingTasks, recieptTasks, userInfo } = useContext(Context);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedReason, setSelectedReason] = useState<string>("");
-  const [selectedReasonText, setSelectedReasonText] = useState<string>("");
+  const openCancellationModal = () => setIsModalOpen(true);
+  const closeCancellationModal = () => setIsModalOpen(false);
+
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const openConfirmModal = () => setIsConfirmModalOpen(true);
+  const closeConfirmModal = () => setIsConfirmModalOpen(false);
 
   const order =
     sendingTasks.find((task) => task.tracking_code === id) ||
@@ -36,16 +45,25 @@ const OrderPage = () => {
     }
   };
 
-  const openCancellationModal = () => setIsModalOpen(true);
-  const closeCancellationModal = () => setIsModalOpen(false);
-
-  const confirmCancellation = () => {
-    if (selectedReason || selectedReasonText) {
-      const reasonToSend = selectedReasonText || selectedReason;
-      handleStatusChange("Canceled", reasonToSend);
-      closeCancellationModal();
-    } else {
-      alert(t("Please select or modify a reason for cancellation"));
+  const handleConfirmHandOver = async (
+    paymentMethod: string,
+    confirmationMethod: string,
+    confirmationValue: string
+  ) => {
+    const params = {
+      device_id: userInfo.device_id,
+      status: "Completed",
+      orders: [order.tracking_code],
+      payment_method: paymentMethod,
+      confirmation_method: confirmationMethod,
+      confirmation_value: confirmationValue,
+    };
+    try {
+      const response = await changeOrderStatus(params);
+      console.log("Handover confirmed successfully:", response);
+      window.history.back();
+    } catch (error: any) {
+      console.error("Failed to confirm handover:", error);
     }
   };
 
@@ -92,81 +110,54 @@ const OrderPage = () => {
         </div>
       </div>
 
-      {/* Action Buttons */}
+          {/* Action Buttons */}
       <div className="flex justify-center p-8">
         {order.Status === "Accepted" && (
           <div className="flex space-x-4">
-            <button
-              onClick={() => handleStatusChange("Completed")}
-              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
+            <Button
+              onClick={openConfirmModal}
+              className="bg-yellow-400 text-black"
             >
               {t("hand over")}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={openCancellationModal}
-              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
+              className="bg-yellow-400 text-black"
             >
               {t("cancellation")}
-            </button>
+            </Button>
+          </div>
+        )}
+        {order.Status === "Waiting" && (
+          <div className="flex space-x-4">
+            <Button
+              onClick={() => handleStatusChange("Accepted")}
+              className="bg-yellow-400 text-black"
+            >
+              {t("accept")}
+            </Button>
+          </div>
+        )}
+        {order.Status === "Canceled" && (
+          <div className="flex space-x-4">
+            <Button
+              onClick={() => handleStatusChange("Accepted")}
+              className="bg-yellow-400 text-black"
+            >
+              {t("recovery")}
+            </Button>
           </div>
         )}
       </div>
 
+
       {/* Modal for Cancellation Reasons */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-1/2">
-            <h2 className="text-lg font-bold mb-4 text-center">{t("Select Reason")}</h2>
-
-            {/* Cancellation Reason Dropdown */}
-            <select
-              name="cancellationReason"
-              value={selectedReason}
-              onChange={(e) => {
-                setSelectedReason(e.target.value);
-                const selectedReasonObject = reasons.find(
-                  (reason) => reason.reason_code === e.target.value
-                );
-                setSelectedReasonText(selectedReasonObject?.reason_text || "");
-              }}
-              className="w-full border p-2 rounded-md"
-            >
-              <option value="" disabled>
-                {t("Choose a reason")}
-              </option>
-              {reasons?.map((reason) => (
-                <option key={reason.reason_code} value={reason.reason_code}>
-                  {reason.reason_description}
-                </option>
-              ))}
-            </select>
-
-            {/* Input for modifying reason text */}
-            <div className="mt-4">
-              <textarea
-                value={selectedReasonText}
-                onChange={(e) => setSelectedReasonText(e.target.value)}
-                placeholder={t("Modify reason text")}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-
-            <div className="mt-4 flex justify-end space-x-4">
-              <button
-                onClick={closeCancellationModal}
-                className="px-4 py-2 bg-gray-300 text-black font-semibold rounded-md"
-              >
-                {t("Cancel")}
-              </button>
-              <button
-                onClick={confirmCancellation}
-                className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md"
-              >
-                {t("Confirm")}
-              </button>
-            </div>
-          </div>
-        </div>
+      {isModalOpen &&  <CancelModal closeCancellationModal={closeCancellationModal} handleStatusChange={handleStatusChange}/>}
+      {isConfirmModalOpen && (
+        <ConfirmModal
+          closeModal={closeConfirmModal}
+          handleConfirm={handleConfirmHandOver}
+        />
       )}
     </div>
   );
