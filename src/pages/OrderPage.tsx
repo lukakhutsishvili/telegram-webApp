@@ -61,7 +61,6 @@ const handleConfirmHandOver = async (
     try {
       const response = await changeOrderStatus(params);
       console.log("Handover confirmed successfully:", response);
-      window.history.back();
     } catch (error: any) {
       console.error("Failed to confirm handover:", error);
     }

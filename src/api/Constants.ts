@@ -16,3 +16,4 @@ export const changeStatusesOfOrder = "/pocket/changetaskstatus";
 export const AMOUNT = "/pocket/cashregistry";
 export const SEND_CLIENT_OTP = "/bot/send_client_otp";
 export const VERIFY_CLIENT_OTP_URL = "/bot/verify_client_otp";
+export const SET_CLIENT_ID_URL = "/bot/idvalidation";
