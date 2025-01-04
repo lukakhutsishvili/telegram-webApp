@@ -6,7 +6,11 @@ import { Context } from "../App";
 
 interface ConfirmModalProps {
   closeModal: () => void;
-  handleConfirm: (paymentMethod: string, confirmationMethod: string, confirmationValue: string) => void;
+  handleConfirm: (
+    paymentMethod: string,
+    confirmationMethod: string,
+    confirmationValue: string
+  ) => void;
   order: any;
 }
 
@@ -14,7 +18,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   closeModal,
   // handleConfirm,
   order,
-}) =>  {
+}) => {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
   const [confirmationValue, setConfirmationValue] = useState("");
@@ -53,16 +57,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       alert("Please enter the OTP.");
       return;
     }
-  
+
     const data = {
       device_id: userInfo.device_id,
       tracking_code: order.tracking_code,
       otp: confirmationValue,
     };
-  
+
     try {
       const response = await axiosInstance.post(VERIFY_CLIENT_OTP_URL, data);
-  
+
       if (response.status === 200) {
         console.log("OTP validated successfully!");
         setOtpValid(true);
@@ -71,16 +75,19 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         closeModal();
       } else {
         setOtpValid(false);
-        setErrorMessage(response.data.message || "Invalid OTP. Please try again.");
+        setErrorMessage(
+          response.data.message || "Invalid OTP. Please try again."
+        );
       }
     } catch (error: any) {
       setOtpValid(false);
-      setErrorMessage(error.response?.data?.message || "An error occurred. Please try again.");
+      setErrorMessage(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
     }
   };
-  
 
-  console.log(otpValid)
+  console.log(otpValid);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -116,14 +123,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         {/* Confirmation Value */}
         <div className="mb-4">
           <label className="block font-medium mb-2">
-            {confirmationMethod === "OTP" ? "Enter OTP Code" : "Enter ID Number"}
+            {confirmationMethod === "OTP"
+              ? "Enter OTP Code"
+              : "Enter ID Number"}
           </label>
-          {confirmationMethod === "OTP"  && (
+          {confirmationMethod === "OTP" && (
             <Button onClick={sendOtp} className="mb-2 bg-blue-500 text-white">
               {isOtpSending ? "Sending OTP..." : "Send OTP"}
             </Button>
           )}
-          
+
           {otpSent && <div className="text-green-500">OTP Sent!</div>}
 
           <input
@@ -131,7 +140,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             value={confirmationValue}
             onChange={(e) => setConfirmationValue(e.target.value)}
             className="w-full p-2 border rounded"
-            placeholder={confirmationMethod === "OTP" ? "OTP Code" : "ID Number"}
+            placeholder={
+              confirmationMethod === "OTP" ? "OTP Code" : "ID Number"
+            }
           />
           {errorMessage && <div className="text-red-500">{errorMessage}</div>}
         </div>

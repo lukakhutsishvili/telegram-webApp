@@ -130,7 +130,7 @@ function Home() {
   }, [recieptTasks, sendingTasks]);
 
   return (
-    <div className="max-w-[100vw] min-h-[100vh] bg-yellow-300">
+    <div className=" min-h-[100vh] bg-yellow-300">
       <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px] max-sm:px-10">
         {/* Logo container */}
         <div className="min-w-[238px] flex items-center justify-between">

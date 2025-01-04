@@ -6,10 +6,19 @@ import { t } from "i18next";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
+import { axiosInstance } from "../api/apiClient";
+import { ORDER_LIST } from "../api/Constants";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { sendingTasks, recieptTasks, userInfo } = useContext(Context);
+  const {
+    sendingTasks,
+    recieptTasks,
+    userInfo,
+    setSendingTasks,
+    navbarButtons,
+    setRecieptTasks,
+  } = useContext(Context);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -24,6 +33,7 @@ const OrderPage = () => {
     sendingTasks.find((task) => task.tracking_code === id) ||
     recieptTasks.find((task) => task.tracking_code === id);
 
+  console.log(order);
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
@@ -44,8 +54,52 @@ const OrderPage = () => {
     }
   };
 
+  const fetchUpdatedOrderList = async () => {
+    try {
+      const tasklistData = {
+        device_id: userInfo.device_id,
+        pickup_task: navbarButtons !== "sending",
+        status: ["Waiting", "Accepted", "Completed", "Canceled"],
+      };
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(JSON.stringify(tasklistData)),
+        },
+      });
+      if (navbarButtons == "sending") {
+        setSendingTasks(response.data.response);
+      } else {
+        setRecieptTasks(response.data.response);
+      }
+      console.log("Order list updated successfully:", response);
+    } catch (error) {
+      console.error("Failed to fetch order list:", error);
+    }
+  };
 
-const handleConfirmHandOver = async (
+  const handleStatusChangeAndFetch = async (newStatus: string) => {
+    const params = {
+      device_id: userInfo.device_id,
+      status: newStatus,
+      orders: [id],
+    };
+
+    try {
+      const response = await changeOrderStatus(params);
+      console.log("Order status updated successfully:", response);
+
+      // Wait for the status update to complete before fetching the updated list
+      await fetchUpdatedOrderList();
+      window.history.back();
+    } catch (error: any) {
+      console.error(
+        "Failed to update order status or fetch updated list:",
+        error
+      );
+    }
+  };
+
+  const handleConfirmHandOver = async (
     paymentMethod: string,
     confirmationMethod: string,
     confirmationValue: string
@@ -110,29 +164,31 @@ const handleConfirmHandOver = async (
         </div>
       </div>
 
-     {/* Action Buttons */}
-     <div className="flex justify-center p-8">
+      {/* Action Buttons */}
+      <div className="flex justify-center p-8">
         {order.Status === "Accepted" && (
           <div className="flex space-x-4">
-             <Button
+            <Button
               onClick={openConfirmModal}
               className="bg-yellow-400 text-black"
             >
               {t("hand over")}
-              </Button>
+            </Button>
             <Button
               onClick={openCancellationModal}
               className="bg-yellow-400 text-black"
             >
               {t("cancellation")}
-              </Button>
+            </Button>
           </div>
         )}
 
-      {order.Status === "Waiting" && (
+        {order.Status === "Waiting" && (
           <div className="flex space-x-4">
             <Button
-              onClick={() => handleStatusChange("Accepted")}
+              onClick={() => {
+                handleStatusChangeAndFetch("Accepted");
+              }}
               className="bg-yellow-400 text-black"
             >
               {t("accept")}
@@ -142,7 +198,9 @@ const handleConfirmHandOver = async (
         {order.Status === "Canceled" && (
           <div className="flex space-x-4">
             <Button
-              onClick={() => handleStatusChange("Accepted")}
+              onClick={() => {
+                handleStatusChangeAndFetch("Accepted");
+              }}
               className="bg-yellow-400 text-black"
             >
               {t("recovery")}
@@ -151,8 +209,14 @@ const handleConfirmHandOver = async (
         )}
       </div>
 
-     {/* Modal for Cancellation Reasons */}
-      {isModalOpen &&  <CancelModal closeCancellationModal={closeCancellationModal} handleStatusChange={handleStatusChange}/>}
+      {/* Modal for Cancellation Reasons */}
+      {isModalOpen && (
+        <CancelModal
+          order={order}
+          closeCancellationModal={closeCancellationModal}
+          handleStatusChange={handleStatusChange}
+        />
+      )}
       {isConfirmModalOpen && (
         <ConfirmModal
           closeModal={closeConfirmModal}

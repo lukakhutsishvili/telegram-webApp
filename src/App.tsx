@@ -8,30 +8,6 @@ import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
 import OrderPage from "./pages/OrderPage";
 
-
-interface Reason {
-  reason_code: string;
-  reason_description: string;
-  reason_text?: string;
-}
-
-interface ContextType {
-  userInfo: Record<string, any>;
-  setUserInfo: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-  reasons: Reason[];
-  setReasons: React.Dispatch<React.SetStateAction<Reason[]>>;
-  recieptTasks: any[];
-  setRecieptTasks: React.Dispatch<React.SetStateAction<any[]>>;
-  sendingTasks: any[];
-  setSendingTasks: React.Dispatch<React.SetStateAction<any[]>>;
-  tabButtons: string;
-  setTabButtons: React.Dispatch<React.SetStateAction<string>>;
-  navbarButtons: string;
-  setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
-  amount: any;
-  setAmount: any;
-}
-
 const defaultContextValue: ContextType = {
   userInfo: {},
   setUserInfo: () => {},
@@ -105,8 +81,12 @@ const App = () => {
         <Route element={<QRBarcodeScanner />} path="/scanner" />
         <Route path="/order/:id" element={<OrderPage />} />
       </Routes>
-      {location.pathname !== "/" && location.pathname !== "/scanner" && (
+      {location.pathname == "/home" ||
+      location.pathname == "/Sending" ||
+      location.pathname == "/Reciept" ? (
         <Navbar />
+      ) : (
+        <div></div>
       )}
     </Context.Provider>
   );

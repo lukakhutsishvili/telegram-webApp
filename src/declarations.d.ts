@@ -13,15 +13,21 @@ declare module "*.jpeg" {
   export default value;
 }
 
-type createContextType = {
+interface Reason {
+  reason_code: string;
+  reason_description: string;
+  reason_text?: string;
+}
+
+interface ContextType {
   userInfo: {
     telegram_id?: string;
     name?: string;
     device_id?: string;
   };
-  setUserInfo: any;
-  reasons: undefined | string[];
-  setReasons: React.Dispatch<React.SetStateAction<string[]>>;
+  setUserInfo: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  reasons: Reason[];
+  setReasons: React.Dispatch<React.SetStateAction<Reason[]>>;
   recieptTasks: any[];
   setRecieptTasks: React.Dispatch<React.SetStateAction<any[]>>;
   sendingTasks: any[];
@@ -30,11 +36,6 @@ type createContextType = {
   setTabButtons: React.Dispatch<React.SetStateAction<string>>;
   navbarButtons: string;
   setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
-  amount: {
-    cash: number;
-    bank: number;
-    sum: number;
-}[];
+  amount: any;
   setAmount: any;
-  
-};
+}
