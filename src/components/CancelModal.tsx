@@ -2,7 +2,8 @@ import { useContext, useState } from "react";
 import { Context } from "../App";
 import { t } from "i18next";
 import { axiosInstance } from "../api/apiClient";
-import { DELIVERY_ORDERS } from "../api/Constants";
+import { DELIVERY_ORDERS, ORDER_LIST } from "../api/Constants";
+import { useNavigate } from "react-router-dom";
 
 interface CancelModalProps {
   closeCancellationModal: () => void;
@@ -15,10 +16,35 @@ function CancelModal({
   handleStatusChange,
   order,
 }: CancelModalProps) {
-  const { reasons } = useContext(Context);
+  const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } =
+    useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedReasonText, setSelectedReasonText] = useState<string>("");
-  const { userInfo } = useContext(Context);
+  const navigate = useNavigate();
+
+  const fetchUpdatedOrderList = async () => {
+    try {
+      const tasklistData = {
+        device_id: userInfo.device_id,
+        pickup_task: navbarButtons !== "sending",
+        status: ["Waiting", "Accepted", "Completed", "Canceled"],
+      };
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(JSON.stringify(tasklistData)),
+        },
+      });
+      if (navbarButtons == "sending") {
+        setSendingTasks(response.data.response);
+      } else {
+        setRecieptTasks(response.data.response);
+      }
+      console.log("Order list updated successfully:", response);
+    } catch (error) {
+      console.error("Failed to fetch order list:", error);
+    }
+  };
+  console.log(selectedReason);
 
   const confirmCancellation = async () => {
     const params = {
@@ -27,16 +53,20 @@ function CancelModal({
       orders: [
         {
           tracking_code: order.tracking_code,
-          successfully: false,
-          reason_id: "1",
+          successfully: "False",
+          reason_id: selectedReason,
           reason_commentary: "No one was at the address",
         },
       ],
     };
     const response = await axiosInstance.post(DELIVERY_ORDERS, params);
+    if (response.data.status) {
+      handleStatusChange("undelivered");
+    }
     console.log(response);
-    handleStatusChange("Undelivered");
     closeCancellationModal();
+    await fetchUpdatedOrderList();
+    navigate("/" + navbarButtons);
   };
   return (
     <div className="w-full h-full fixed left-1/2 top-0 pt-[90px] transform -translate-x-1/2 bg-black bg-opacity-50 flex items-start justify-center z-50">

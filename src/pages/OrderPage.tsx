@@ -33,7 +33,6 @@ const OrderPage = () => {
     sendingTasks.find((task) => task.tracking_code === id) ||
     recieptTasks.find((task) => task.tracking_code === id);
 
-  console.log(order);
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
@@ -115,7 +114,6 @@ const OrderPage = () => {
     try {
       const response = await changeOrderStatus(params);
       console.log("Handover confirmed successfully:", response);
-      window.history.back();
     } catch (error: any) {
       console.error("Failed to confirm handover:", error);
     }
