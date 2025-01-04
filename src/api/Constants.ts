@@ -14,3 +14,5 @@ export const ORDER_LIST = "/bot/gettask";
 export const GET_DETAILS_BY_SCANNER = "/pocket/getDetailsByTrackCode";
 export const changeStatusesOfOrder = "/pocket/changetaskstatus";
 export const AMOUNT = "/pocket/cashregistry";
+export const SEND_CLIENT_OTP = "/bot/send_client_otp";
+export const VERIFY_CLIENT_OTP_URL = "/bot/verify_client_otp";

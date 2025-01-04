@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { Context } from "../App";
 import { changeOrderStatus } from "../api/requestHandlers";
 import { t } from "i18next";
-// import PaymentModal from "../components/deliveryConfirm";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
@@ -13,7 +12,6 @@ const OrderPage = () => {
   const { sendingTasks, recieptTasks, userInfo } = useContext(Context);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [confirmModal, setConfirmModal] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const openCancellationModal = () => setIsModalOpen(true);
@@ -118,7 +116,6 @@ const handleConfirmHandOver = async (
           <div className="flex space-x-4">
              <Button
               onClick={openConfirmModal}
-              // onClick={() => handleStatusChange("Completed")}
               className="bg-yellow-400 text-black"
             >
               {t("hand over")}
@@ -160,13 +157,9 @@ const handleConfirmHandOver = async (
         <ConfirmModal
           closeModal={closeConfirmModal}
           handleConfirm={handleConfirmHandOver}
+          order={order}
         />
       )}
-        {/* <PaymentModal
-            isOpen={confirmModal}
-            onClose={() => setConfirmModal(false)}
-          /> */}
-      
     </div>
   );
 };
