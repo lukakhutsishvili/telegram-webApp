@@ -1,34 +1,86 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "../components/Button";
+import { SEND_CLIENT_OTP, VERIFY_CLIENT_OTP_URL } from "../api/Constants";
+import { axiosInstance } from "../api/apiClient";
+import { Context } from "../App";
 
 interface ConfirmModalProps {
   closeModal: () => void;
   handleConfirm: (paymentMethod: string, confirmationMethod: string, confirmationValue: string) => void;
+  order: any;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
   closeModal,
-  handleConfirm,
-}) => {
+  // handleConfirm,
+  order,
+}) =>  {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
   const [confirmationValue, setConfirmationValue] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [isOtpSending, setIsOtpSending] = useState(false);
+  const [otpValid, setOtpValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { userInfo } = useContext(Context);
 
-  const sendOtp = () => {
-    // Simulate sending OTP
-    console.log("Sending OTP...");
-    setOtpSent(true);
-  };
-
-  const onConfirm = () => {
-    if (!confirmationValue) {
-      alert("Please provide the confirmation value.");
+  const sendOtp = async () => {
+    if (!order.client_phone) {
+      alert("Phone number is not available.");
       return;
     }
-    handleConfirm(paymentMethod, confirmationMethod, confirmationValue);
-    closeModal();
+
+    try {
+      setIsOtpSending(true);
+      const response = await axiosInstance.post(SEND_CLIENT_OTP, {
+        device_id: userInfo.device_id,
+        tracking_code: order.tracking_code,
+      });
+      if (response.status === 200) {
+        setOtpSent(true);
+      } else {
+        alert(response.data.message || "Failed to send OTP.");
+      }
+    } catch (error) {
+      alert("Error sending OTP.");
+    } finally {
+      setIsOtpSending(false);
+    }
   };
+
+  const checkClientOtp = async () => {
+    if (!confirmationValue) {
+      alert("Please enter the OTP.");
+      return;
+    }
+  
+    const data = {
+      device_id: userInfo.device_id,
+      tracking_code: order.tracking_code,
+      otp: confirmationValue,
+    };
+  
+    try {
+      const response = await axiosInstance.post(VERIFY_CLIENT_OTP_URL, data);
+  
+      if (response.status === 200) {
+        console.log("OTP validated successfully!");
+        setOtpValid(true);
+        setErrorMessage("");
+        alert("OTP validated. Proceeding with delivery...");
+        closeModal();
+      } else {
+        setOtpValid(false);
+        setErrorMessage(response.data.message || "Invalid OTP. Please try again.");
+      }
+    } catch (error: any) {
+      setOtpValid(false);
+      setErrorMessage(error.response?.data?.message || "An error occurred. Please try again.");
+    }
+  };
+  
+
+  console.log(otpValid)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -68,11 +120,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           </label>
           {confirmationMethod === "OTP"  && (
             <Button onClick={sendOtp} className="mb-2 bg-blue-500 text-white">
-              Send OTP
+              {isOtpSending ? "Sending OTP..." : "Send OTP"}
             </Button>
           )}
           
-          { otpSent && <h3>Sending OTP...</h3>}
+          {otpSent && <div className="text-green-500">OTP Sent!</div>}
 
           <input
             type="text"
@@ -81,6 +133,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             className="w-full p-2 border rounded"
             placeholder={confirmationMethod === "OTP" ? "OTP Code" : "ID Number"}
           />
+          {errorMessage && <div className="text-red-500">{errorMessage}</div>}
         </div>
 
         {/* Action Buttons */}
@@ -88,7 +141,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <Button onClick={closeModal} className="bg-gray-300 text-black">
             Cancel
           </Button>
-          <Button onClick={onConfirm} className="bg-yellow-400 text-black">
+          <Button onClick={checkClientOtp} className="bg-yellow-400 text-black">
             Confirm
           </Button>
         </div>
@@ -98,4 +151,3 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 };
 
 export default ConfirmModal;
-
