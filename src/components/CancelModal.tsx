@@ -44,7 +44,6 @@ function CancelModal({
       console.error("Failed to fetch order list:", error);
     }
   };
-  console.log(selectedReason);
 
   const confirmCancellation = async () => {
     const params = {
@@ -55,7 +54,7 @@ function CancelModal({
           tracking_code: order.tracking_code,
           successfully: "False",
           reason_id: selectedReason,
-          reason_commentary: "No one was at the address",
+          reason_commentary: selectedReasonText,
         },
       ],
     };
@@ -68,6 +67,7 @@ function CancelModal({
     await fetchUpdatedOrderList();
     navigate("/" + navbarButtons);
   };
+
   return (
     <div className="w-full h-full fixed left-1/2 top-0 pt-[90px] transform -translate-x-1/2 bg-black bg-opacity-50 flex items-start justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-1/2 max-sm:w-3/4">
