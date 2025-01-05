@@ -144,9 +144,12 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
-          <span className="font-medium text-blue-500">
+          <a
+            href={`tel:${order.client_phone}`}
+            className="font-medium text-blue-500 underline"
+          >
             {order.client_phone}
-          </span>
+          </a>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("barcode")} :</span>
