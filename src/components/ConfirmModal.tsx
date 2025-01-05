@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import { SEND_CLIENT_OTP, SET_CLIENT_ID_URL, VERIFY_CLIENT_OTP_URL } from "../api/Constants";
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
+import { t } from "i18next";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -65,7 +66,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
 
   const sendOtp = async () => {
     if (!order.client_phone) {
-      alert("Phone number is not available.");
+      alert(t("Phone number is not available."));
       return;
     }
 
@@ -79,10 +80,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
         setOtpSent(true);
         setOtpCooldown(30); 
       } else {
-        alert(response.data.message || "Failed to send OTP.");
+        alert(response.data.message || t("Failed to send OTP."));
       }
     } catch (error) {
-      alert("Error sending OTP.");
+      alert(t("Error sending OTP."));
     } finally {
       setIsOtpSending(false);
     }
@@ -90,7 +91,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
 
   const checkClientOtp = async () => {
     if (!confirmationValue) {
-      setErrorMessage("Please enter the OTP.");
+      setErrorMessage(t("Please enter the OTP."));
       return;
     }
 
@@ -104,21 +105,21 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
       const response = await axiosInstance.post(VERIFY_CLIENT_OTP_URL, data);
 
       if (response.status === 200) {
-        setConfirmationMessage("OTP confirmed!");
+        setConfirmationMessage(t("OTP confirmed!"));
         handleConfirm(paymentMethod, confirmationMethod, confirmationValue);
         setErrorMessage("");
         setStartTimer(true); 
       } else {
-        setErrorMessage(response.data.message || "Invalid OTP. Please try again.");
+        setErrorMessage(response.data.message || t("Invalid OTP. Please try again."));
       }
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Invalid OTP. Please try again.");
+      setErrorMessage(error.response?.data?.message || t("Invalid OTP. Please try again."));
     }
   };
 
   const postClientID = async () => {
     if (!confirmationValue.trim()) {
-      setErrorMessage("Please enter the ID number.");
+      setErrorMessage(t("Please enter the ID number."));
       return;
     }
 
@@ -132,16 +133,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
       const response = await axiosInstance.post(SET_CLIENT_ID_URL, idData);
 
       if (response.status === 200) {
-        setConfirmationMessage("ID Number confirmed!");
+        setConfirmationMessage(t("ID Number confirmed!"));
         handleConfirm(paymentMethod, confirmationMethod, confirmationValue);
         setErrorMessage("");
         setStartTimer(true); 
       } else {
-        setErrorMessage(response.data.message || "Failed to save ID Number. Please try again.");
+        setErrorMessage(response.data.message || t("Failed to save ID Number. Please try again."));
       }
     } catch (error: any) {
       setErrorMessage(
-        error.response?.data?.message || "An error occurred while saving the ID Number. Please try again."
+        error.response?.data?.message || t("An error occurred while saving the ID Number. Please try again.")
       );
     }
   };
@@ -152,11 +153,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
     } else if (confirmationMethod === "ID Number") {
       if (order.client_id) {
         if (order.client_id === confirmationValue) {
-          setConfirmationMessage("ID Number confirmed!");
+          setConfirmationMessage(t("ID Number confirmed!"));
           handleConfirm(paymentMethod, confirmationMethod, confirmationValue);
           setStartTimer(true);
         } else {
-          setErrorMessage("The ID Number does not match the client's ID. Please try again.");
+          setErrorMessage(t("The ID Number does not match the client's ID. Please try again."));
         }
       } else {
         await postClientID();
@@ -167,42 +168,42 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-lg font-bold mb-4">Confirm Handover</h2>
+        <h2 className="text-lg font-bold mb-4">{t("Confirm Handover")}</h2>
 
         {confirmationMessage ? (
           <div>
             <p className="text-green-500 text-center mb-4">{confirmationMessage}</p>
-            <p className="text-sm text-gray-500 text-center">This modal will close in {timer} seconds.</p>
+            <p className="text-sm text-gray-500 text-center">{t("This modal will close in {{timer}} seconds.", { timer })}</p>
           </div>
         ) : (
           <>
             <div className="mb-4">
-              <label className="block font-medium mb-2">Payment Method</label>
+              <label className="block font-medium mb-2">{t("Payment Method")}</label>
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="w-full p-2 border rounded"
               >
-                <option value="Cash">Cash</option>
-                <option value="Bank">Bank</option>
+                <option value="Cash">{t("Cash")}</option>
+                <option value="Bank">{t("Bank")}</option>
               </select>
             </div>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2">Confirmation Method</label>
+              <label className="block font-medium mb-2">{t("Confirmation Method")}</label>
               <select
                 value={confirmationMethod}
                 onChange={(e) => handleConfirmationMethodChange(e.target.value)}
                 className="w-full p-2 border rounded"
               >
-                <option value="OTP">OTP</option>
-                <option value="ID Number">ID Number</option>
+                <option value="OTP">{t("OTP")}</option>
+                <option value="ID Number">{t("ID Number")}</option>
               </select>
             </div>
 
             <div className="mb-4">
               <label className="block font-medium mb-2">
-                {confirmationMethod === "OTP" ? "Enter OTP Code" : "Enter ID Number"}
+                {confirmationMethod === "OTP" ? t("Enter OTP Code") : t("Enter ID Number")}
               </label>
               {confirmationMethod === "OTP" && (
                 <Button
@@ -210,16 +211,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
                   className="mb-2 bg-blue-500 text-white"
                   disabled={otpCooldown > 0 || isOtpSending}
                 >
-                  {isOtpSending ? "Sending OTP..." : otpCooldown > 0 ? `Wait ${otpCooldown}s` : "Send OTP"}
+                  {isOtpSending ? t("Sending OTP...") : otpCooldown > 0 ? t("Wait {{otpCooldown}}s", { otpCooldown }) : t("Send OTP")}
                 </Button>
               )}
-              {otpSent && <div className="text-green-500">OTP Sent!</div>}
+              {otpSent && <div className="text-green-500">{t("OTP Sent!")}</div>}
               <input
                 type="text"
                 value={confirmationValue}
                 onChange={(e) => setConfirmationValue(e.target.value)}
                 className="w-full p-2 border rounded"
-                placeholder={confirmationMethod === "OTP" ? "OTP Code" : "ID Number"}
+                placeholder={confirmationMethod === "OTP" ? t("OTP Code") : t("ID Number")}
               />
               {errorMessage && <div className="text-red-500">{errorMessage}</div>}
             </div>
@@ -228,11 +229,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order, handleCo
 
         <div className="flex justify-center space-x-4">
           <Button onClick={closeModal} className="bg-gray-300 text-black">
-            Cancel
+            {t("cancel")}
           </Button>
           {!confirmationMessage && (
             <Button onClick={onConfirm} className="bg-yellow-400 text-black">
-              Confirm
+              {t("confirm")}
             </Button>
           )}
         </div>
