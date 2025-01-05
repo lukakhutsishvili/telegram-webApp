@@ -118,8 +118,8 @@ const ReceiptOrders = ({ status }: { status: string | null }) => {
   }
 
   return (
-    <div className="px-4">
-      <div className="flex items-center py-2">
+    <div className="relative px-4">
+      <div className="sticky top-0 z-10 flex items-center bg-white">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input

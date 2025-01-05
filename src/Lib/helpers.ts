@@ -1,4 +1,4 @@
-import { faHome, faTruckFast, faBox } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faTruckFast, faBox, faBarcode } from "@fortawesome/free-solid-svg-icons";
 
 // sending and reciept tab buttons
 export const TAB_BUTTONS = [
@@ -13,4 +13,5 @@ export  const buttons = [
   { name: "home", path: "/home", icon: faHome },
   { name: "sending", path: "/Sending", icon: faTruckFast },
   { name: "receipt", path: "/Reciept", icon: faBox },
+  { name: "scan the register", path: "/scanner", icon: faBarcode }
 ];
