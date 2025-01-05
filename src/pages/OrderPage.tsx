@@ -98,30 +98,8 @@ const OrderPage = () => {
     }
   };
 
-  const handleConfirmHandOver = async (
-    paymentMethod: string,
-    confirmationMethod: string,
-    confirmationValue: string
-  ) => {
-    const params = {
-      device_id: userInfo.device_id,
-      status: "Completed",
-      orders: [order.tracking_code],
-      payment_method: paymentMethod,
-      confirmation_method: confirmationMethod,
-      confirmation_value: confirmationValue,
-    };
-    try {
-      const response = await changeOrderStatus(params);
-      console.log("Handover confirmed successfully:", response);
-    } catch (error: any) {
-      console.error("Failed to confirm handover:", error);
-    }
-  };
-
-
   return (
-    <div className="min-h-screen bg-white px-4 pt-24">
+    <div className="min-h-screen bg-white px-4 pt-12">
       {/* Header */}
       <header className="flex items-center mb-6">
         <button
@@ -145,21 +123,13 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
-          <a
-            onClick={() => navigator.clipboard.writeText(order.client_phone)} 
-            href={`tel:${order.client_phone}`} rel="noopener noreferrer"
-            className="font-medium text-blue-500 underline"
-          >
+          <span className="font-medium text-blue-500">
             {order.client_phone}
-          </a>
+          </span>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("barcode")} :</span>
-          <span 
-          onClick={() => navigator.clipboard.writeText(order.tracking_code)} 
-          className="font-medium text-blue-500 underline cursor-pointer">
-            {order.tracking_code}
-          </span>
+          <span className="font-medium">{order.tracking_code}</span>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("sum")} :</span>
@@ -227,7 +197,6 @@ const OrderPage = () => {
       {isConfirmModalOpen && (
         <ConfirmModal
           closeModal={closeConfirmModal}
-          handleConfirm={handleConfirmHandOver}
           order={order}
         />
       )}
