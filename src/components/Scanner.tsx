@@ -6,7 +6,6 @@ import {
   GET_DETAILS_BY_SCANNER,
   changeStatusesOfOrder,
 } from "../api/Constants";
-import { useNavigate } from "react-router-dom";
 
 const BarcodeScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -14,9 +13,8 @@ const BarcodeScanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderTrackingCodes, setOrderTrackingCodes] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { userInfo, navbarButtons } = useContext(Context);
+  const { userInfo } = useContext(Context);
   const [secRes, setSecRes] = useState<any>();
-  const navigate = useNavigate();
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
@@ -115,9 +113,6 @@ const BarcodeScanner = () => {
             <button
               onClick={() => {
                 setIsModalOpen(false);
-                if (navbarButtons) {
-                  navigate("/" + navbarButtons);
-                }
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
