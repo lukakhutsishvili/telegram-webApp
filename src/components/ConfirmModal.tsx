@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import Button from "../components/Button";
 import {
   DELIVERY_ORDERS,
+  ORDER_LIST,
   SEND_CLIENT_OTP,
   SET_CLIENT_ID_URL,
   VERIFY_CLIENT_OTP_URL,
@@ -9,6 +10,7 @@ import {
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
 import { t } from "i18next";
+import { useNavigate } from "react-router-dom";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -26,7 +28,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [timer, setTimer] = useState(10);
   const [startTimer, setStartTimer] = useState(false);
-  const { userInfo } = useContext(Context);
+  const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
+    useContext(Context);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (startTimer) {
@@ -108,6 +112,28 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
       setIsOtpSending(false);
     }
   };
+  const fetchUpdatedOrderList = async () => {
+    try {
+      const tasklistData = {
+        device_id: userInfo.device_id,
+        pickup_task: navbarButtons !== "sending",
+        status: ["Waiting", "Accepted", "Completed", "Canceled"],
+      };
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(JSON.stringify(tasklistData)),
+        },
+      });
+      if (navbarButtons == "sending") {
+        setSendingTasks(response.data.response);
+      } else {
+        setRecieptTasks(response.data.response);
+      }
+      console.log("Order list updated successfully:", response);
+    } catch (error) {
+      console.error("Failed to fetch order list:", error);
+    }
+  };
 
   const checkClientOtp = async () => {
     if (!confirmationValue) {
@@ -177,12 +203,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
   const onConfirm = async () => {
     if (confirmationMethod === "OTP") {
       await checkClientOtp();
+      await fetchUpdatedOrderList();
+      navigate("/" + navbarButtons);
     } else if (confirmationMethod === "ID Number") {
       if (order.client_id) {
         if (order.client_id === confirmationValue) {
           await confirmDelivery();
           setConfirmationMessage(t("ID Number confirmed!"));
           setStartTimer(true);
+          await fetchUpdatedOrderList();
+          navigate("/" + navbarButtons);
         } else if (order.client_id !== confirmationValue) {
           setErrorMessage(
             t("The ID Number does not match the client's ID. Please try again.")
@@ -190,7 +220,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
         }
       } else if (!order.client_id) {
         await postClientID();
-        // await confirmDelivery();
+        await fetchUpdatedOrderList();
+        navigate("/" + navbarButtons);
       }
     }
   };

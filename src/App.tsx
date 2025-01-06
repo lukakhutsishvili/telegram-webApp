@@ -81,9 +81,9 @@ const App = () => {
         <Route element={<QRBarcodeScanner />} path="/scanner" />
         <Route path="/order/:id" element={<OrderPage />} />
       </Routes>
-      {location.pathname == "/home" ||
-      location.pathname == "/Sending" ||
-      location.pathname == "/Reciept" ? (
+      {location.pathname.toLowerCase() === "/home" ||
+      location.pathname.toLowerCase() === "/sending" ||
+      location.pathname.toLowerCase() === "/reciept" ? (
         <Navbar />
       ) : (
         <div></div>
