@@ -153,11 +153,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
       client_id: confirmationValue,
     };
 
-    console.log(params);
     try {
       const response = await axiosInstance.post(SET_CLIENT_ID_URL, params);
-
-      if (response.status === 200) {
+      console.log(response);
+      if (response.status === 202) {
         await confirmDelivery();
         setConfirmationMessage(t("ID Number confirmed!"));
         setErrorMessage("");
@@ -180,17 +179,19 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
     if (confirmationMethod === "OTP") {
       await checkClientOtp();
     } else if (confirmationMethod === "ID Number") {
-      if (order.client_id === "") {
-        await postClientID();
-      } else if (order.client_id !== "") {
+      if (order.client_id) {
         if (order.client_id === confirmationValue) {
+          await confirmDelivery();
           setConfirmationMessage(t("ID Number confirmed!"));
           setStartTimer(true);
-        } else {
+        } else if (order.client_id !== confirmationValue) {
           setErrorMessage(
             t("The ID Number does not match the client's ID. Please try again.")
           );
         }
+      } else if (!order.client_id) {
+        await postClientID();
+        // await confirmDelivery();
       }
     }
   };
