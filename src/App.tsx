@@ -83,7 +83,8 @@ const App = () => {
       </Routes>
       {location.pathname.toLowerCase() === "/home" ||
       location.pathname.toLowerCase() === "/sending" ||
-      location.pathname.toLowerCase() === "/reciept" ? (
+      location.pathname.toLowerCase() === "/reciept" ||
+      location.pathname.toLowerCase() === "/scanner" ? (
         <Navbar />
       ) : (
         <div></div>

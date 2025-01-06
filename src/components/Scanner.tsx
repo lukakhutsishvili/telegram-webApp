@@ -6,7 +6,6 @@ import {
   GET_DETAILS_BY_SCANNER,
   changeStatusesOfOrder,
 } from "../api/Constants";
-import { useNavigate } from "react-router-dom";
 
 const BarcodeScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -14,9 +13,9 @@ const BarcodeScanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderTrackingCodes, setOrderTrackingCodes] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { userInfo, navbarButtons } = useContext(Context);
+  const [isConfirmationRequired, setIsConfirmationRequired] = useState(false);
+  const { userInfo } = useContext(Context);
   const [secRes, setSecRes] = useState<any>();
-  const navigate = useNavigate();
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
@@ -40,11 +39,25 @@ const BarcodeScanner = () => {
       );
 
       setOrderTrackingCodes(trackingCodes);
+      setIsConfirmationRequired(true);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching barcode details:", error);
+      setOrderTrackingCodes({ error: "Failed to fetch details" });
+      setIsModalOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const sendSecondRequest = async () => {
+    try {
+      setIsLoading(true);
 
       const orderParams = {
         device_id: userInfo.device_id,
         status: "accepted",
-        orders: trackingCodes,
+        orders: orderTrackingCodes,
       };
 
       const secResponse = await axiosInstance.post(
@@ -52,11 +65,9 @@ const BarcodeScanner = () => {
         orderParams
       );
       setSecRes(secResponse);
-      setIsModalOpen(true);
+      setIsConfirmationRequired(false);
     } catch (error) {
-      console.error("Error fetching barcode details:", error);
-      setOrderTrackingCodes({ error: "Failed to fetch details" });
-      setIsModalOpen(true); // Open modal even on error
+      console.error("Error updating order status:", error);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +98,7 @@ const BarcodeScanner = () => {
   }, []);
 
   return (
-    <div className=" relative">
+    <div className="relative">
       {!isModalOpen && <video ref={videoRef} className="w-full h-100vh" />}
 
       {isModalOpen && (
@@ -95,6 +106,27 @@ const BarcodeScanner = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
             {isLoading ? (
               <p className="mb-6 text-gray-700">Loading...</p>
+            ) : isConfirmationRequired ? (
+              <>
+                <h2 className="text-xl font-bold mb-4 text-blue-600">
+                  Confirm Re-entry
+                </h2>
+                <p className="mb-6 text-gray-700">
+                  Do you want to accept the re-entry for the scanned order?
+                </p>
+                <button
+                  onClick={sendSecondRequest}
+                  className="px-4 py-2 mr-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                >
+                  No
+                </button>
+              </>
             ) : secRes && secRes.status ? (
               <h2 className="text-xl font-bold mb-4 text-green-600">
                 Scan Successful!
@@ -106,17 +138,16 @@ const BarcodeScanner = () => {
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
             )}
-            <button
-              onClick={() => {
-                setIsModalOpen(false);
-                if (navbarButtons) {
-                  navigate("/" + navbarButtons);
-                }
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-            >
-              Close
-            </button>
+            {!isConfirmationRequired && (
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+              >
+                Close
+              </button>
+            )}
           </div>
         </div>
       )}
