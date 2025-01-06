@@ -7,15 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 interface CancelModalProps {
   closeCancellationModal: () => void;
-  handleStatusChange: (status: string) => void;
   order: any;
 }
 
-function CancelModal({
-  closeCancellationModal,
-  handleStatusChange,
-  order,
-}: CancelModalProps) {
+function CancelModal({ closeCancellationModal, order }: CancelModalProps) {
   const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } =
     useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
@@ -58,11 +53,7 @@ function CancelModal({
         },
       ],
     };
-    const response = await axiosInstance.post(DELIVERY_ORDERS, params);
-    if (response.data.status) {
-      handleStatusChange("undelivered");
-    }
-    console.log(response);
+    await axiosInstance.post(DELIVERY_ORDERS, params);
     closeCancellationModal();
     await fetchUpdatedOrderList();
     navigate("/" + navbarButtons);

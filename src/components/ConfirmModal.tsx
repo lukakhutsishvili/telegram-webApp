@@ -155,7 +155,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
 
     try {
       const response = await axiosInstance.post(SET_CLIENT_ID_URL, params);
-      console.log(response);
       if (response.status === 202) {
         await confirmDelivery();
         setConfirmationMessage(t("ID Number confirmed!"));

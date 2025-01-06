@@ -37,22 +37,6 @@ const OrderPage = () => {
     return <div className="p-4">{t("Order not found")}</div>;
   }
 
-  const handleStatusChange = async (newStatus: string) => {
-    const params = {
-      device_id: userInfo.device_id,
-      status: newStatus,
-      orders: [id],
-    };
-
-    try {
-      const response = await changeOrderStatus(params);
-      console.log("Order status updated successfully:", response);
-      window.history.back();
-    } catch (error: any) {
-      console.error("Failed to update order status:", error);
-    }
-  };
-
   const fetchUpdatedOrderList = async () => {
     try {
       const tasklistData = {
@@ -191,14 +175,10 @@ const OrderPage = () => {
         <CancelModal
           order={order}
           closeCancellationModal={closeCancellationModal}
-          handleStatusChange={handleStatusChange}
         />
       )}
       {isConfirmModalOpen && (
-        <ConfirmModal
-          closeModal={closeConfirmModal}
-          order={order}
-        />
+        <ConfirmModal closeModal={closeConfirmModal} order={order} />
       )}
     </div>
   );
