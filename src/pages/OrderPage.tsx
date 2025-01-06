@@ -83,12 +83,12 @@ const OrderPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white px-4 pt-12">
+    <div className="min-h-screen bg-white px-4 pt-24">
       {/* Header */}
       <header className="flex items-center mb-6">
         <button
           onClick={() => window.history.back()}
-          className="text-gray-500 text-lg"
+          className="text-gray-500 text-4xl"
         >
           <span>&larr;</span>
         </button>
@@ -107,13 +107,20 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
-          <span className="font-medium text-blue-500">
+          <a
+            onClick={() => navigator.clipboard.writeText(order.client_phone)} 
+            href={`tel:${order.client_phone}`} rel="noopener noreferrer"
+            className="font-medium text-blue-500 underline"
+          >
             {order.client_phone}
-          </span>
+          </a>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("barcode")} :</span>
-          <span className="font-medium">{order.tracking_code}</span>
+          <span  
+            onClick={() => navigator.clipboard.writeText(order.tracking_code)} 
+            className="font-medium text-blue-500 underline cursor-pointer"
+          >{order.tracking_code}</span>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("sum")} :</span>

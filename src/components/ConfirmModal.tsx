@@ -10,7 +10,6 @@ import {
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
 import { t } from "i18next";
-import { useNavigate } from "react-router-dom";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -30,7 +29,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
   const [startTimer, setStartTimer] = useState(false);
   const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
     useContext(Context);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (startTimer) {
@@ -204,7 +202,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
     if (confirmationMethod === "OTP") {
       await checkClientOtp();
       await fetchUpdatedOrderList();
-      navigate("/" + navbarButtons);
     } else if (confirmationMethod === "ID Number") {
       if (order.client_id) {
         if (order.client_id === confirmationValue) {
@@ -212,7 +209,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
           setConfirmationMessage(t("ID Number confirmed!"));
           setStartTimer(true);
           await fetchUpdatedOrderList();
-          navigate("/" + navbarButtons);
         } else if (order.client_id !== confirmationValue) {
           setErrorMessage(
             t("The ID Number does not match the client's ID. Please try again.")
@@ -221,7 +217,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
       } else if (!order.client_id) {
         await postClientID();
         await fetchUpdatedOrderList();
-        navigate("/" + navbarButtons);
       }
     }
   };

@@ -3,7 +3,6 @@ import { Context } from "../App";
 import { t } from "i18next";
 import { axiosInstance } from "../api/apiClient";
 import { DELIVERY_ORDERS, ORDER_LIST } from "../api/Constants";
-import { useNavigate } from "react-router-dom";
 
 interface CancelModalProps {
   closeCancellationModal: () => void;
@@ -15,7 +14,6 @@ function CancelModal({ closeCancellationModal, order }: CancelModalProps) {
     useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedReasonText, setSelectedReasonText] = useState<string>("");
-  const navigate = useNavigate();
 
   const fetchUpdatedOrderList = async () => {
     try {
@@ -56,7 +54,7 @@ function CancelModal({ closeCancellationModal, order }: CancelModalProps) {
     await axiosInstance.post(DELIVERY_ORDERS, params);
     closeCancellationModal();
     await fetchUpdatedOrderList();
-    navigate("/" + navbarButtons);
+    window.history.back();
   };
 
   return (
