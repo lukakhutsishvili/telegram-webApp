@@ -29,9 +29,12 @@ const OrderPage = () => {
   const openConfirmModal = () => setIsConfirmModalOpen(true);
   const closeConfirmModal = () => setIsConfirmModalOpen(false);
 
-  const order =
-    sendingTasks.find((task) => task.tracking_code === id) ||
-    recieptTasks.find((task) => task.tracking_code === id);
+  const  sendingOrder = sendingTasks.find((task) => task.tracking_code === id);
+  const  receiptOrder = recieptTasks.find((task) => task.tracking_code === id);
+
+  const order = sendingOrder || receiptOrder;
+
+  
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -81,6 +84,7 @@ const OrderPage = () => {
       );
     }
   };
+
 
   return (
     <div className="min-h-screen bg-white px-4 pt-24">
@@ -185,7 +189,7 @@ const OrderPage = () => {
         />
       )}
       {isConfirmModalOpen && (
-        <ConfirmModal closeModal={closeConfirmModal} order={order} />
+        <ConfirmModal closeModal={closeConfirmModal} sendingOrder={sendingOrder} receiptOrder={receiptOrder} />
       )}
     </div>
   );

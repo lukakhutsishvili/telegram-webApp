@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import {
   DELIVERY_ORDERS,
   ORDER_LIST,
+  PICKUP_ORDERS,
   SEND_CLIENT_OTP,
   SET_CLIENT_ID_URL,
   VERIFY_CLIENT_OTP_URL,
@@ -13,11 +14,12 @@ import { t } from "i18next";
 
 interface ConfirmModalProps {
   closeModal: () => void;
-  order: any;
+  receiptOrder: any;
+  sendingOrder: any;
 }
 
-const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
+const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, receiptOrder, sendingOrder }) => {
+  const [paymentMethod, setPaymentMethod] = useState<string | null>("");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
   const [confirmationValue, setConfirmationValue] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -27,8 +29,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [timer, setTimer] = useState(10);
   const [startTimer, setStartTimer] = useState(false);
-  const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
-    useContext(Context);
+  const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } = useContext(Context);
+
+  const order = sendingOrder || receiptOrder;
+
 
   useEffect(() => {
     if (startTimer) {
@@ -66,10 +70,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
     setErrorMessage("");
   };
 
+
   const confirmDelivery = async () => {
+  
     const params = {
       device_id: userInfo.device_id,
-      payment_type: paymentMethod,
+      payment_type: order.sum === 0 ? null : paymentMethod,
       orders: [
         {
           tracking_code: order.tracking_code,
@@ -79,10 +85,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
         },
       ],
     };
+  
+    console.log(params);
+  
     try {
-      await axiosInstance.post(DELIVERY_ORDERS, params);
+      const url = order == receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
+      await axiosInstance.post(url, params);
+      console.log("Request sent successfully to:", url);
     } catch (error) {
-      console.log(error);
+      console.error("Error sending request:", error);
     }
   };
 
@@ -110,6 +121,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
       setIsOtpSending(false);
     }
   };
+
   const fetchUpdatedOrderList = async () => {
     try {
       const tasklistData = {
@@ -199,7 +211,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
   };
 
   const onConfirm = async () => {
-    if (confirmationMethod === "OTP") {
+    if(receiptOrder){
+      await confirmDelivery();
+      setConfirmationMessage(t("Receipt order confirmed!"));
+      setStartTimer(true);
+      await fetchUpdatedOrderList();
+    }else if (confirmationMethod === "OTP") {
       await checkClientOtp();
       await fetchUpdatedOrderList();
     } else if (confirmationMethod === "ID Number") {
@@ -221,10 +238,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
     }
   };
 
+
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-lg font-bold mb-4">{t("Confirm Handover")}</h2>
+      <h2 className="text-lg font-bold mb-4">
+        {sendingOrder ? t("Confirm Handover") : t("Confirm Receiving")}
+      </h2>
 
         {confirmationMessage ? (
           <div>
@@ -237,69 +258,70 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, order }) => {
           </div>
         ) : (
           <>
+            { order.sum != 0 && 
             <div className="mb-4">
               <label className="block font-medium mb-2">
                 {t("Payment Method")}
               </label>
               <select
-                value={paymentMethod}
+                value={paymentMethod ?? ""}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="w-full p-2 border rounded"
               >
                 <option value="Cash">{t("Cash")}</option>
                 <option value="Bank">{t("Bank")}</option>
               </select>
-            </div>
+            </div>}
+            {sendingOrder && (
+                <>
+                  <div className="mb-4">
+                    <label className="block font-medium mb-2">
+                      {t("Confirmation Method")}
+                    </label>
+                    <select
+                      value={confirmationMethod}
+                      onChange={(e) => handleConfirmationMethodChange(e.target.value)}
+                      className="w-full p-2 border rounded"
+                    >
+                      <option value="OTP">{t("OTP")}</option>
+                      <option value="ID Number">{t("ID Number")}</option>
+                    </select>
+                  </div>
 
-            <div className="mb-4">
-              <label className="block font-medium mb-2">
-                {t("Confirmation Method")}
-              </label>
-              <select
-                value={confirmationMethod}
-                onChange={(e) => handleConfirmationMethodChange(e.target.value)}
-                className="w-full p-2 border rounded"
-              >
-                <option value="OTP">{t("OTP")}</option>
-                <option value="ID Number">{t("ID Number")}</option>
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label className="block font-medium mb-2">
-                {confirmationMethod === "OTP"
-                  ? t("Enter OTP Code")
-                  : t("Enter ID Number")}
-              </label>
-              {confirmationMethod === "OTP" && (
-                <Button
-                  onClick={sendOtp}
-                  className="mb-2 bg-blue-500 text-white"
-                  disabled={otpCooldown > 0 || isOtpSending}
-                >
-                  {isOtpSending
-                    ? t("Sending OTP...")
-                    : otpCooldown > 0
-                    ? t("Wait {{otpCooldown}}s", { otpCooldown })
-                    : t("Send OTP")}
-                </Button>
+                  <div className="mb-4">
+                    <label className="block font-medium mb-2">
+                      {confirmationMethod === "OTP"
+                        ? t("Enter OTP Code")
+                        : t("Enter ID Number")}
+                    </label>
+                    {confirmationMethod === "OTP" && (
+                      <Button
+                        onClick={sendOtp}
+                        className="mb-2 bg-blue-500 text-white"
+                        disabled={otpCooldown > 0 || isOtpSending}
+                      >
+                        {isOtpSending
+                          ? t("Sending OTP...")
+                          : otpCooldown > 0
+                          ? t("Wait {{otpCooldown}}s", { otpCooldown })
+                          : t("Send OTP")}
+                      </Button>
+                    )}
+                    {otpSent && <div className="text-green-500">{t("OTP Sent!")}</div>}
+                    <input
+                      type="text"
+                      value={confirmationValue}
+                      onChange={(e) => setConfirmationValue(e.target.value)}
+                      className="w-full p-2 border rounded"
+                      placeholder={
+                        confirmationMethod === "OTP" ? t("OTP Code") : t("ID Number")
+                      }
+                    />
+                    {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+                  </div>
+                </>
               )}
-              {otpSent && (
-                <div className="text-green-500">{t("OTP Sent!")}</div>
-              )}
-              <input
-                type="text"
-                value={confirmationValue}
-                onChange={(e) => setConfirmationValue(e.target.value)}
-                className="w-full p-2 border rounded"
-                placeholder={
-                  confirmationMethod === "OTP" ? t("OTP Code") : t("ID Number")
-                }
-              />
-              {errorMessage && (
-                <div className="text-red-500">{errorMessage}</div>
-              )}
-            </div>
+            
           </>
         )}
 
