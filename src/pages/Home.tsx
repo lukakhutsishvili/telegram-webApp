@@ -156,7 +156,10 @@ function Home() {
               <h3>{t("Bank")}: </h3>
               <p className="ml-auto">{amount?.[0]?.bank}</p>
             </div>
-            <h3>{t("Total Amount")}: </h3>
+            <div className="flex gap-2 items-center">
+              <h3>{t("Total Amount")}: </h3>
+              <p className="ml-auto">{amount?.[0]?.sum}</p>
+            </div>
           </div>
         </section>
 
