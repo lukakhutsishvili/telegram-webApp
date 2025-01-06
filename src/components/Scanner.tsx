@@ -92,7 +92,7 @@ const BarcodeScanner = () => {
 
   return (
     <div className=" relative">
-      {!isModalOpen && <video ref={videoRef} className="w-full h-100vh" />}
+      {!isModalOpen && <video ref={videoRef} className="" />}
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
