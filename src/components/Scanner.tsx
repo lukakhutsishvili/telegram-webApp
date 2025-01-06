@@ -15,6 +15,8 @@ const BarcodeScanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useContext(Context);
   const [secRes, setSecRes] = useState<any>();
+  const [manualCode, setManualCode] = useState("");
+  const [restart, setRestart] = useState(false);
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
@@ -79,20 +81,41 @@ const BarcodeScanner = () => {
       }
     );
 
-    //    return () => {
-    //   reader.current.reset();
-    //   const stream = videoRef.current?.srcObject as MediaStream;
-    //   stream?.getTracks().forEach((track) => track.stop());
-    // };
-
     return () => {
       reader.current.reset();
     };
-  }, []);
+  }, [restart]);
+
+  const handleManualSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (manualCode.trim()) {
+      sendGetRequest(manualCode.trim());
+      setManualCode("");
+    }
+  };
 
   return (
-    <div className=" relative">
-      {!isModalOpen && <video ref={videoRef} className="" />}
+    <div className="relative">
+      {!isModalOpen && (
+        <div className="grid justify-center">
+          <video ref={videoRef} className="" />
+          <form onSubmit={handleManualSubmit} className="mt-4 px-4">
+            <input
+              type="text"
+              value={manualCode}
+              onChange={(e) => setManualCode(e.target.value)}
+              placeholder="Enter tracking code manually"
+              className="border rounded px-4 py-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -110,11 +133,13 @@ const BarcodeScanner = () => {
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
             )}
+
             <button
               onClick={() => {
                 setIsModalOpen(false);
+                setRestart(!restart);
               }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
             >
               Close
             </button>
