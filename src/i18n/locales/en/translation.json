@@ -74,5 +74,8 @@
     "OTP Sent!": "OTP Sent!",
     "Enter ID Number": "Enter ID Number",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "Enter register code manually": "Enter register code manually",
+    "Scan Successfully": "Scan Successfully",
+    "Close": "Close"
 }

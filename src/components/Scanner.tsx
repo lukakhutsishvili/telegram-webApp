@@ -6,6 +6,7 @@ import {
   GET_DETAILS_BY_SCANNER,
   changeStatusesOfOrder,
 } from "../api/Constants";
+import { t } from "i18next";
 
 const BarcodeScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -104,14 +105,14 @@ const BarcodeScanner = () => {
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder="Enter tracking code manually"
+              placeholder={t("Enter register code manually")}
               className="border rounded px-4 py-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
               type="submit"
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
-              Submit
+              {t("confirm")}
             </button>
           </form>
         </div>
@@ -124,7 +125,7 @@ const BarcodeScanner = () => {
               <p className="mb-6 text-gray-700">Loading...</p>
             ) : secRes && secRes.status ? (
               <h2 className="text-xl font-bold mb-4 text-green-600">
-                Scan Successful!
+                {t("Scan Successfully")}
               </h2>
             ) : orderTrackingCodes && orderTrackingCodes.error ? (
               <h2 className="text-xl font-bold mb-4 text-red-600">
@@ -141,7 +142,7 @@ const BarcodeScanner = () => {
               }}
               className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
             >
-              Close
+              {t("Close")}
             </button>
           </div>
         </div>

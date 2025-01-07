@@ -74,5 +74,10 @@
     "OTP Sent!": "OTP отправлен!",
     "Enter ID Number": "Введите номер удостоверения личности",
     "cancel": "Отмена",
-    "confirm": "Подтвердить"
+    "confirm": "Подтвердить",
+    "Enter register code manually": "Введите код регистрации",
+    "Scan Successfully": "Сканирование успешно",
+    "Close": "Закрыть"
+
+
 }

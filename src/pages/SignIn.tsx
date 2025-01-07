@@ -4,6 +4,8 @@ import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
 import { Context } from "../App";
 import { useTranslation } from "react-i18next";
+import { langButtons } from "../Lib/helpers";
+import Button from "../components/Button";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -11,11 +13,11 @@ const SignIn = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [showOtpField, setShowOtpField] = useState(false);
-  const [error, setError] = useState("");
+  const [errorKey, setErrorKey] = useState(""); 
   const { setUserInfo, userInfo } = useContext(Context);
   const chat_id = userInfo.telegram_id || "6087086146";
   const params = { telegram_id: chat_id };
-  const { t, i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
   const changeLanguage = (lng: string) => {
@@ -24,12 +26,7 @@ const SignIn = () => {
     localStorage.setItem("selectedLanguage", lng);
   };
 
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-    changeLanguage(savedLanguage);
-  }, []);
-
-  // sign in
+  // Sign in
   const handleSignIn = async () => {
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
@@ -45,14 +42,19 @@ const SignIn = () => {
       }
     } catch (error: any) {
       setShowRegister(true);
-      setError(t("no_account_register"));
+      setErrorKey("no_account_register"); // Use the error key
     }
   };
 
-  // send OTP code
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    changeLanguage(savedLanguage);
+  }, []);
+
+  // Send OTP code
   const handleRegister = async () => {
     if (!phoneNumber.trim()) {
-      setError(t("phone_number_required"));
+      setErrorKey("phone_number_required"); // Use the error key
       return;
     }
 
@@ -66,18 +68,18 @@ const SignIn = () => {
       await axiosInstance.post(SEND_OTP, authData);
       if (true) {
         console.log("OTP sent successfully!");
-        setError("");
-        setShowOtpField(true); // Show the OTP field
+        setErrorKey(""); // Clear error on success
+        setShowOtpField(true);
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
-      setError(t("error_sending_otp"));
+      setErrorKey("error_sending_otp"); // Use the error key
     }
   };
 
   const handleConfirmOtp = async () => {
     if (!otp.trim()) {
-      setError(t("otp_required"));
+      setErrorKey("otp_required"); // Use the error key
       return;
     }
 
@@ -99,11 +101,9 @@ const SignIn = () => {
       }
     } catch (err) {
       console.error("Error confirming OTP:", err);
-      setError(t("error_confirming_otp"));
+      setErrorKey("error_confirming_otp"); // Use the error key
     }
   };
-
-  console.log("signIN");
 
   return (
     <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -120,13 +120,15 @@ const SignIn = () => {
 
         {!showRegister && (
           <button
-            onClick={handleSignIn}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {t("sign_in_button")}
-          </button>
+          onClick={handleSignIn}
+          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {t("sign_in_button")}
+        </button>
         )}
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {errorKey && (
+          <p className="text-red-500 text-sm mt-2">{t(errorKey)}</p> // Use t() with errorKey
+        )}
         {showRegister && !showOtpField && (
           <div className="space-y-4">
             <input
@@ -134,7 +136,7 @@ const SignIn = () => {
               placeholder="Enter your phone number"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
             <button
               onClick={handleRegister}
@@ -151,7 +153,7 @@ const SignIn = () => {
               placeholder={t("enter_otp")}
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
             <button
               onClick={handleConfirmOtp}
@@ -165,30 +167,16 @@ const SignIn = () => {
 
       {/* Language Switcher */}
       <div className="flex gap-4 mb-4">
-        <button
-          onClick={() => changeLanguage("ge")}
-          className={`px-3 py-1 border-black border rounded ${
-            selectedLanguage === "ge" ? "bg-yellow-600" : "bg-yellow-400"
-          }`}
-        >
-          ქართული
-        </button>
-        <button
-          onClick={() => changeLanguage("en")}
-          className={`px-3 py-1 border-black border rounded ${
-            selectedLanguage === "en" ? "bg-yellow-600" : "bg-yellow-400"
-          }`}
-        >
-          English
-        </button>
-        <button
-          onClick={() => changeLanguage("ru")}
-          className={`px-3 py-1 border-black border rounded ${
-            selectedLanguage === "ru" ? "bg-yellow-600" : "bg-yellow-400"
-          }`}
-        >
-          Русский
-        </button>
+        {langButtons.map((button) => (
+          <Button
+            key={button.lang}
+            onClick={() => changeLanguage(button.lang)}
+            isActive={selectedLanguage === button.lang}
+            className="px-3 py-1 border-black border"
+          >
+            {button.name}
+          </Button>
+        ))}
       </div>
     </div>
   );

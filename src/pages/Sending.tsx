@@ -5,6 +5,7 @@ import Order from "../components/Order";
 import { useContext } from "react";
 import { t } from "i18next";
 import { Context } from "../App";
+import Button from "../components/Button";
 
 function Sending() {
   const { tabButtons, setTabButtons } = useContext(Context);
@@ -17,7 +18,7 @@ function Sending() {
           <Swiper spaceBetween={10} slidesPerView={2} freeMode={true}>
             {TAB_BUTTONS.map((item) => (
               <SwiperSlide key={item.name}>
-                <button
+                <Button
                   onClick={() => setTabButtons(item.status)}
                   className={`px-4 py-2 ${
                     tabButtons === item.status
@@ -26,7 +27,7 @@ function Sending() {
                   } text-black font-semibold text-[14px] rounded-md w-full`}
                 >
                   {t(item.name)}
-                </button>
+                </Button>
               </SwiperSlide>
             ))}
           </Swiper>

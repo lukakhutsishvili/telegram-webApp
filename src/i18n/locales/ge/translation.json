@@ -74,5 +74,9 @@
     "OTP Sent!": "OTP გაიგზავნა!",
     "Enter ID Number": "შეიყვანეთ ID ნომერი",
     "cancel": "გაუქმება",
-    "confirm": "დადასტურება"
+    "confirm": "დადასტურება",
+    "Enter register code manually": "შეიყვანე რეესტრის კოდი",
+    "Scan Successfully": "სკანირება წარმატებით შესრულდა",
+    "Close": "დახურვა"
+
 }

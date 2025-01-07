@@ -15,3 +15,9 @@ export  const buttons = [
   { name: "receipt", path: "/Reciept", icon: faBox },
   { name: "scan the register", path: "/scanner", icon: faBarcode }
 ];
+
+export const langButtons = [
+  {name: "ქართული", lang: "ge"},
+  {name: "English", lang: "en"},
+  {name: "Русский", lang: "ru"},
+]
