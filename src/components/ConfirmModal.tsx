@@ -19,7 +19,7 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, receiptOrder, sendingOrder }) => {
-  const [paymentMethod, setPaymentMethod] = useState<string | null>("");
+  const [paymentMethod, setPaymentMethod] = useState<string | null>("Cash");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
   const [confirmationValue, setConfirmationValue] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -85,8 +85,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, receiptOrder, s
         },
       ],
     };
-  
-    console.log(params);
+
   
     try {
       const url = order == receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
@@ -297,7 +296,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ closeModal, receiptOrder, s
                     {confirmationMethod === "OTP" && (
                       <Button
                         onClick={sendOtp}
-                        className="mb-2 bg-blue-500 text-white"
+                        className="mb-2 bg-blue-500 text-black"
                         disabled={otpCooldown > 0 || isOtpSending}
                       >
                         {isOtpSending
