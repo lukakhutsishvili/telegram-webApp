@@ -4,9 +4,106 @@ import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
-import { changeOrderStatus } from "../api/requestHandlers";
+import {
+  closestCenter,
+  DndContext,
+  MouseSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  TouchSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { CSS } from "@dnd-kit/utilities";
 import { axiosInstance } from "../api/apiClient";
 import { ORDER_LIST } from "../api/Constants";
+import { changeOrderStatus } from "../api/requestHandlers";
+
+const SortableItem = ({
+  id,
+  task,
+  status,
+  navigate,
+  handleCheckboxChange,
+  selectedOrders,
+}: any) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    cursor: isDragging ? "grabbing" : "pointer",
+    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white", // Highlight background during drag
+    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none", // Add shadow during drag
+    opacity: isDragging ? 0.9 : 1, // Slightly fade non-dragged elements
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).tagName === "INPUT") {
+      e.stopPropagation();
+      return;
+    }
+    if (!isDragging) {
+      navigate(`/order/${task.tracking_code}`);
+    }
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={handleClick}
+      className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
+        isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
+      }`} // Add ring and scale for dragging
+    >
+      {status === "Waiting" && (
+        <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
+          <input
+            type="checkbox"
+            checked={!!selectedOrders[task.tracking_code]}
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) =>
+              handleCheckboxChange(task.tracking_code, e.target.checked)
+            }
+            className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
+          />
+        </div>
+      )}
+
+      <div className="w-full flex flex-col gap-1 pl-9">
+        <div className="flex justify-between">
+          <h2 className="text-sm">{task.client_name}</h2>
+          <p className="text-sm">{task.sum} ₾</p>
+        </div>
+        <div className="flex items-center gap-1">
+          <FontAwesomeIcon icon={faBarcode} />
+          <p className="text-sm">{task.tracking_code}</p>
+        </div>
+        <div className="flex items-center gap-1">
+          <FontAwesomeIcon icon={faPhone} />
+          <p className="text-sm">{task.client_phone}</p>
+        </div>
+        <h2 className="text-sm">{task.client_address}</h2>
+      </div>
+    </div>
+  );
+};
 
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks, userInfo, setSendingTasks } = useContext(Context);
@@ -16,6 +113,24 @@ const Order = ({ status }: { status: string | null }) => {
   }>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Configure Sensors
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10, // Drag starts after moving 10px
+    },
+  });
+  const keyboardSensor = useSensor(KeyboardSensor);
+  // const sensors = useSensors(mouseSensor, keyboardSensor);
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250, // Optional: Start drag after 250ms of touch
+      tolerance: 5, // Optional: Move 5px before drag activates
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
   const filteredTasks = useMemo(() => {
     if (!sendingTasks) return [];
@@ -111,6 +226,25 @@ const Order = ({ status }: { status: string | null }) => {
     await fetchUpdatedOrderList();
   };
 
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sendingTasks.findIndex(
+      (task: any) => task.tracking_code === active.id
+    );
+    const newIndex = sendingTasks.findIndex(
+      (task: any) => task.tracking_code === over.id
+    );
+
+    console.log(`From index: ${oldIndex}, tracking code: ${active.id}`);
+
+    const newOrder = arrayMove(sendingTasks, oldIndex, newIndex);
+    setSendingTasks(newOrder);
+    console.log(`To index: ${newIndex}, tracking code: ${over.id}`);
+  };
+    
   if (!sendingTasks || sendingTasks.length === 0) {
     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
   }
@@ -118,7 +252,7 @@ const Order = ({ status }: { status: string | null }) => {
   return (
     <div className="relative px-4">
       <div className="sticky top-0 z-10 flex items-center bg-white">
-      <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
+        <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
             type="text"
@@ -150,44 +284,29 @@ const Order = ({ status }: { status: string | null }) => {
         </div>
       )}
 
-      {filteredTasks.map((item: any, index: number) => (
-        <div
-          key={index}
-          className="first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={filteredTasks.map((task: any) => task.tracking_code)}
+          strategy={verticalListSortingStrategy}
         >
-          {status === "Waiting" && (
-            <div className="flex items-center gap-2 mt-2">
-              <input
-                type="checkbox"
-                checked={!!selectedOrders[item.tracking_code]}
-                onChange={(e) =>
-                  handleCheckboxChange(item.tracking_code, e.target.checked)
-                }
-                className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
-              />
-            </div>
-          )}
-
-          <div
-            className="w-full flex flex-col gap-1 cursor-pointer"
-            onClick={() => navigate(`/order/${item.tracking_code}`)}
-          >
-            <div className="flex justify-between">
-              <h2 className="text-sm">{item.client_name}</h2>
-              <p className="text-sm">{item.sum} ₾</p>
-            </div>
-            <div className="flex items-center gap-1">
-              <FontAwesomeIcon icon={faBarcode} />
-              <p className="text-sm">{item.tracking_code}</p>
-            </div>
-            <div className="flex items-center gap-1">
-              <FontAwesomeIcon icon={faPhone} />
-              <p className="text-sm">{item.client_phone}</p>
-            </div>
-            <h2 className="text-sm">{item.client_address}</h2>
-          </div>
-        </div>
-      ))}
+          {filteredTasks.map((item: any) => (
+            <SortableItem
+              key={item.tracking_code}
+              id={item.tracking_code}
+              task={item}
+              status={status}
+              navigate={navigate}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedOrders={selectedOrders}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };
