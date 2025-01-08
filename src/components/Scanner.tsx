@@ -31,28 +31,46 @@ const BarcodeScanner = () => {
 
       const params = { tracking_code_data: base64Data };
 
+      // First API call
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
         params,
       });
 
-      const trackingCodes = response.data.response.value.tracking_codes.map(
-        (item: { tracking_code: string }) => item.tracking_code
-      );
+      const firstResponseData = response.data.response.value;
+      const status = firstResponseData.status;
 
-      setOrderTrackingCodes(trackingCodes);
+      if (status === "Waiting") {
+        const trackingCodes = firstResponseData.tracking_codes.map(
+          (item: { tracking_code: string }) => item.tracking_code
+        );
 
-      const orderParams = {
-        device_id: userInfo.device_id,
-        status: "accepted",
-        orders: trackingCodes,
-      };
+        setOrderTrackingCodes(trackingCodes);
 
-      const secResponse = await axiosInstance.post(
-        changeStatusesOfOrder,
-        orderParams
-      );
-      setSecRes(secResponse);
-      setIsModalOpen(true);
+        const orderParams = {
+          device_id: userInfo.device_id,
+          status: "accepted",
+          orders: trackingCodes,
+        };
+
+        // Second API call
+        const secResponse = await axiosInstance.post(
+          changeStatusesOfOrder,
+          orderParams
+        );
+
+        setSecRes(secResponse);
+        setIsModalOpen(true);
+      } else if (status === "Accepted") {
+        setOrderTrackingCodes({
+          error: "This reestr is already in tasks",
+        });
+        setIsModalOpen(true);
+      } else {
+        setOrderTrackingCodes({
+          error: "Unexpected status: " + status,
+        });
+        setIsModalOpen(true);
+      }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setOrderTrackingCodes({ error: "Failed to fetch details" });
@@ -98,7 +116,7 @@ const BarcodeScanner = () => {
     <div className="relative">
       {!isModalOpen && (
         <div className="grid justify-center">
-          <video ref={videoRef} className="" />
+          <video ref={videoRef} className="max-h-[480px]" />
           <form onSubmit={handleManualSubmit} className="mt-4 px-4">
             <input
               type="text"
@@ -132,6 +150,12 @@ const BarcodeScanner = () => {
               </h2>
             ) : (
               <p className="mb-6 text-gray-700">No details available</p>
+            )}
+
+            {secRes && secRes.status && orderTrackingCodes?.length > 0 && (
+              <p className="text-gray-700">
+                Total Parcels in Reestr: {orderTrackingCodes.length}
+              </p>
             )}
 
             <button
