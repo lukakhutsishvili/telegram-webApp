@@ -4,17 +4,23 @@ import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
-import { changeOrderStatus } from "../api/requestHandlers";
-import { axiosInstance } from "../api/apiClient";
-import { ORDER_LIST } from "../api/Constants";
-import { closestCenter, DndContext } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  MouseSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
 } from "@dnd-kit/sortable";
-import { arrayMove } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { axiosInstance } from "../api/apiClient";
+import { ORDER_LIST } from "../api/Constants";
 
 export const SortableItem = ({
   id,
@@ -24,12 +30,25 @@ export const SortableItem = ({
   handleCheckboxChange,
   selectedOrders,
 }: any) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    cursor: isDragging ? "grabbing" : "pointer",
+  };
+
+  const handleClick = () => {
+    if (!isDragging) {
+      navigate(`/order/${task.tracking_code}`);
+    }
   };
 
   return (
@@ -38,6 +57,7 @@ export const SortableItem = ({
       style={style}
       {...attributes}
       {...listeners}
+      onClick={handleClick}
       className="first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4"
     >
       {status === "Waiting" && (
@@ -53,10 +73,7 @@ export const SortableItem = ({
         </div>
       )}
 
-      <div
-        className="w-full flex flex-col gap-1 cursor-pointer"
-        onClick={() => navigate(`/order/${task.tracking_code}`)}
-      >
+      <div className="w-full flex flex-col gap-1">
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
@@ -83,6 +100,15 @@ const Order = ({ status }: { status: string | null }) => {
   }>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Configure Sensors
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10, // Drag starts after moving 10px
+    },
+  });
+  const keyboardSensor = useSensor(KeyboardSensor);
+  const sensors = useSensors(mouseSensor, keyboardSensor);
 
   const filteredTasks = useMemo(() => {
     if (!sendingTasks) return [];
@@ -150,12 +176,13 @@ const Order = ({ status }: { status: string | null }) => {
       (task: any) => task.tracking_code === over.id
     );
 
-    console.log(`From index: ${oldIndex - 1}, tracking code: ${active.id}`);
+    console.log(`From index: ${oldIndex}, tracking code: ${active.id}`);
 
     const newOrder = arrayMove(sendingTasks, oldIndex, newIndex);
     setSendingTasks(newOrder);
-    console.log(`To index: ${newIndex - 1}, tracking code: ${over.id}`);
+    console.log(`To index: ${newIndex}, tracking code: ${over.id}`);
   };
+
   if (!sendingTasks || sendingTasks.length === 0) {
     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
   }
@@ -175,7 +202,11 @@ const Order = ({ status }: { status: string | null }) => {
         </div>
       </div>
 
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext
           items={filteredTasks.map((task: any) => task.tracking_code)}
           strategy={verticalListSortingStrategy}
