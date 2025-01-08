@@ -18,11 +18,13 @@ import {
   useSortable,
   arrayMove,
 } from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { axiosInstance } from "../api/apiClient";
 import { ORDER_LIST } from "../api/Constants";
+import { changeOrderStatus } from "../api/requestHandlers";
 
-export const SortableItem = ({
+const SortableItem = ({
   id,
   task,
   status,
@@ -45,7 +47,12 @@ export const SortableItem = ({
     cursor: isDragging ? "grabbing" : "pointer",
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Prevent navigation if the event originates from a checkbox
+    if ((e.target as HTMLElement).tagName === "INPUT") {
+      e.stopPropagation();
+      return;
+    }
     if (!isDragging) {
       navigate(`/order/${task.tracking_code}`);
     }
@@ -58,13 +65,14 @@ export const SortableItem = ({
       {...attributes}
       {...listeners}
       onClick={handleClick}
-      className="first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4"
+      className="relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4"
     >
       {status === "Waiting" && (
-        <div className="flex items-center gap-2 mt-2">
+        <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
           <input
             type="checkbox"
             checked={!!selectedOrders[task.tracking_code]}
+            onClick={(e) => e.stopPropagation()} // Prevent click propagation
             onChange={(e) =>
               handleCheckboxChange(task.tracking_code, e.target.checked)
             }
@@ -73,7 +81,7 @@ export const SortableItem = ({
         </div>
       )}
 
-      <div className="w-full flex flex-col gap-1">
+      <div className="w-full flex flex-col gap-1 pl-9">
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
@@ -164,6 +172,46 @@ const Order = ({ status }: { status: string | null }) => {
     }
   };
 
+  const handleAllStatusChange = async (newStatus: string) => {
+    const selectedTrackingCodes = Object.keys(selectedOrders).filter(
+      (trackingCode) => selectedOrders[trackingCode]
+    );
+
+    if (selectedTrackingCodes.length === 0) {
+      alert(t("No orders selected!"));
+      return;
+    }
+
+    try {
+      // Update statuses locally
+      const updatedTasks = sendingTasks.map((task: any) =>
+        selectedTrackingCodes.includes(task.tracking_code)
+          ? { ...task, Status: newStatus }
+          : task
+      );
+      setSendingTasks(updatedTasks);
+
+      const params = {
+        device_id: userInfo.device_id,
+        status: newStatus,
+        orders: selectedTrackingCodes,
+      };
+
+      const response = await changeOrderStatus(params);
+      console.log("Order statuses updated successfully:", response);
+
+      setSelectedOrders({});
+      setCheckAll(false);
+
+      alert(t("Selected orders updated successfully!"));
+    } catch (error: any) {
+      console.error("Failed to update order statuses:", error);
+      alert(t("Failed to update orders. Please try again."));
+    }
+
+    await fetchUpdatedOrderList();
+  };
+
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
@@ -202,9 +250,30 @@ const Order = ({ status }: { status: string | null }) => {
         </div>
       </div>
 
+      {status === "Waiting" && filteredTasks.length > 0 && (
+        <div className="flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={checkAll}
+              onChange={(e) => handleCheckAllChange(e.target.checked)}
+              className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
+            />
+            <span>{t("select all")}</span>
+          </div>
+          <button
+            onClick={() => handleAllStatusChange("Accepted")}
+            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md"
+          >
+            {t("accept all")}
+          </button>
+        </div>
+      )}
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
         onDragEnd={handleDragEnd}
       >
         <SortableContext
