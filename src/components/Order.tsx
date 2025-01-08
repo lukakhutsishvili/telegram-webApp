@@ -11,6 +11,7 @@ import {
   KeyboardSensor,
   useSensor,
   useSensors,
+  TouchSensor,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -45,10 +46,12 @@ const SortableItem = ({
     transform: CSS.Transform.toString(transform),
     transition,
     cursor: isDragging ? "grabbing" : "pointer",
+    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white", // Highlight background during drag
+    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none", // Add shadow during drag
+    opacity: isDragging ? 0.9 : 1, // Slightly fade non-dragged elements
   };
 
   const handleClick = (e: React.MouseEvent) => {
-    // Prevent navigation if the event originates from a checkbox
     if ((e.target as HTMLElement).tagName === "INPUT") {
       e.stopPropagation();
       return;
@@ -65,14 +68,16 @@ const SortableItem = ({
       {...attributes}
       {...listeners}
       onClick={handleClick}
-      className="relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4"
+      className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
+        isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
+      }`} // Add ring and scale for dragging
     >
       {status === "Waiting" && (
         <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
           <input
             type="checkbox"
             checked={!!selectedOrders[task.tracking_code]}
-            onClick={(e) => e.stopPropagation()} // Prevent click propagation
+            onClick={(e) => e.stopPropagation()}
             onChange={(e) =>
               handleCheckboxChange(task.tracking_code, e.target.checked)
             }
@@ -116,7 +121,16 @@ const Order = ({ status }: { status: string | null }) => {
     },
   });
   const keyboardSensor = useSensor(KeyboardSensor);
-  const sensors = useSensors(mouseSensor, keyboardSensor);
+  // const sensors = useSensors(mouseSensor, keyboardSensor);
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250, // Optional: Start drag after 250ms of touch
+      tolerance: 5, // Optional: Move 5px before drag activates
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
   const filteredTasks = useMemo(() => {
     if (!sendingTasks) return [];
