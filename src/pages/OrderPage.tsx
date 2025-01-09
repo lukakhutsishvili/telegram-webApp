@@ -29,12 +29,10 @@ const OrderPage = () => {
   const openConfirmModal = () => setIsConfirmModalOpen(true);
   const closeConfirmModal = () => setIsConfirmModalOpen(false);
 
-  const  sendingOrder = sendingTasks.find((task) => task.tracking_code === id);
-  const  receiptOrder = recieptTasks.find((task) => task.tracking_code === id);
+  const sendingOrder = sendingTasks.find((task) => task.tracking_code === id);
+  const receiptOrder = recieptTasks.find((task) => task.tracking_code === id);
 
   const order = sendingOrder || receiptOrder;
-
-  
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -85,7 +83,6 @@ const OrderPage = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-white px-4 pt-24">
       {/* Header */}
@@ -112,8 +109,9 @@ const OrderPage = () => {
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
           <a
-            onClick={() => navigator.clipboard.writeText(order.client_phone)} 
-            href={`tel:${order.client_phone}`} rel="noopener noreferrer"
+            onClick={() => navigator.clipboard.writeText(order.client_phone)}
+            href={`tel:${order.client_phone}`}
+            rel="noopener noreferrer"
             className="font-medium text-blue-500 underline"
           >
             {order.client_phone}
@@ -121,10 +119,12 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("barcode")} :</span>
-          <span  
-            onClick={() => navigator.clipboard.writeText(order.tracking_code)} 
+          <span
+            onClick={() => navigator.clipboard.writeText(order.tracking_code)}
             className="font-medium text-blue-500 underline cursor-pointer"
-          >{order.tracking_code}</span>
+          >
+            {order.tracking_code}
+          </span>
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("sum")} :</span>
@@ -186,10 +186,15 @@ const OrderPage = () => {
         <CancelModal
           order={order}
           closeCancellationModal={closeCancellationModal}
+          sendingOrder={sendingOrder}
         />
       )}
       {isConfirmModalOpen && (
-        <ConfirmModal closeModal={closeConfirmModal} sendingOrder={sendingOrder} receiptOrder={receiptOrder} />
+        <ConfirmModal
+          closeModal={closeConfirmModal}
+          sendingOrder={sendingOrder}
+          receiptOrder={receiptOrder}
+        />
       )}
     </div>
   );

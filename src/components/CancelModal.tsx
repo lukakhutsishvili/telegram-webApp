@@ -2,14 +2,19 @@ import { useContext, useState } from "react";
 import { Context } from "../App";
 import { t } from "i18next";
 import { axiosInstance } from "../api/apiClient";
-import { DELIVERY_ORDERS, ORDER_LIST } from "../api/Constants";
+import { DELIVERY_ORDERS, ORDER_LIST, PICKUP_ORDERS } from "../api/Constants";
 
 interface CancelModalProps {
   closeCancellationModal: () => void;
   order: any;
+  sendingOrder: any;
 }
 
-function CancelModal({ closeCancellationModal, order }: CancelModalProps) {
+function CancelModal({
+  closeCancellationModal,
+  order,
+  sendingOrder,
+}: CancelModalProps) {
   const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } =
     useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
@@ -51,7 +56,10 @@ function CancelModal({ closeCancellationModal, order }: CancelModalProps) {
         },
       ],
     };
-    await axiosInstance.post(DELIVERY_ORDERS, params);
+    await axiosInstance.post(
+      sendingOrder ? DELIVERY_ORDERS : PICKUP_ORDERS,
+      params
+    );
     closeCancellationModal();
     await fetchUpdatedOrderList();
     window.history.back();
