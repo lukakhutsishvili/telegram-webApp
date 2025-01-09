@@ -241,29 +241,34 @@ const Order = ({ status }: { status: string | null }) => {
     const reorderedTasks = arrayMove(sendingTasks, oldIndex, newIndex);
     setSendingTasks(reorderedTasks);
 
-    // Prepare data for the API
-    const updatedTask = reorderedTasks[newIndex];
-    const sort_number =
-      sendingTasks[oldIndex].sort_number + (newIndex - oldIndex);
-
-    const payload = {
-      device_id: userInfo.device_id,
-      tracking_code: updatedTask.tracking_code,
-      sort_number,
-      pickup_task: false,
-    };
+    // Update sort numbers for all reordered tasks
+    const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
+      ...task,
+      sort_number: index + 1,
+    }));
+    setSendingTasks(updatedTasks);
 
     try {
-      const response = await axiosInstance.post(
-        "https://bo.delivo.ge/delivo_test/hs/pocket/modifysortnumber",
-        payload
-      );
-      console.log("Sort number updated successfully:", response.data);
+      // Send updated sort numbers to the server
+      for (const task of updatedTasks) {
+        const payload = {
+          device_id: userInfo.device_id,
+          tracking_code: task.tracking_code,
+          sort_number: task.sort_number,
+          pickup_task: false,
+        };
+        await axiosInstance.post(
+          "https://bo.delivo.ge/delivo_test/hs/pocket/modifysortnumber",
+          payload
+        );
+      }
+      console.log("Sort numbers updated successfully.");
     } catch (error) {
-      console.error("Failed to update sort number:", error);
+      console.error("Failed to update sort numbers:", error);
       alert(t("Failed to update sort order. Please try again."));
     }
   };
+
   if (!sendingTasks || sendingTasks.length === 0) {
     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
   }
