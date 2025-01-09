@@ -204,7 +204,6 @@ const Order = ({ status }: { status: string | null }) => {
           : task
       );
       setSendingTasks(updatedTasks);
-
       const params = {
         device_id: userInfo.device_id,
         status: newStatus,
@@ -226,9 +225,10 @@ const Order = ({ status }: { status: string | null }) => {
     await fetchUpdatedOrderList();
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
 
+    // Ensure there's a valid drag-over target
     if (!over || active.id === over.id) return;
 
     const oldIndex = sendingTasks.findIndex(
@@ -238,13 +238,32 @@ const Order = ({ status }: { status: string | null }) => {
       (task: any) => task.tracking_code === over.id
     );
 
-    console.log(`From index: ${oldIndex}, tracking code: ${active.id}`);
+    const reorderedTasks = arrayMove(sendingTasks, oldIndex, newIndex);
+    setSendingTasks(reorderedTasks);
 
-    const newOrder = arrayMove(sendingTasks, oldIndex, newIndex);
-    setSendingTasks(newOrder);
-    console.log(`To index: ${newIndex}, tracking code: ${over.id}`);
+    // Prepare data for the API
+    const updatedTask = reorderedTasks[newIndex];
+    const sort_number =
+      sendingTasks[oldIndex].sort_number + (newIndex - oldIndex);
+
+    const payload = {
+      device_id: userInfo.device_id,
+      tracking_code: updatedTask.tracking_code,
+      sort_number,
+      pickup_task: false,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        "https://bo.delivo.ge/delivo_test/hs/pocket/modifysortnumber",
+        payload
+      );
+      console.log("Sort number updated successfully:", response.data);
+    } catch (error) {
+      console.error("Failed to update sort number:", error);
+      alert(t("Failed to update sort order. Please try again."));
+    }
   };
-    
   if (!sendingTasks || sendingTasks.length === 0) {
     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
   }
