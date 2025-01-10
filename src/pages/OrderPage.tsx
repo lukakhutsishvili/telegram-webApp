@@ -50,7 +50,7 @@ const OrderPage = () => {
           tasklist_data: btoa(JSON.stringify(tasklistData)),
         },
       });
-      if (navbarButtons == "sending") {
+      if (navbarButtons === "sending") {
         setSendingTasks(response.data.response);
       } else {
         setRecieptTasks(response.data.response);
@@ -109,10 +109,12 @@ const OrderPage = () => {
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
           <a
-            onClick={() => navigator.clipboard.writeText(order.client_phone)}
             href={`tel:${order.client_phone}`}
-            rel="noopener noreferrer"
             className="font-medium text-blue-500 underline"
+            rel="noopener noreferrer"
+            onClick={() => {
+              window.location.href = `${order.client_phone}`;
+            }}
           >
             {order.client_phone}
           </a>
