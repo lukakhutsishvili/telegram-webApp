@@ -19,6 +19,7 @@ function CancelModal({
     useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedReasonText, setSelectedReasonText] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const fetchUpdatedOrderList = async () => {
     try {
@@ -44,6 +45,12 @@ function CancelModal({
   };
 
   const confirmCancellation = async () => {
+    if (!selectedReason) {
+      setError(t("You must choose a reason"));
+      return;
+    }
+    setError(""); 
+
     const params = {
       device_id: userInfo.device_id,
       payment_type: "cash",
@@ -56,13 +63,18 @@ function CancelModal({
         },
       ],
     };
-    await axiosInstance.post(
-      sendingOrder ? DELIVERY_ORDERS : PICKUP_ORDERS,
-      params
-    );
-    closeCancellationModal();
-    await fetchUpdatedOrderList();
-    window.history.back();
+
+    try {
+      await axiosInstance.post(
+        sendingOrder ? DELIVERY_ORDERS : PICKUP_ORDERS,
+        params
+      );
+      closeCancellationModal();
+      await fetchUpdatedOrderList();
+      window.history.back();
+    } catch (error) {
+      console.error("Failed to cancel the order:", error);
+    }
   };
 
   return (
@@ -94,6 +106,9 @@ function CancelModal({
             </option>
           ))}
         </select>
+
+        {/* Error Message */}
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
         {/* Input for modifying reason text */}
         <div className="mt-4">
