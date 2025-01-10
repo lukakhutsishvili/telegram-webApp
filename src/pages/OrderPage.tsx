@@ -110,11 +110,12 @@ const OrderPage = () => {
           <span>{t("phone")} :</span>
 
           <a
-            onClick={() => navigator.clipboard.writeText(order.client_phone)}
+            href="tel:+995598348189"
+            // onClick={() => navigator.clipboard.writeText(order.client_phone)}
             rel="noopener noreferrer"
             className="font-medium text-blue-500 underline"
           >
-            {order.client_phone}
+            598348189
           </a>
         </div>
 
