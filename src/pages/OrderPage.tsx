@@ -83,6 +83,18 @@ const OrderPage = () => {
     }
   };
 
+  const validatePhoneNumber = (phone: string): string | null => {
+    // Check if the phone number starts with '+995' and is valid
+    const trimmedPhone = phone.trim();
+    const phoneRegex = /^\+995\d{9}$/; // Georgian phone numbers (+995 followed by 9 digits)
+  
+    if (phoneRegex.test(trimmedPhone)) {
+      return trimmedPhone;
+    }
+  
+    return null; // Return null for invalid phone numbers
+  };
+
   return (
     <div className="min-h-screen bg-white px-4 pt-24">
       {/* Header */}
@@ -108,15 +120,22 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
-          <a
-            onClick={() => navigator.clipboard.writeText(order.client_phone)}
-            href={`tel:${order.client_phone}`}
-            rel="noopener noreferrer"
-            className="font-medium text-blue-500 underline"
-          >
-            {order.client_phone}
-          </a>
+          {validatePhoneNumber(order.client_phone) ? (
+            <a
+              onClick={() => navigator.clipboard.writeText(order.client_phone)}
+              href={`tel:${validatePhoneNumber(order.client_phone)}`}
+              rel="noopener noreferrer"
+              className="font-medium text-blue-500 underline"
+            >
+              {order.client_phone}
+            </a>
+          ) : (
+            <span className="font-medium text-red-500">
+              {t("Invalid phone number")}
+            </span>
+          )}
         </div>
+
         <div className="p-4 flex justify-between">
           <span>{t("barcode")} :</span>
           <span
