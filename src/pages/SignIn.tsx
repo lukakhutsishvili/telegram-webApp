@@ -13,7 +13,8 @@ const SignIn = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [showOtpField, setShowOtpField] = useState(false);
-  const [errorKey, setErrorKey] = useState(""); 
+  const [errorKey, setErrorKey] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const { setUserInfo, userInfo } = useContext(Context);
   const chat_id = userInfo.telegram_id || "6087086146";
   const params = { telegram_id: chat_id };
@@ -26,8 +27,8 @@ const SignIn = () => {
     localStorage.setItem("selectedLanguage", lng);
   };
 
-  // Sign in
   const handleSignIn = async () => {
+    setLoading(true); // Start loading
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
       setUserInfo((prev: any) => ({
@@ -42,7 +43,9 @@ const SignIn = () => {
       }
     } catch (error: any) {
       setShowRegister(true);
-      setErrorKey("no_account_register"); // Use the error key
+      setErrorKey("no_account_register");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -51,13 +54,12 @@ const SignIn = () => {
     changeLanguage(savedLanguage);
   }, []);
 
-  // Send OTP code
   const handleRegister = async () => {
     if (!phoneNumber.trim()) {
-      setErrorKey("phone_number_required"); // Use the error key
+      setErrorKey("phone_number_required");
       return;
     }
-
+    setLoading(true); // Start loading
     const authData = {
       telegram_id: chat_id,
       phone_number: phoneNumber,
@@ -66,23 +68,22 @@ const SignIn = () => {
 
     try {
       await axiosInstance.post(SEND_OTP, authData);
-      if (true) {
-        console.log("OTP sent successfully!");
-        setErrorKey(""); // Clear error on success
-        setShowOtpField(true);
-      }
+      setErrorKey("");
+      setShowOtpField(true);
     } catch (err) {
       console.error("Error sending OTP:", err);
-      setErrorKey("error_sending_otp"); // Use the error key
+      setErrorKey("error_sending_otp");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   const handleConfirmOtp = async () => {
     if (!otp.trim()) {
-      setErrorKey("otp_required"); // Use the error key
+      setErrorKey("otp_required");
       return;
     }
-
+    setLoading(true); // Start loading
     const data = {
       phone_number: phoneNumber,
       otp,
@@ -96,12 +97,12 @@ const SignIn = () => {
         name: response.data.response.courier_name,
         device_id: response.data.response.device_id,
       }));
-      if (true) {
-        navigate("/home");
-      }
+      navigate("/home");
     } catch (err) {
       console.error("Error confirming OTP:", err);
-      setErrorKey("error_confirming_otp"); // Use the error key
+      setErrorKey("error_confirming_otp");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -118,54 +119,61 @@ const SignIn = () => {
           </h2>
         </div>
 
-        {!showRegister && (
-          <button
-          onClick={handleSignIn}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {t("sign_in_button")}
-        </button>
-        )}
-        {errorKey && (
-          <p className="text-red-500 text-sm mt-2">{t(errorKey)}</p> // Use t() with errorKey
-        )}
-        {showRegister && !showOtpField && (
-          <div className="space-y-4">
-            <input
-              type="text"
-              placeholder="Enter your phone number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-            <button
-              onClick={handleRegister}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            >
-              {t("send_otp")}
-            </button>
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
-        )}
-        {showOtpField && (
-          <div className="space-y-4">
-            <input
-              type="text"
-              placeholder={t("enter_otp")}
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-            <button
-              onClick={handleConfirmOtp}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              {t("confirm_otp_button")}
-            </button>
-          </div>
+        ) : (
+          <>
+            {!showRegister && (
+              <button
+                onClick={handleSignIn}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                {t("sign_in_button")}
+              </button>
+            )}
+            {errorKey && (
+              <p className="text-red-500 text-sm mt-2">{t(errorKey)}</p>
+            )}
+            {showRegister && !showOtpField && (
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Enter your phone number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <button
+                  onClick={handleRegister}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                  {t("send_otp")}
+                </button>
+              </div>
+            )}
+            {showOtpField && (
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder={t("enter_otp")}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <button
+                  onClick={handleConfirmOtp}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  {t("confirm_otp_button")}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {/* Language Switcher */}
       <div className="flex gap-4 mb-4">
         {langButtons.map((button) => (
           <Button
