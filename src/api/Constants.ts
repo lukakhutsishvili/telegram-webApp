@@ -19,3 +19,4 @@ export const VERIFY_CLIENT_OTP_URL = "/bot/verify_client_otp";
 export const DELIVERY_ORDERS = "pocket/deliveryorders"; 
 export const PICKUP_ORDERS = "/pocket/pickuporders";
 export const SET_CLIENT_ID_URL = "/bot/idvalidation";
+export const MODIFY_SORT_NUMBER = "/pocket/modifysortnumber"

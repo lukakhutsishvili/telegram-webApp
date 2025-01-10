@@ -22,7 +22,7 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { axiosInstance } from "../api/apiClient";
-import { ORDER_LIST } from "../api/Constants";
+import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
 
 const SortableItem = ({
@@ -226,9 +226,10 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     await fetchUpdatedOrderList();
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
 
+    // Ensure there's a valid drag-over target
     if (!over || active.id === over.id) return;
 
     const oldIndex = recieptTasks.findIndex(
@@ -238,11 +239,32 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
       (task: any) => task.tracking_code === over.id
     );
 
-    console.log(`From index: ${oldIndex}, tracking code: ${active.id}`);
+    const reorderedTasks = arrayMove(recieptTasks, oldIndex, newIndex);
+    setRecieptTasks(reorderedTasks);
 
-    const newOrder = arrayMove(recieptTasks, oldIndex, newIndex);
-    setRecieptTasks(newOrder);
-    console.log(`To index: ${newIndex}, tracking code: ${over.id}`);
+    // Update sort numbers for all reordered tasks
+    const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
+      ...task,
+      sort_number: index + 1,
+    }));
+    setRecieptTasks(updatedTasks);
+
+    try {
+      // Send updated sort numbers to the server
+      for (const task of updatedTasks) {
+        const payload = {
+          device_id: userInfo.device_id,
+          tracking_code: task.tracking_code,
+          sort_number: task.sort_number,
+          pickup_task: true,
+        };
+        await axiosInstance.post(MODIFY_SORT_NUMBER, payload);
+      }
+      console.log("Sort numbers updated successfully.");
+    } catch (error) {
+      console.error("Failed to update sort numbers:", error);
+      alert(t("Failed to update sort order. Please try again."));
+    }
   };
 
   if (!recieptTasks || recieptTasks.length === 0) {
