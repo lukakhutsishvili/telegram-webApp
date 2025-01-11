@@ -22,7 +22,7 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { axiosInstance } from "../api/apiClient";
-import { ORDER_LIST } from "../api/Constants";
+import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
 
 const SortableItem = ({
@@ -257,10 +257,7 @@ const Order = ({ status }: { status: string | null }) => {
           sort_number: task.sort_number,
           pickup_task: false,
         };
-        await axiosInstance.post(
-          "https://bo.delivo.ge/delivo_test/hs/pocket/modifysortnumber",
-          payload
-        );
+        await axiosInstance.post(MODIFY_SORT_NUMBER, payload);
       }
       console.log("Sort numbers updated successfully.");
     } catch (error) {
