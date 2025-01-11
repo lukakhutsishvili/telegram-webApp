@@ -85,23 +85,31 @@ const OrderPage = () => {
 
   const handlePhoneCall = (phone: string) => {
     try {
-      // Check if the environment supports "tel:" links
+      const url = `tel:${phone}`;
+
+      // Check if the URL is supported by Telegram
       if (window.Telegram?.WebApp) {
-        // Use Telegram's method to open links if available
-        window.Telegram.WebApp.openLink(`tel:${phone}`);
+        // Telegram doesn't support `tel:` protocol; handle it with fallback
+        console.warn(
+          "[Telegram.WebApp] `tel:` protocol is not supported, using fallback."
+        );
+
+        // Use standard `window.open` for `tel:` links
+        window.open(url, "_self");
       } else {
-        // Use the standard `window.open` method as a fallback
-        window.open(`tel:${phone}`, "_self");
+        // Fallback for non-Telegram environments
+        window.open(url, "_self");
       }
     } catch (error) {
       console.error("Failed to open phone link:", error);
+
       // Fallback to copy the phone number to clipboard
       navigator.clipboard.writeText(phone).then(() => {
         alert("Phone number copied to clipboard");
       });
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-white px-4 pt-24">
       {/* Header */}
