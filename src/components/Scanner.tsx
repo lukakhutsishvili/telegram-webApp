@@ -114,21 +114,24 @@ const BarcodeScanner = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col items-center justify-center h-screen bg-gray-100">
       {!isModalOpen && (
-        <div className="grid justify-center">
-          <video ref={videoRef} className="max-h-[480px]" />
-          <form onSubmit={handleManualSubmit} className="mt-4 px-4">
+        <div className="grid justify-center w-full max-w-md mx-auto">
+          <video
+            ref={videoRef}
+            className="max-h-[480px] w-full rounded-lg shadow-md border border-gray-300"
+          />
+          <form onSubmit={handleManualSubmit} className="mt-6 w-full">
             <input
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
               placeholder={t("Enter register code manually")}
-              className="border rounded px-4 py-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+              className="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
               {t("confirm")}
             </button>
@@ -138,9 +141,9 @@ const BarcodeScanner = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             {isLoading ? (
-              <p className="mb-6 text-gray-700">Loading...</p>
+              <p className="mb-6 text-gray-700">{t("Loading...")}</p>
             ) : secRes && secRes.status ? (
               <h2 className="text-xl font-bold mb-4 text-green-600">
                 {t("Scan Successfully")}
@@ -150,12 +153,12 @@ const BarcodeScanner = () => {
                 {orderTrackingCodes.error}
               </h2>
             ) : (
-              <p className="mb-6 text-gray-700">No details available</p>
+              <p className="mb-6 text-gray-700">{t("No details available")}</p>
             )}
 
             {secRes && secRes.status && orderTrackingCodes?.length > 0 && (
               <p className="text-gray-700">
-                Total Parcels in Reestr: {orderTrackingCodes.length}
+                {t("Total Parcels in Reestr")}: {orderTrackingCodes.length}
               </p>
             )}
 
@@ -164,7 +167,7 @@ const BarcodeScanner = () => {
                 setIsModalOpen(false);
                 setRestart(!restart);
               }}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+              className="mt-6 w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
             >
               {t("Close")}
             </button>
