@@ -108,7 +108,7 @@ const SignIn = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-yellow-300 via-white to-yellow-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg border border-yellow-500 p-8 space-y-6">
-        <h2 className="text-center text-3xl font-extrabold text-black tracking-wide">
+        <h2 className="text-center text-3xl max-sm:text-base font-extrabold text-black tracking-wide">
           {showRegister
             ? showOtpField
               ? t("confirm_otp")
@@ -173,7 +173,7 @@ const SignIn = () => {
         )}
       </div>
 
-      <div className="flex justify-center gap-4 mt-6">
+      <div className="flex justify-center flex-wrap gap-4 mt-6">
         {langButtons.map((button) => (
           <button
             key={button.lang}
