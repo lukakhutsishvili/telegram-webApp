@@ -39,43 +39,21 @@ const App = () => {
 
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
-  
+
     if (webApp) {
       webApp.ready();
       webApp.expand();
       webApp.disableVerticalSwipes();
-  
+
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
-  
       const userId = webApp.initDataUnsafe?.user?.id;
+
       if (userId) {
         setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
       }
-  
-      if (webApp.openLink) {
-        const originalOpenLink = webApp.openLink;
-  
-        webApp.openLink = function (url: string, options?: any) {
-          try {
-            console.warn("[Override] Attempting to open URL:", url);
-  
-            // Handle "tel:" URLs separately
-            if (url.startsWith("tel:")) {
-              console.log("[Override] Opening 'tel:' link directly:", url);
-              window.open(url, "_self"); // Opens in the same tab
-              return;
-            }
-  
-            // Fallback to the original method for other URLs
-            originalOpenLink.call(webApp, url, options);
-          } catch (error) {
-            console.error("[Override] Failed to override openLink:", error);
-          }
-        };
-      }
     }
   }, []);
-  
+
   return (
     <Context.Provider
       value={{
