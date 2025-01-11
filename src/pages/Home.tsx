@@ -130,89 +130,119 @@ function Home() {
   }, [recieptTasks, sendingTasks]);
 
   return (
-    <div className=" min-h-[100vh] bg-yellow-300">
-      <div className="flex flex-col gap-8 pt-20 px-20 pb-[128px] max-sm:px-10">
-        {/* Logo container */}
-        <div className="min-w-[238px] flex items-center justify-between">
-          <h2>{t("General Information")}</h2>
-          <img src={logo} alt="logo" className="w-[50px]" />
+    <div className="min-h-screen bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300">
+      <div className="container mx-auto px-6 pt-12 pb-[100px] max-sm:px-4">
+        {/* Logo and Header */}
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-2xl font-bold text-gray-800">
+            {t("General Information")}
+          </h2>
+          <img
+            src={logo}
+            alt="logo"
+            className="w-16 h-16 object-cover rounded-full"
+          />
         </div>
 
-        {/* Info section */}
-        <section className="flex flex-col gap-6">
-          <div className="flex items-center gap-6">
-            <FontAwesomeIcon icon={faUser} />
-            <h2>{userInfo.name}</h2>
+        {/* Info Section */}
+        <section className="bg-white shadow-lg rounded-lg p-6 mb-10">
+          <div className="flex items-center gap-4 mb-4">
+            <FontAwesomeIcon
+              icon={faUser}
+              className="text-yellow-500 text-xl"
+            />
+            <h2 className="text-lg font-semibold text-gray-700">
+              {userInfo.name}
+            </h2>
           </div>
-
-          <div className="flex flex-col gap-2 bg-[#f4e1d2] max-w-[540px] p-4 rounded-xl">
-            <div className="flex gap-2 items-center">
-              <FontAwesomeIcon icon={faMoneyBill1} />
-              <h3>{t("Cash")}:</h3>
-              <p className="ml-auto">{amount?.[0]?.cash}</p>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between p-4 bg-yellow-100 rounded-lg">
+              <FontAwesomeIcon
+                icon={faMoneyBill1}
+                className="text-yellow-500"
+              />
+              <h3 className="text-gray-700">{t("Cash")}:</h3>
+              <p className="text-gray-800 font-semibold">{amount?.[0]?.cash}</p>
             </div>
-            <div className="flex gap-2 items-center border-b-2 border-black pb-2">
-              <FontAwesomeIcon icon={faMoneyCheckDollar} />
-              <h3>{t("Bank")}: </h3>
-              <p className="ml-auto">{amount?.[0]?.bank}</p>
+            <div className="flex items-center justify-between p-4 bg-yellow-100 rounded-lg">
+              <FontAwesomeIcon
+                icon={faMoneyCheckDollar}
+                className="text-yellow-500"
+              />
+              <h3 className="text-gray-700">{t("Bank")}:</h3>
+              <p className="text-gray-800 font-semibold">{amount?.[0]?.bank}</p>
             </div>
-            <div className="flex gap-2 items-center">
-              <h3>{t("Total Amount")}: </h3>
-              <p className="ml-auto">{amount?.[0]?.sum}</p>
+            <div className="flex items-center justify-between p-4 bg-yellow-100 rounded-lg">
+              <h3 className="text-gray-700">{t("Total Amount")}:</h3>
+              <p className="text-gray-800 font-semibold">{amount?.[0]?.sum}</p>
             </div>
           </div>
         </section>
 
-        {/* Parcel statistics section */}
-        <section className="flex flex-col gap-8">
-          <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
-            <div className="flex items-center gap-5">
-              <FontAwesomeIcon icon={faBox} />
-              <h2>{t("Receipt orders")}</h2>
+        {/* Parcel Statistics */}
+        <section>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Receipt Orders */}
+            <div className="bg-white shadow-lg rounded-lg p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <FontAwesomeIcon
+                  icon={faBox}
+                  className="text-yellow-500 text-xl"
+                />
+                <h2 className="text-lg font-semibold text-gray-700">
+                  {t("Receipt orders")}
+                </h2>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Completed Visits")}:</span>
+                  <span>{taskAmounts.receiptCompleted}</span>
+                </li>
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Canceled Visits")}:</span>
+                  <span>{taskAmounts.receiptCanceled}</span>
+                </li>
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Active Visits")}:</span>
+                  <span>{taskAmounts.receiptAccepted}</span>
+                </li>
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Waiting")}:</span>
+                  <span>{taskAmounts.receiptWaiting}</span>
+                </li>
+              </ul>
             </div>
-            <ul className="flex flex-col gap-2">
-              <li className="flex justify-between">
-                <span>{t("Completed Visits")}:</span>
-                <span>{taskAmounts.receiptCompleted}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>{t("Canceled Visits")}:</span>
-                <span>{taskAmounts.receiptCanceled}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>{t("Active Visits")}:</span>
-                <span>{taskAmounts.receiptAccepted}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>{t("Waiting")}:</span>
-                <span>{taskAmounts.receiptWaiting}</span>
-              </li>
-            </ul>
-          </div>
 
-          <div className="flex flex-col gap-4 border-b-2 border-black pb-6">
-            <div className="flex items-center gap-5">
-              <FontAwesomeIcon icon={faBox} />
-              <h2>{t("Sending orders")}</h2>
+            {/* Sending Orders */}
+            <div className="bg-white shadow-lg rounded-lg p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <FontAwesomeIcon
+                  icon={faBox}
+                  className="text-yellow-500 text-xl"
+                />
+                <h2 className="text-lg font-semibold text-gray-700">
+                  {t("Sending orders")}
+                </h2>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Completed Visits")}:</span>
+                  <span>{taskAmounts.sendingCompleted}</span>
+                </li>
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Canceled Visits")}:</span>
+                  <span>{taskAmounts.sendingCanceled}</span>
+                </li>
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Active Visits")}:</span>
+                  <span>{taskAmounts.sendingAccepted}</span>
+                </li>
+                <li className="flex justify-between text-gray-600">
+                  <span>{t("Waiting")}:</span>
+                  <span>{taskAmounts.sendingWaiting}</span>
+                </li>
+              </ul>
             </div>
-            <ul className="flex flex-col gap-2">
-              <li className="flex justify-between">
-                <span>{t("Completed Visits")}:</span>
-                <span>{taskAmounts.sendingCompleted}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>{t("Canceled Visits")}:</span>
-                <span>{taskAmounts.sendingCanceled}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>{t("Active Visits")}:</span>
-                <span>{taskAmounts.sendingAccepted}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>{t("Waiting")}:</span>
-                <span>{taskAmounts.sendingWaiting}</span>
-              </li>
-            </ul>
           </div>
         </section>
       </div>
