@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhone, faBarcode } from "@fortawesome/free-solid-svg-icons";
+import {  faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
 import {
   closestCenter,
@@ -16,94 +16,14 @@ import {
 import {
   SortableContext,
   verticalListSortingStrategy,
-  useSortable,
+
   arrayMove,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { CSS } from "@dnd-kit/utilities";
 import { axiosInstance } from "../api/apiClient";
 import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
-
-const SortableItem = ({
-  id,
-  task,
-  status,
-  navigate,
-  handleCheckboxChange,
-  selectedOrders,
-}: any) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    cursor: isDragging ? "grabbing" : "pointer",
-    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white", // Highlight background during drag
-    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none", // Add shadow during drag
-    opacity: isDragging ? 0.9 : 1, // Slightly fade non-dragged elements
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).tagName === "INPUT") {
-      e.stopPropagation();
-      return;
-    }
-    if (!isDragging) {
-      navigate(`/order/${task.tracking_code}`);
-    }
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onClick={handleClick}
-      className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
-        isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
-      }`} // Add ring and scale for dragging
-    >
-      {status === "Waiting" && (
-        <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
-          <input
-            type="checkbox"
-            checked={!!selectedOrders[task.tracking_code]}
-            onClick={(e) => e.stopPropagation()}
-            onChange={(e) =>
-              handleCheckboxChange(task.tracking_code, e.target.checked)
-            }
-            className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
-          />
-        </div>
-      )}
-
-      <div className="w-full flex flex-col gap-1 pl-9">
-        <div className="flex justify-between">
-          <h2 className="text-sm">{task.client_name}</h2>
-          <p className="text-sm">{task.sum} ₾</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <FontAwesomeIcon icon={faBarcode} />
-          <p className="text-sm">{task.tracking_code}</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <FontAwesomeIcon icon={faPhone} />
-          <p className="text-sm">{task.client_phone}</p>
-        </div>
-        <h2 className="text-sm">{task.client_address}</h2>
-      </div>
-    </div>
-  );
-};
+import SortableItem from "./SortableItem";
 
 const RecieptOrder = ({ status }: { status: string | null }) => {
   const { recieptTasks, userInfo, setRecieptTasks } = useContext(Context);
