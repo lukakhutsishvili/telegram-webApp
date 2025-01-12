@@ -114,14 +114,14 @@ const BarcodeScanner = () => {
   };
 
   return (
-    <div className="relative mt-10 items-center justify-center h-screen bg-gray-100">
+    <div className="relative  items-center justify-center h-screen bg-gray-100">
       {!isModalOpen && (
-        <div className="grid justify-center w-full ">
+        <div className="grid justify-center w-full mt-10">
           <video
             ref={videoRef}
             className="max-h-[480px] w-full rounded-lg shadow-md border border-gray-300"
           />
-          <form onSubmit={handleManualSubmit} className="mt-6 w-full">
+          <form onSubmit={handleManualSubmit} className="mt-3 w-full">
             <input
               type="text"
               value={manualCode}
