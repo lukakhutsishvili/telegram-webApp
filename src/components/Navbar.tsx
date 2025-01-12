@@ -17,10 +17,10 @@ function Navbar() {
             to={item.path}
             className={({ isActive }) =>
               `cursor-pointer flex-1 text-center px-2 py-2 rounded-md transition-all ${
-                isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-400"
+                isActive && "bg-yellow-500 text-black"
               }`
             }
-            onClick={() => setNavbarButtons(item.name)} 
+            onClick={() => setNavbarButtons(item.name)}
           >
             <div className="flex flex-col items-center gap-1">
               <FontAwesomeIcon icon={item.icon} size="lg" />
