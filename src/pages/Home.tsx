@@ -131,9 +131,9 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300">
-      <div className="container mx-auto px-6 pt-12 pb-[100px] max-sm:px-4">
+      <div className="container mx-auto px-6 pt-24 pb-[100px] max-sm:px-4">
         {/* Logo and Header */}
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-800">
             {t("General Information")}
           </h2>

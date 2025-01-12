@@ -116,7 +116,7 @@ const BarcodeScanner = () => {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen bg-gray-100">
       {!isModalOpen && (
-        <div className="grid justify-center w-full max-w-md mx-auto">
+        <div className="grid justify-center w-full ">
           <video
             ref={videoRef}
             className="max-h-[480px] w-full rounded-lg shadow-md border border-gray-300"
