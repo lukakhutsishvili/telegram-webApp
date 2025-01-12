@@ -15,8 +15,7 @@ const SignIn = () => {
   const [errorKey, setErrorKey] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUserInfo, userInfo } = useContext(Context);
-  const chat_id = userInfo.telegram_id || "6087086146";
-  const params = { telegram_id: chat_id };
+  const params = { telegram_id: userInfo.telegram_id || "6087086146" };
   const { i18n, t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
@@ -60,7 +59,7 @@ const SignIn = () => {
     }
     setLoading(true);
     const authData = {
-      telegram_id: chat_id,
+      telegram_id: userInfo.telegram_id,
       phone_number: phoneNumber,
       type: "1",
     };
@@ -86,7 +85,7 @@ const SignIn = () => {
     const data = {
       phone_number: phoneNumber,
       otp,
-      telegram_id: chat_id?.toString(),
+      telegram_id: userInfo.telegram_id?.toString(),
     };
 
     try {
