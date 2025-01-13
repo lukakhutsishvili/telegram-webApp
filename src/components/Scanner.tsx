@@ -12,68 +12,83 @@ const BarcodeScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reader = useRef(new BrowserMultiFormatReader());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
-  const [orderTrackingCodes, setOrderTrackingCodes] = useState<string[] | null>(
-    null
-  );
+  const [orderTrackingCodes, setOrderTrackingCodes] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useContext(Context);
+  const [secRes, setSecRes] = useState<any>();
   const [manualCode, setManualCode] = useState("");
+  const [restart, setRestart] = useState(false);
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
       setIsLoading(true);
-
       const requestData = {
         device_id: userInfo.device_id,
         tracking_code: trackingCode,
       };
 
-      const base64Data = btoa(JSON.stringify(requestData));
+      const jsonData = JSON.stringify(requestData);
+      const base64Data = btoa(jsonData);
+
+      const params = { tracking_code_data: base64Data };
+
+      // First API call
       const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
-        params: { tracking_code_data: base64Data },
+        params,
       });
 
-      const { status, tracking_codes: trackingCodes } =
-        response.data.response.value;
+      const firstResponseData = response.data.response.value;
+      const status = firstResponseData.status;
 
       if (status === "Waiting") {
-        const codes = trackingCodes.map(
+        const trackingCodes = firstResponseData.tracking_codes.map(
           (item: { tracking_code: string }) => item.tracking_code
         );
-        setOrderTrackingCodes(codes);
+
+        setOrderTrackingCodes(trackingCodes);
 
         const orderParams = {
           device_id: userInfo.device_id,
           status: "accepted",
-          orders: codes,
+          orders: trackingCodes,
         };
 
-        await axiosInstance.post(changeStatusesOfOrder, orderParams);
-        setFeedbackMessage(t("Scan Successfully"));
+        // Second API call
+        const secResponse = await axiosInstance.post(
+          changeStatusesOfOrder,
+          orderParams
+        );
+
+        setSecRes(secResponse);
+        setIsModalOpen(true);
+      } else if (status === "Accepted") {
+        setOrderTrackingCodes({
+          error: "This reestr is already in tasks",
+        });
+        setIsModalOpen(true);
       } else {
-        const errorMessage =
-          status === "Accepted"
-            ? t("This reestr is already in tasks")
-            : `${t("Unexpected status")}: ${status}`;
-        setFeedbackMessage(errorMessage);
+        setOrderTrackingCodes({
+          error: "Unexpected status: " + status,
+        });
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
-      setFeedbackMessage(t("Failed to fetch details"));
+      setOrderTrackingCodes({ error: "Failed to fetch details" });
+      setIsModalOpen(true); // Open modal even on error
     } finally {
       setIsLoading(false);
-      setIsModalOpen(true);
     }
   };
 
-  const startScanner = () => {
+  useEffect(() => {
     if (!videoRef.current) return;
-
     reader.current.decodeFromConstraints(
       {
         audio: false,
-        video: { facingMode: "environment" },
+        video: {
+          facingMode: "environment",
+        },
       },
       videoRef.current,
       (result) => {
@@ -84,12 +99,11 @@ const BarcodeScanner = () => {
         }
       }
     );
-  };
 
-  useEffect(() => {
-    startScanner();
-    return () => reader.current.reset();
-  }, []);
+    return () => {
+      reader.current.reset();
+    };
+  }, [restart]);
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,13 +111,6 @@ const BarcodeScanner = () => {
       sendGetRequest(manualCode.trim());
       setManualCode("");
     }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setFeedbackMessage(null);
-    setOrderTrackingCodes(null);
-    startScanner();
   };
 
   return (
@@ -137,26 +144,29 @@ const BarcodeScanner = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             {isLoading ? (
               <p className="mb-6 text-gray-700">{t("Loading...")}</p>
-            ) : (
-              <h2
-                className={`text-xl font-bold mb-4 ${
-                  feedbackMessage?.includes("Success")
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {feedbackMessage}
+            ) : secRes && secRes.status ? (
+              <h2 className="text-xl font-bold mb-4 text-green-600">
+                {t("Scan Successfully")}
               </h2>
+            ) : orderTrackingCodes && orderTrackingCodes.error ? (
+              <h2 className="text-xl font-bold mb-4 text-red-600">
+                {orderTrackingCodes.error}
+              </h2>
+            ) : (
+              <p className="mb-6 text-gray-700">{t("No details available")}</p>
             )}
 
-            {orderTrackingCodes && (
+            {secRes && secRes.status && orderTrackingCodes?.length > 0 && (
               <p className="text-gray-700">
                 {t("Total Parcels in Reestr")}: {orderTrackingCodes.length}
               </p>
             )}
 
             <button
-              onClick={closeModal}
+              onClick={() => {
+                setIsModalOpen(false);
+                setRestart(!restart);
+              }}
               className="mt-6 w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
             >
               {t("Close")}
