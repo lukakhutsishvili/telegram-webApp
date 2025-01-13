@@ -45,13 +45,13 @@ const SortableItem = ({
       style={style}
       {...attributes}
       {...listeners}
-      onClick={handleClick}
       className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
-        isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
-      }`}
+        isDragging ? "ring-2 ring-yellow-500 scale-105" : "" } `}
     >
       {status === "Waiting" && (
-        <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
+        <div 
+        className="flex items-center"
+        onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>
           <input
             type="checkbox"
             checked={!!selectedOrders[task.tracking_code]}
@@ -64,7 +64,9 @@ const SortableItem = ({
         </div>
       )}
 
-      <div className="relative w-full flex flex-col gap-1 pl-9 select-none">
+      <div 
+      className={`relative w-full flex flex-col gap-1  select-none`}
+      onClick={handleClick}>
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
