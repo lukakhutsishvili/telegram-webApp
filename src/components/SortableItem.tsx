@@ -64,8 +64,7 @@ const SortableItem = ({
         </div>
       )}
 
-      <div className="relative w-full flex flex-col gap-1 pl-9">
-        <div className="absolute w-full h-full z-50"></div>
+      <div className="relative w-full flex flex-col gap-1 pl-9 select-none">
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
