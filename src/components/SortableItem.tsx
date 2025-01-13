@@ -27,7 +27,6 @@ const SortableItem = ({
     background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white",
     boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none",
     opacity: isDragging ? 0.9 : 1,
-    userSelect: isDragging ? "none" : "auto", // Fixed type for userSelect
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -65,7 +64,8 @@ const SortableItem = ({
         </div>
       )}
 
-      <div className="w-full flex flex-col gap-1 pl-9">
+      <div className="relative w-full flex flex-col gap-1 pl-9">
+        <div className="absolute w-full h-full z-50"></div>
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
