@@ -20,13 +20,14 @@ const SortableItem = ({
     isDragging,
   } = useSortable({ id });
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     cursor: isDragging ? "grabbing" : "pointer",
-    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white", // Highlight background during drag
-    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none", // Add shadow during drag
-    opacity: isDragging ? 0.9 : 1, // Slightly fade non-dragged elements
+    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white",
+    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none",
+    opacity: isDragging ? 0.9 : 1,
+    userSelect: isDragging ? "none" : "auto", // Fixed type for userSelect
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -48,7 +49,7 @@ const SortableItem = ({
       onClick={handleClick}
       className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
         isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
-      }`} // Add ring and scale for dragging
+      }`}
     >
       {status === "Waiting" && (
         <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
