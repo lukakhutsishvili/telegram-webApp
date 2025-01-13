@@ -50,7 +50,7 @@ const SortableItem = ({
     >
       {status === "Waiting" && (
         <div 
-        className="flex items-center"
+        className="flex items-center select-none"
         onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>
           <input
             type="checkbox"
