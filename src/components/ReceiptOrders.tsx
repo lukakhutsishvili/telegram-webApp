@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
 import {
   closestCenter,
@@ -16,7 +16,6 @@ import {
 import {
   SortableContext,
   verticalListSortingStrategy,
-
   arrayMove,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
