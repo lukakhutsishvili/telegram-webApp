@@ -94,8 +94,8 @@ const BarcodeScanner = () => {
         if (result) {
           const scannedBarcode = result.getText();
           reader.current.reset();
-          setIsModalOpen(true);
           sendGetRequest(scannedBarcode);
+          setIsModalOpen(true);
         }
       }
     );
