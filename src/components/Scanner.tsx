@@ -60,7 +60,6 @@ const BarcodeScanner = () => {
         );
 
         setSecRes(secResponse);
-        setIsModalOpen(true);
       } else if (status === "Accepted") {
         setOrderTrackingCodes({
           error: "This reestr is already in tasks",
@@ -95,6 +94,7 @@ const BarcodeScanner = () => {
         if (result) {
           const scannedBarcode = result.getText();
           reader.current.reset();
+          setIsModalOpen(true);
           sendGetRequest(scannedBarcode);
         }
       }
