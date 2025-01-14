@@ -20,13 +20,13 @@ const SortableItem = ({
     isDragging,
   } = useSortable({ id });
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     cursor: isDragging ? "grabbing" : "pointer",
-    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white", // Highlight background during drag
-    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none", // Add shadow during drag
-    opacity: isDragging ? 0.9 : 1, // Slightly fade non-dragged elements
+    background: isDragging ? "rgba(100, 100, 0, 0.2)" : "white",
+    boxShadow: isDragging ? "0 4px 8px rgba(0, 0, 0, 0.2)" : "none",
+    opacity: isDragging ? 0.9 : 1,
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -45,13 +45,13 @@ const SortableItem = ({
       style={style}
       {...attributes}
       {...listeners}
-      onClick={handleClick}
       className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
-        isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
-      }`} // Add ring and scale for dragging
+        isDragging ? "ring-2 ring-yellow-500 scale-105" : "" } `}
     >
       {status === "Waiting" && (
-        <div className="absolute top-8 z-50 flex items-center gap-2 mt-2">
+        <div 
+        className="flex items-center select-none"
+        onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>
           <input
             type="checkbox"
             checked={!!selectedOrders[task.tracking_code]}
@@ -64,7 +64,9 @@ const SortableItem = ({
         </div>
       )}
 
-      <div className="w-full flex flex-col gap-1 pl-9">
+      <div 
+      className={`relative w-full flex flex-col gap-1  select-none`}
+      onClick={handleClick}>
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>

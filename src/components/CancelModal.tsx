@@ -49,7 +49,7 @@ function CancelModal({
       setError(t("You must choose a reason"));
       return;
     }
-    setError(""); 
+    setError("");
 
     const params = {
       device_id: userInfo.device_id,

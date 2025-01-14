@@ -11,6 +11,7 @@ import {
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
 import { t } from "i18next";
+import { useNavigate } from "react-router-dom";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -35,8 +36,19 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const [startTimer, setStartTimer] = useState(false);
   const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
     useContext(Context);
+  const navigate = useNavigate();
 
   const order = sendingOrder || receiptOrder;
+
+  const navigationfunction = () => {
+    if (confirmationMessage) {
+      if (sendingOrder) {
+        navigate("/sending");
+      } else {
+        navigate("/reciept");
+      }
+    }
+  };
 
   useEffect(() => {
     if (startTimer) {
@@ -332,7 +344,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         )}
 
         <div className="flex justify-center space-x-4">
-          <Button onClick={closeModal} className="bg-gray-300 text-black">
+          <Button
+            onClick={confirmationMessage ? navigationfunction : closeModal}
+            className="bg-gray-300 text-black"
+          >
             {t("cancel")}
           </Button>
           {!confirmationMessage && (

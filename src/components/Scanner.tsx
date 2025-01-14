@@ -60,22 +60,18 @@ const BarcodeScanner = () => {
         );
 
         setSecRes(secResponse);
-        setIsModalOpen(true);
       } else if (status === "Accepted") {
         setOrderTrackingCodes({
           error: "This reestr is already in tasks",
         });
-        setIsModalOpen(true);
       } else {
         setOrderTrackingCodes({
           error: "Unexpected status: " + status,
         });
-        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setOrderTrackingCodes({ error: "Failed to fetch details" });
-      setIsModalOpen(true); // Open modal even on error
     } finally {
       setIsLoading(false);
     }
@@ -96,6 +92,7 @@ const BarcodeScanner = () => {
           const scannedBarcode = result.getText();
           reader.current.reset();
           sendGetRequest(scannedBarcode);
+          setIsModalOpen(true);
         }
       }
     );

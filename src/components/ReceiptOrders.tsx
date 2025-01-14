@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { faBarcode } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
 import {
   closestCenter,
@@ -16,7 +16,6 @@ import {
 import {
   SortableContext,
   verticalListSortingStrategy,
-
   arrayMove,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -41,12 +40,10 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     },
   });
   const keyboardSensor = useSensor(KeyboardSensor);
-  // const sensors = useSensors(mouseSensor, keyboardSensor);
-
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 250, // Optional: Start drag after 250ms of touch
-      tolerance: 5, // Optional: Move 5px before drag activates
+      delay: 250, // Start drag after 250ms of touch
+      tolerance: 5, // Move 5px before drag activates
     },
   });
 
@@ -90,7 +87,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     try {
       const tasklistData = {
         device_id: userInfo.device_id,
-        pickup_task: false,
+        pickup_task: true,
         status: ["Waiting", "Accepted", "Completed", "Canceled"],
       };
 
@@ -117,7 +114,6 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     }
 
     try {
-      // Update statuses locally
       const updatedTasks = recieptTasks.map((task: any) =>
         selectedTrackingCodes.includes(task.tracking_code)
           ? { ...task, Status: newStatus }
@@ -149,7 +145,6 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
 
-    // Ensure there's a valid drag-over target
     if (!over || active.id === over.id) return;
 
     const oldIndex = recieptTasks.findIndex(
@@ -162,7 +157,6 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     const reorderedTasks = arrayMove(recieptTasks, oldIndex, newIndex);
     setRecieptTasks(reorderedTasks);
 
-    // Update sort numbers for all reordered tasks
     const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
       ...task,
       sort_number: index + 1,
@@ -170,7 +164,6 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     setRecieptTasks(updatedTasks);
 
     try {
-      // Send updated sort numbers to the server
       for (const task of updatedTasks) {
         const payload = {
           device_id: userInfo.device_id,
