@@ -2,7 +2,10 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
-import { GET_DETAILS_BY_SCANNER, changeStatusesOfOrder } from "../api/Constants";
+import {
+  GET_DETAILS_BY_SCANNER,
+  changeStatusesOfOrder,
+} from "../api/Constants";
 import { t } from "i18next";
 
 const BarcodeScanner = () => {
@@ -11,7 +14,6 @@ const BarcodeScanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderTrackingCodes, setOrderTrackingCodes] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isScanning, setIsScanning] = useState(false); // New state
   const { userInfo } = useContext(Context);
   const [secRes, setSecRes] = useState<any>();
   const [manualCode, setManualCode] = useState("");
@@ -20,9 +22,6 @@ const BarcodeScanner = () => {
   const sendGetRequest = async (trackingCode: string) => {
     try {
       setIsLoading(true);
-      setIsScanning(true); // Start scanning
-      setIsModalOpen(true); // Open modal immediately
-
       const requestData = {
         device_id: userInfo.device_id,
         tracking_code: trackingCode,
@@ -61,21 +60,24 @@ const BarcodeScanner = () => {
         );
 
         setSecRes(secResponse);
+        setIsModalOpen(true);
       } else if (status === "Accepted") {
         setOrderTrackingCodes({
           error: "This reestr is already in tasks",
         });
+        setIsModalOpen(true);
       } else {
         setOrderTrackingCodes({
           error: "Unexpected status: " + status,
         });
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setOrderTrackingCodes({ error: "Failed to fetch details" });
+      setIsModalOpen(true); // Open modal even on error
     } finally {
       setIsLoading(false);
-      setIsScanning(false); // Stop scanning
     }
   };
 
@@ -140,11 +142,7 @@ const BarcodeScanner = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            {isScanning ? (
-              <div className="flex justify-center">
-                <div className="spinner-border animate-spin w-8 h-8 border-4 border-blue-500 rounded-full" />
-              </div>
-            ) : isLoading ? (
+            {isLoading ? (
               <p className="mb-6 text-gray-700">{t("Loading...")}</p>
             ) : secRes && secRes.status ? (
               <h2 className="text-xl font-bold mb-4 text-green-600">
