@@ -45,7 +45,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       if (sendingOrder) {
         navigate("/sending");
       } else {
-        navigate("reciept");
+        navigate("/reciept");
       }
     }
   };
