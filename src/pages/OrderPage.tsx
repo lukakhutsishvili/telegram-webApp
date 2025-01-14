@@ -68,6 +68,7 @@ const OrderPage = () => {
       status: newStatus,
       orders: [id],
     };
+
     try {
       const response = await changeOrderStatus(params);
       console.log("Order status updated successfully:", response);
