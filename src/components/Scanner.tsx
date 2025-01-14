@@ -143,7 +143,9 @@ const BarcodeScanner = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             {isLoading ? (
-              <p className="mb-6 text-gray-700">{t("Loading...")}</p>
+              <div className="flex justify-center items-center mb-6">
+                <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
             ) : secRes && secRes.status ? (
               <h2 className="text-xl font-bold mb-4 text-green-600">
                 {t("Scan Successfully")}
