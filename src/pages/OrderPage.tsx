@@ -22,6 +22,7 @@ const OrderPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openCancellationModal = () => setIsModalOpen(true);
   const closeCancellationModal = () => setIsModalOpen(false);
@@ -67,7 +68,6 @@ const OrderPage = () => {
       status: newStatus,
       orders: [id],
     };
-
     try {
       const response = await changeOrderStatus(params);
       console.log("Order status updated successfully:", response);
@@ -80,6 +80,17 @@ const OrderPage = () => {
         "Failed to update order status or fetch updated list:",
         error
       );
+    }
+  };
+
+  const handleRecoveryClick = async () => {
+    setLoading(true); // Set loading to true before the async operation
+    try {
+      await handleStatusChangeAndFetch("Accepted"); // Perform the async action
+    } catch (error) {
+      console.error("Recovery failed:", error);
+    } finally {
+      setLoading(false); // Reset loading to false after the operation
     }
   };
 
@@ -188,12 +199,20 @@ const OrderPage = () => {
         {order.Status === "Canceled" && (
           <div className="flex space-x-4">
             <Button
-              onClick={() => {
-                handleStatusChangeAndFetch("Accepted");
-              }}
-              className="bg-yellow-400 text-black"
+              onClick={handleRecoveryClick}
+              disabled={loading} // Disable button while loading
+              className={`bg-yellow-400 text-black ${
+                loading ? "cursor-not-allowed" : ""
+              }`}
             >
-              {t("recovery")}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-black rounded-full animate-spin"></div>
+                  <span className="ml-2">{t("loading")}</span>
+                </div>
+              ) : (
+                t("recovery")
+              )}
             </Button>
           </div>
         )}

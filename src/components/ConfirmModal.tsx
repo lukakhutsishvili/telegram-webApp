@@ -37,6 +37,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
     useContext(Context);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const order = sendingOrder || receiptOrder;
 
@@ -223,30 +224,42 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   const onConfirm = async () => {
-    if (receiptOrder) {
-      await confirmDelivery();
-      setConfirmationMessage(t("Receipt order confirmed!"));
-      setStartTimer(true);
-      await fetchUpdatedOrderList();
-    } else if (confirmationMethod === "OTP") {
-      await checkClientOtp();
-      await fetchUpdatedOrderList();
-    } else if (confirmationMethod === "ID Number") {
-      if (order.client_id) {
-        if (order.client_id === confirmationValue) {
-          await confirmDelivery();
-          setConfirmationMessage(t("ID Number confirmed!"));
-          setStartTimer(true);
-          await fetchUpdatedOrderList();
-        } else if (order.client_id !== confirmationValue) {
-          setErrorMessage(
-            t("The ID Number does not match the client's ID. Please try again.")
-          );
-        }
-      } else if (!order.client_id) {
-        await postClientID();
+    setLoading(true);
+    try {
+      if (receiptOrder) {
+        await confirmDelivery();
+        setConfirmationMessage(t("Receipt order confirmed!"));
+        setStartTimer(true);
         await fetchUpdatedOrderList();
+      } else if (confirmationMethod === "OTP") {
+        await checkClientOtp();
+        await fetchUpdatedOrderList();
+      } else if (confirmationMethod === "ID Number") {
+        if (order.client_id) {
+          if (order.client_id === confirmationValue) {
+            await confirmDelivery();
+            setConfirmationMessage(t("ID Number confirmed!"));
+            setStartTimer(true);
+            await fetchUpdatedOrderList();
+          } else {
+            setErrorMessage(
+              t(
+                "The ID Number does not match the client's ID. Please try again."
+              )
+            );
+          }
+        } else {
+          await postClientID();
+          await fetchUpdatedOrderList();
+        }
       }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setErrorMessage(
+        t("An unexpected error occurred. Please try again later.")
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -346,13 +359,26 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className="flex justify-center space-x-4">
           <Button
             onClick={confirmationMessage ? navigationfunction : closeModal}
-            className="bg-gray-300 text-black"
+            className={`g-gray-300 text-black `}
           >
             {t("cancel")}
           </Button>
           {!confirmationMessage && (
-            <Button onClick={onConfirm} className="bg-yellow-400 text-black">
-              {t("confirm")}
+            <Button
+              onClick={onConfirm}
+              disabled={loading} // Disable button when loading
+              className={`g-gray-300 text-black ${
+                loading ? "bg-yellow-300 cursor-not-allowed" : "bg-yellow-400"
+              }`}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-black rounded-full animate-spin"></div>
+                  <span className="ml-2">{t("loading")}</span>
+                </div>
+              ) : (
+                t("confirm")
+              )}
             </Button>
           )}
         </div>
