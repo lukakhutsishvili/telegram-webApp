@@ -4,6 +4,7 @@ import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
 import {
   GET_DETAILS_BY_SCANNER,
+  ORDER_LIST,
   changeStatusesOfOrder,
 } from "../api/Constants";
 import { t } from "i18next";
@@ -18,6 +19,8 @@ const BarcodeScanner = () => {
   const [secRes, setSecRes] = useState<any>();
   const [manualCode, setManualCode] = useState("");
   const [restart, setRestart] = useState(false);
+  const { setRecieptTasks, setSendingTasks } = useContext(Context);
+  const [isFetchingTasks, setIsFetchingTasks] = useState(false);
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
@@ -110,6 +113,45 @@ const BarcodeScanner = () => {
     }
   };
 
+  const fetchRecieptTasks = async () => {
+    try {
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(
+            JSON.stringify({
+              device_id: userInfo.device_id,
+              pickup_task: true,
+              status: ["Waiting", "Accepted", "Completed", "Canceled"],
+            })
+          ),
+        },
+      });
+      setRecieptTasks(response.data.response);
+    } catch (error) {
+      console.error("Error fetching receipt tasks:", error);
+    }
+  };
+
+  // Fetch sending tasks
+  const fetchSendingTasks = async () => {
+    try {
+      const response = await axiosInstance.get(ORDER_LIST, {
+        params: {
+          tasklist_data: btoa(
+            JSON.stringify({
+              device_id: userInfo.device_id,
+              pickup_task: false,
+              status: ["Waiting", "Accepted", "Completed", "Canceled"],
+            })
+          ),
+        },
+      });
+      setSendingTasks(response.data.response);
+    } catch (error) {
+      console.error("Error fetching sending tasks:", error);
+    }
+  };
+
   return (
     <div className="relative flex flex-col items-center justify-start h-screen bg-gray-100 pt-24">
       {!isModalOpen && (
@@ -162,13 +204,34 @@ const BarcodeScanner = () => {
             )}
 
             <button
-              onClick={() => {
-                setIsModalOpen(false);
-                setRestart(!restart);
+              onClick={async () => {
+                setIsFetchingTasks(true); // Start spinner
+                try {
+                  await fetchSendingTasks(); // Fetch sending tasks first
+                  await fetchRecieptTasks(); // Then fetch receipt tasks
+                } catch (error) {
+                  console.error("Error fetching tasks:", error);
+                } finally {
+                  setIsFetchingTasks(false); // Stop spinner
+                  setIsModalOpen(false);
+                  setRestart(!restart);
+                }
               }}
-              className="mt-6 w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+              disabled={isFetchingTasks} // Disable button while fetching tasks
+              className={`mt-6 w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                isFetchingTasks
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-gray-500 hover:bg-gray-600 text-white"
+              }`}
             >
-              {t("Close")}
+              {isFetchingTasks ? (
+                <div className="flex justify-center items-center">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span className="ml-2">{t("Loading...")}</span>
+                </div>
+              ) : (
+                t("Close")
+              )}
             </button>
           </div>
         </div>
