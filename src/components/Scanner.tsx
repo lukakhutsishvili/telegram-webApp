@@ -22,6 +22,7 @@ const BarcodeScanner = () => {
   const sendGetRequest = async (trackingCode: string) => {
     try {
       setIsLoading(true);
+      setOrderTrackingCodes(null); // Clear previous data
       const requestData = {
         device_id: userInfo.device_id,
         tracking_code: trackingCode,
@@ -60,24 +61,20 @@ const BarcodeScanner = () => {
         );
 
         setSecRes(secResponse);
-        setIsModalOpen(true);
       } else if (status === "Accepted") {
         setOrderTrackingCodes({
           error: "This reestr is already in tasks",
         });
-        setIsModalOpen(true);
       } else {
         setOrderTrackingCodes({
           error: "Unexpected status: " + status,
         });
-        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setOrderTrackingCodes({ error: "Failed to fetch details" });
-      setIsModalOpen(true); // Open modal even on error
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Stop loading animation
     }
   };
 
@@ -95,6 +92,11 @@ const BarcodeScanner = () => {
         if (result) {
           const scannedBarcode = result.getText();
           reader.current.reset();
+
+          // Immediately open the modal and start loading
+          setIsModalOpen(true);
+          setIsLoading(true);
+
           sendGetRequest(scannedBarcode);
         }
       }
@@ -108,6 +110,8 @@ const BarcodeScanner = () => {
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (manualCode.trim()) {
+      setIsModalOpen(true);
+      setIsLoading(true);
       sendGetRequest(manualCode.trim());
       setManualCode("");
     }
@@ -143,7 +147,10 @@ const BarcodeScanner = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             {isLoading ? (
-              <p className="mb-6 text-gray-700">{t("Loading...")}</p>
+              <div className="flex flex-col items-center">
+                <div className="loader border-t-4 border-blue-500 w-12 h-12 rounded-full animate-spin mb-4"></div>
+                <p className="text-gray-700">{t("Loading...")}</p>
+              </div>
             ) : secRes && secRes.status ? (
               <h2 className="text-xl font-bold mb-4 text-green-600">
                 {t("Scan Successfully")}
