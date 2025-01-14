@@ -64,17 +64,14 @@ const BarcodeScanner = () => {
         setOrderTrackingCodes({
           error: "This reestr is already in tasks",
         });
-        setIsModalOpen(true);
       } else {
         setOrderTrackingCodes({
           error: "Unexpected status: " + status,
         });
-        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
       setOrderTrackingCodes({ error: "Failed to fetch details" });
-      setIsModalOpen(true); // Open modal even on error
     } finally {
       setIsLoading(false);
     }
