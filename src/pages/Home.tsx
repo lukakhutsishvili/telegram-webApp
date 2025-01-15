@@ -2,11 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
 import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.jpg";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
 import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 import { t } from "i18next";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 function Home() {
   const {
@@ -20,6 +21,7 @@ function Home() {
     setAmount,
   } = useContext(Context);
 
+  const [loading, setLoading] = useState(false);
   // Fetch reasons
   const fetchReasons = async () => {
     try {
@@ -90,10 +92,17 @@ function Home() {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      await fetchRecieptTasks();
-      await fetchSendingTasks();
-      await fetchAmount();
-      await fetchReasons();
+      setLoading(true);
+      try {
+        await fetchRecieptTasks();
+        await fetchSendingTasks();
+        await fetchAmount();
+        await fetchReasons();
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchAllData();
@@ -143,6 +152,19 @@ function Home() {
             className="w-16 h-16 object-cover rounded-full"
           />
         </div>
+
+        {/* Spinner animation */}
+        {loading && (
+          <div className="flex items-center justify-center mb-6">
+            <FontAwesomeIcon
+              icon={faSpinner}
+              className="text-yellow-500 text-3xl animate-spin mr-4"
+            />
+            <p className="text-gray-700 font-medium">
+              {t("please wait until information is fetched")}
+            </p>
+          </div>
+        )}
 
         {/* Info Section */}
         <section className="bg-white shadow-lg rounded-lg p-6 mb-10">
