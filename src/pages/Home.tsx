@@ -154,18 +154,19 @@ function Home() {
         </div>
 
         {/* Spinner animation */}
-        {loading && (
-          <div className="flex items-center justify-center mb-6">
-            <FontAwesomeIcon
-              icon={faSpinner}
-              className="text-yellow-500 text-3xl animate-spin mr-4"
-            />
-            <p className="text-gray-700 font-medium">
-              {t("please wait until information is fetched")}
-            </p>
-          </div>
-        )}
-
+        <div className="h-8  flex items-center justify-center">
+          {loading && (
+            <div className="flex items-center justify-center mb-6">
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className="text-yellow-500 text-3xl animate-spin mr-4"
+              />
+              <p className="text-red-500 font-medium">
+                {t("please wait until information is fetched")}
+              </p>
+            </div>
+          )}
+        </div>
         {/* Info Section */}
         <section className="bg-white shadow-lg rounded-lg p-6 mb-10">
           <div className="flex items-center gap-4 mb-4">
