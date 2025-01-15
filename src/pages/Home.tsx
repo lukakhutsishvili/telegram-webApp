@@ -90,10 +90,10 @@ function Home() {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      await fetchReasons();
-      await fetchAmount();
       await fetchRecieptTasks();
       await fetchSendingTasks();
+      await fetchAmount();
+      await fetchReasons();
     };
 
     fetchAllData();
@@ -157,22 +157,22 @@ function Home() {
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between p-4 bg-yellow-100 rounded-lg">
-             <div className="flex items-center gap-4">
-             <FontAwesomeIcon
-                icon={faMoneyBill1}
-                className="text-yellow-500"
-              />
-              <h3 className="text-gray-700">{t("Cash")}:</h3>
-            </div> 
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon
+                  icon={faMoneyBill1}
+                  className="text-yellow-500"
+                />
+                <h3 className="text-gray-700">{t("Cash")}:</h3>
+              </div>
               <p className="text-gray-800 font-semibold">{amount?.[0]?.cash}</p>
             </div>
             <div className="flex items-center justify-between p-4 bg-yellow-100 rounded-lg">
-            <div className="flex items-center gap-4">
-              <FontAwesomeIcon
-                icon={faMoneyCheckDollar}
-                className="text-yellow-500"
-              />
-              <h3 className="text-gray-700">{t("Bank")}:</h3>
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon
+                  icon={faMoneyCheckDollar}
+                  className="text-yellow-500"
+                />
+                <h3 className="text-gray-700">{t("Bank")}:</h3>
               </div>
               <p className="text-gray-800 font-semibold">{amount?.[0]?.bank}</p>
             </div>
