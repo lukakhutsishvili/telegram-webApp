@@ -83,6 +83,7 @@
     "Failed to update sort order. Please try again.": "Не удалось обновить порядок сортировки. Пожалуйста, попробуйте снова.",
     "No orders selected": "Заказы не выбраны",
     "Selected orders updated successfully!": "Выбранные заказы успешно обновлены!",
-    "Failed to update orders. Please try again.": "Не удалось обновить заказы. Пожалуйста, попробуйте снова."
+    "Failed to update orders. Please try again.": "Не удалось обновить заказы. Пожалуйста, попробуйте снова.",
+    "Search": "Поиск"
 
 }

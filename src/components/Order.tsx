@@ -61,7 +61,9 @@ const Order = ({ status }: { status: string | null }) => {
       tasks = tasks.filter(
         (task: any) =>
           task.tracking_code.includes(searchTerm) ||
-          task.client_phone.includes(searchTerm)
+          task.client_phone.includes(searchTerm)  ||
+          task.client_name.includes(searchTerm) ||
+          task.client_address.includes(searchTerm)
       );
     }
     return tasks;
@@ -196,7 +198,7 @@ const Order = ({ status }: { status: string | null }) => {
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
             type="text"
-            placeholder="ძიება"
+            placeholder={t("Search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full focus:outline-none"

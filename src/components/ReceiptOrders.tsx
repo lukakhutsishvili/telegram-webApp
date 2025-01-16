@@ -59,7 +59,9 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
       tasks = tasks.filter(
         (task: any) =>
           task.tracking_code.includes(searchTerm) ||
-          task.client_phone.includes(searchTerm)
+          task.client_phone.includes(searchTerm)  ||
+          task.client_name.includes(searchTerm) ||
+          task.client_address.includes(searchTerm)
       );
     }
     return tasks;

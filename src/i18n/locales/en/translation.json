@@ -83,5 +83,6 @@
     "Failed to update sort order. Please try again.": "Failed to update sort order. Please try again.",
     "No orders selected": "No orders selected",
     "Selected orders updated successfully!": "Selected orders updated successfully!",
-    "Failed to update orders. Please try again.": "Failed to update orders. Please try again."
+    "Failed to update orders. Please try again.": "Failed to update orders. Please try again.",
+    "Search": "Search"
 }
