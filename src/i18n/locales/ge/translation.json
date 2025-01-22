@@ -30,7 +30,7 @@
     "sum": "თანხა",
     "status": "სტატუსი",
     "accept": "მიღება",
-    "restore": "აღდგენა",
+    "recovery": "აღდგენა",
     "hand over": "ჩაბარება",
     "cancellation": "გაუქმება",
     "delivery": "მიწოდება",
@@ -77,6 +77,13 @@
     "confirm": "დადასტურება",
     "Enter register code manually": "შეიყვანე რეესტრის კოდი",
     "Scan Successfully": "სკანირება წარმატებით შესრულდა",
-    "Close": "დახურვა"
+    "Close": "დახურვა",
+    "please wait until information is loaded": "გთხოვთ, დაელოდოთ ინფორმაციის ჩატვირთვას",
+    "Phone number copied to clipboard": "ტელეფონის ნომერი კლიპბორდზე დაკოპირდა",
+    "Failed to update sort order. Please try again.": "სორტირების რიგის განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ ხელახლა.",
+    "No orders selected": "შეკვეთები არ არის არჩეული",
+    "Selected orders updated successfully!": "არჩეული შეკვეთები წარმატებით განახლდა!",
+    "Failed to update orders. Please try again.": "შეკვეთების განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ ხელახლა.",
+    "Search": "ძიება"
 
 }

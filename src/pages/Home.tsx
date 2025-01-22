@@ -99,7 +99,7 @@ function Home() {
         await fetchAmount();
         await fetchReasons();
       } catch (error) {
-        alert(error);
+        console.log(error);  // changed alert to console.error
       } finally {
         setLoading(false);
       }
@@ -162,7 +162,7 @@ function Home() {
                 className="text-yellow-500 text-3xl animate-spin mr-4"
               />
               <p className="text-red-500 font-medium">
-                {t("please wait until information is fetched")}
+                {t("please wait until information is loaded")}
               </p>
             </div>
           )}

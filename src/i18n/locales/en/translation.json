@@ -30,7 +30,7 @@
     "sum": "Sum",
     "status": "Status",
     "accept": "Accept",
-    "restore": "Restore",
+    "recovery": "Recovery",
     "hand over": "Hand over",
     "cancellation": "Cancellation",
     "delivery": "Delivery",
@@ -77,5 +77,12 @@
     "confirm": "Confirm",
     "Enter register code manually": "Enter register code manually",
     "Scan Successfully": "Scan Successfully",
-    "Close": "Close"
+    "Close": "Close",
+    "please wait until information is loaded": "Please wait until information is loaded",
+    "Phone number copied to clipboard": "Phone number copied to clipboard",
+    "Failed to update sort order. Please try again.": "Failed to update sort order. Please try again.",
+    "No orders selected": "No orders selected",
+    "Selected orders updated successfully!": "Selected orders updated successfully!",
+    "Failed to update orders. Please try again.": "Failed to update orders. Please try again.",
+    "Search": "Search"
 }

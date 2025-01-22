@@ -68,7 +68,7 @@ const OrderPage = () => {
       status: newStatus,
       orders: [id],
     };
-
+    setLoading(true);
     try {
       const response = await changeOrderStatus(params);
       console.log("Order status updated successfully:", response);
@@ -81,6 +81,8 @@ const OrderPage = () => {
         "Failed to update order status or fetch updated list:",
         error
       );
+    } finally {
+      setLoading(false); // Reset loading to false after the operation
     }
   };
 
@@ -191,9 +193,19 @@ const OrderPage = () => {
               onClick={() => {
                 handleStatusChangeAndFetch("Accepted");
               }}
-              className="bg-yellow-400 text-black"
+              disabled={loading}
+              className={`bg-yellow-400 text-black ${
+                loading ? "cursor-not-allowed" : ""
+              }`}
             >
-              {t("accept")}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-black rounded-full animate-spin"></div>
+                  <span className="ml-2">{t("loading")}</span>
+                </div>
+              ) : (
+                t("accept")
+              )}
             </Button>
           </div>
         )}
