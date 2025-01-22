@@ -141,12 +141,12 @@ const OrderPage = () => {
         </div>
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
-          <button
-            // onClick={() => handlePhoneCall(order.client_phone)}
-            className="font-medium text-blue-500 underline"
+          <span
+            onClick={() => navigator.clipboard.writeText(order.client_phone)}
+            className="font-medium text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
-          </button>
+          </span>
         </div>
 
         <div className="p-4 flex justify-between">
