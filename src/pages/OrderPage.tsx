@@ -95,24 +95,24 @@ const OrderPage = () => {
     }
   };
 
-  const handlePhoneCall = (phone: string) => {
-    try {
-      // Check if the environment supports "tel:" links
-      if (true) {
-        // Use Telegram's method to open links if available
-        window.Telegram.WebApp.openLink(`tel:${phone}`);
-      } else {
-        // Use the standard `window.open` method as a fallback
-        window.open(`tel:${phone}`, "_self");
-      }
-    } catch (error) {
-      console.error("Failed to open phone link:", error);
-      // Fallback to copy the phone number to clipboard
-      navigator.clipboard.writeText(phone).then(() => {
-        alert("Phone number copied to clipboard");
-      });
-    }
-  };
+  // const handlePhoneCall = (phone: string) => {
+  //   try {
+  //     // Check if the environment supports "tel:" links
+  //     if (true) {
+  //       // Use Telegram's method to open links if available
+  //       window.Telegram.WebApp.openLink(`tel:${phone}`);
+  //     } else {
+  //       // Use the standard `window.open` method as a fallback
+  //       window.open(`tel:${phone}`, "_self");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to open phone link:", error);
+  //     // Fallback to copy the phone number to clipboard
+  //     navigator.clipboard.writeText(phone).then(() => {
+  //       alert("Phone number copied to clipboard");
+  //     });
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-white px-4 pt-24">
@@ -140,7 +140,7 @@ const OrderPage = () => {
         <div className="p-4 flex justify-between">
           <span>{t("phone")} :</span>
           <button
-            onClick={() => handlePhoneCall(order.client_phone)}
+            // onClick={() => handlePhoneCall(order.client_phone)}
             className="font-medium text-blue-500 underline"
           >
             {order.client_phone}
