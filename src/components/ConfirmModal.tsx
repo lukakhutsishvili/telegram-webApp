@@ -90,7 +90,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const confirmDelivery = async () => {
     const params = {
       device_id: userInfo.device_id,
-      payment_type: order.sum === 0 ? null : paymentMethod,
+      payment_type: order.sum == 0 ? null : paymentMethod,
       orders: [
         {
           tracking_code: order.tracking_code,

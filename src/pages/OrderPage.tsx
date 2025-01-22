@@ -97,8 +97,6 @@ const OrderPage = () => {
     }
   };
 
-
-
   return (
     <div className="min-h-screen bg-white px-4 pt-24">
       {/* Header */}
