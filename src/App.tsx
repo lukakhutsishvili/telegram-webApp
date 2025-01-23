@@ -41,7 +41,7 @@ const App = () => {
     const webApp = (window as any)?.Telegram?.WebApp;
 
     if (webApp) {
-      webApp.ready();
+      // webApp.ready();
       webApp.expand();
       webApp.disableVerticalSwipes();
 
