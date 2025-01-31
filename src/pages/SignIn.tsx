@@ -15,7 +15,7 @@ const SignIn = () => {
   const [errorKey, setErrorKey] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUserInfo, userInfo } = useContext(Context);
-  const params = { telegram_id: userInfo.telegram_id || "1800276631" };
+  const params = { telegram_id: userInfo.telegram_id || "6087086146" };
   const { i18n, t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 

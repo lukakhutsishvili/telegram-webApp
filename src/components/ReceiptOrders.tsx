@@ -25,7 +25,8 @@ import { changeOrderStatus } from "../api/requestHandlers";
 import SortableItem from "./SortableItem";
 
 const RecieptOrder = ({ status }: { status: string | null }) => {
-  const { recieptTasks, userInfo, setRecieptTasks } = useContext(Context);
+  const { recieptTasks, userInfo, setRecieptTasks, tabButtons } =
+    useContext(Context);
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState<{
     [key: string]: boolean;
@@ -188,7 +189,12 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
 
   return (
     <div className="relative px-4">
-      <div className="sticky top-0 z-10 flex items-center bg-white">
+      {/* Search bar with corrected z-index */}
+      <div
+        className={`sticky  top-0 z-30 flex items-center bg-white shadow-md ${
+          tabButtons != "Waiting"  ? "pt-2" : "py-2"
+        }`}
+      >
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
@@ -202,7 +208,10 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
       </div>
 
       {status === "Waiting" && filteredTasks.length > 0 && (
-        <div className="sticky top-[58px] z-30 flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500 bg-white">
+        <div
+          className={`sticky top-[60px] z-30 flex items-center gap-2 py-2  px-3 border-b-2
+      border-gray-500 bg-white will-change-transform`}
+        >
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
