@@ -38,4 +38,6 @@ interface ContextType {
   setNavbarButtons: React.Dispatch<React.SetStateAction<string>>;
   amount: any;
   setAmount: any;
+  activeButton: number;
+  setActiveButton: any;
 }

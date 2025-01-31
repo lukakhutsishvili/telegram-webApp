@@ -23,6 +23,8 @@ const defaultContextValue: ContextType = {
   setNavbarButtons: () => {},
   amount: [{ cash: 0, bank: 0, sum: 0 }],
   setAmount: () => {},
+  activeButton: 0,
+  setActiveButton: () => {},
 };
 
 export const Context = createContext(defaultContextValue);
@@ -36,6 +38,7 @@ const App = () => {
   const [sendingTasks, setSendingTasks] = useState<any[]>([]);
   const [tabButtons, setTabButtons] = useState<string>("Accepted");
   const [amount, setAmount] = useState([{ cash: 0, bank: 0, sum: 0 }]);
+  const [activeButton, setActiveButton] = useState<number>(0);
 
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
@@ -71,6 +74,8 @@ const App = () => {
         setNavbarButtons,
         amount,
         setAmount,
+        activeButton,
+        setActiveButton,
       }}
     >
       <Routes>
