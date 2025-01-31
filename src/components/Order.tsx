@@ -61,7 +61,7 @@ const Order = ({ status }: { status: string | null }) => {
       tasks = tasks.filter(
         (task: any) =>
           task.tracking_code.includes(searchTerm) ||
-          task.client_phone.includes(searchTerm)  ||
+          task.client_phone.includes(searchTerm) ||
           task.client_name.includes(searchTerm) ||
           task.client_address.includes(searchTerm)
       );
@@ -72,7 +72,7 @@ const Order = ({ status }: { status: string | null }) => {
   useEffect(() => {
     setSelectedOrders({});
     setCheckAll(false);
-  }, [status, searchTerm, sendingTasks]);
+  }, [status, sendingTasks]);
 
   const handleCheckboxChange = (trackingCode: string, checked: boolean) => {
     setSelectedOrders((prev) => ({ ...prev, [trackingCode]: checked }));
