@@ -71,14 +71,17 @@ const SortableItem = ({
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
         </div>
-        <div className="flex items-center gap-1">
-          <FontAwesomeIcon icon={faBarcode} />
-          <p className="text-sm">{task.tracking_code}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <FontAwesomeIcon icon={faBarcode} />
+            <p className="text-sm">{task.tracking_code}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <FontAwesomeIcon icon={faPhone} />
+            <p className="text-sm">{task.client_phone}</p>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <FontAwesomeIcon icon={faPhone} />
-          <p className="text-sm">{task.client_phone}</p>
-        </div>
+  
         <h2 className="text-sm">{task.client_address}</h2>
       </div>
     </div>

@@ -32,7 +32,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const [otpCooldown, setOtpCooldown] = useState(0); // Cooldown timer for OTP
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(2);
   const [startTimer, setStartTimer] = useState(false);
   const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
     useContext(Context);
