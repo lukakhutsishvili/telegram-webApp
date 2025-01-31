@@ -55,7 +55,8 @@ function Receipt() {
           </Swiper>
         </div>
       </div>
-
+ 
+ 
       {/* Parcel info */}
       <div className="w-full overflow-y-auto pb-4">
         <ReceiptOrders status={tabButtons} />
