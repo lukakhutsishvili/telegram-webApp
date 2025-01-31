@@ -59,7 +59,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
       tasks = tasks.filter(
         (task: any) =>
           task.tracking_code.includes(searchTerm) ||
-          task.client_phone.includes(searchTerm)  ||
+          task.client_phone.includes(searchTerm) ||
           task.client_name.includes(searchTerm) ||
           task.client_address.includes(searchTerm)
       );
@@ -70,7 +70,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
   useEffect(() => {
     setSelectedOrders({});
     setCheckAll(false);
-  }, [status, searchTerm, recieptTasks]);
+  }, [status, recieptTasks]);
 
   const handleCheckboxChange = (trackingCode: string, checked: boolean) => {
     setSelectedOrders((prev) => ({ ...prev, [trackingCode]: checked }));
@@ -202,7 +202,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
       </div>
 
       {status === "Waiting" && filteredTasks.length > 0 && (
-         <div className="sticky top-[58px] z-30 flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500 bg-white">
+        <div className="sticky top-[58px] z-30 flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500 bg-white">
           <div className="flex items-center gap-2">
             <input
               type="checkbox"

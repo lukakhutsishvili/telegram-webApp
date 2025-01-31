@@ -61,7 +61,7 @@ const Order = ({ status }: { status: string | null }) => {
       tasks = tasks.filter(
         (task: any) =>
           task.tracking_code.includes(searchTerm) ||
-          task.client_phone.includes(searchTerm) ||
+          task.client_phone.includes(searchTerm)  ||
           task.client_name.includes(searchTerm) ||
           task.client_address.includes(searchTerm)
       );
@@ -193,9 +193,7 @@ const Order = ({ status }: { status: string | null }) => {
 
   return (
     <div className="relative px-4">
-  
-      {/* Search bar with corrected z-index */}
-      <div className="sticky top-0 z-30 flex items-center bg-white shadow-md py-2">
+      <div className="sticky top-0 z-10 flex items-center bg-white">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
@@ -207,10 +205,9 @@ const Order = ({ status }: { status: string | null }) => {
           />
         </div>
       </div>
-  
-      {/* Checkbox section for "Waiting" status */}
+
       {status === "Waiting" && filteredTasks.length > 0 && (
-        <div className="sticky top-[58px] z-30 flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500 bg-white">
+        <div className="flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500">
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -228,8 +225,7 @@ const Order = ({ status }: { status: string | null }) => {
           </button>
         </div>
       )}
-  
-      {/* Sortable list */}
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -255,7 +251,6 @@ const Order = ({ status }: { status: string | null }) => {
       </DndContext>
     </div>
   );
-  
 };
 
 export default Order;
