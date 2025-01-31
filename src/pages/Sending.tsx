@@ -11,7 +11,7 @@ function Sending() {
   const { tabButtons, setTabButtons } = useContext(Context);
 
   return (
-    <div className="flex flex-col h-screen bg-white pt-16 pb-[104px]">
+    <div className="flex flex-col h-screen bg-white pt-16 h-sm:pt-6 pb-[104px]">
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("delivery")}</h1>
         <div className="mt-4">

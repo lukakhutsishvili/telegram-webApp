@@ -12,7 +12,7 @@ function Reciept() {
   const { tabButtons, setTabButtons } = useContext(Context);
 
   return (
-    <div className="flex flex-col h-screen bg-white pt-16 ">
+    <div className="flex flex-col h-screen bg-white pt-16 h-sm:pt-6 ">
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("pick up")}</h1>
