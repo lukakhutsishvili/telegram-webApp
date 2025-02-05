@@ -64,6 +64,22 @@ const SortableItem = ({
         </div>
       )}
 
+      {status === "Accepted" && (
+        <div 
+        className="flex items-center select-none"
+        onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>
+          <input
+            type="checkbox"
+            checked={!!selectedOrders[task.tracking_code]}
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) =>
+              handleCheckboxChange(task.tracking_code, e.target.checked)
+            }
+            className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
+          />
+        </div>
+      )}
+
       <div 
       className={`relative w-full flex flex-col gap-1  select-none`}
       onClick={handleClick}>

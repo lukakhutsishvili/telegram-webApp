@@ -197,10 +197,38 @@ const Order = ({ status }: { status: string | null }) => {
   }, []);
   console.log("sendingTasks", sendingTasks);
 
-  if (!sendingTasks || sendingTasks.length === 0) {
-    return <div>{t("No tasks available")}</div>;
-  }
-
+  const handleConfirmAllTasks = () => {
+    const selectedOrdersList = Object.keys(selectedOrders)
+      .filter((trackingCode) => selectedOrders[trackingCode])
+      .map((trackingCode) => {
+        const order = sendingTasks.find((task) => task.tracking_code === trackingCode);
+        return {
+          tracking_code: order.tracking_code,
+          sum: order.sum,
+          client_phone: order.client_phone,
+        };
+      });
+  
+    if (selectedOrdersList.length === 0) {
+      alert(t("No orders selected!"));
+      return;
+    }
+  
+    // Get the phone number of the first selected order
+    const firstPhoneNumber = selectedOrdersList[0].client_phone;
+  
+    // Filter orders that have the same phone number
+    const samePhoneOrders = selectedOrdersList.filter(
+      (order) => order.client_phone === firstPhoneNumber
+    );
+  
+    // Navigate to the first selected order and pass filtered orders as state
+    navigate(`/order/${selectedOrdersList[0].tracking_code}`, {
+      state: { selectedOrdersList: samePhoneOrders },
+    });
+  };
+  
+  
 
   return (
     <div className="relative px-4">
@@ -237,6 +265,27 @@ const Order = ({ status }: { status: string | null }) => {
             className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md"
           >
             {t("accept all")}
+          </button>
+        </div>
+      )}
+
+      {status === "Accepted" && filteredTasks.length > 0 && (
+        <div className="sticky top-[60px] z-30 flex items-center gap-2 py-2 px-3 border-b-2
+         border-gray-500 bg-white will-change-transform">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={checkAll}
+              onChange={(e) => handleCheckAllChange(e.target.checked)}
+              className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
+            />
+            <span>{t("select all")}</span>
+          </div>
+          <button
+            onClick={() => handleConfirmAllTasks()}
+            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md"
+          >
+            {t("confirm all")}
           </button>
         </div>
       )}
