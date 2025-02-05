@@ -1,0 +1,52 @@
+{
+    "sendingTasks": [
+      {
+        "tracking_code": "123456",
+        "client_name": "John Doe",
+        "client_address": "123 Main Street, Tbilisi",
+        "client_phone": "+995555123456",
+        "sum": 150,
+        "Status": "Accepted"
+      },
+      {
+        "tracking_code": "789102",
+        "client_name": "Alice Smith",
+        "client_address": "456 Elm Street, Batumi",
+        "client_phone": "+995577654321",
+        "sum": 200,
+        "Status": "Waiting"
+      },
+      {
+        "tracking_code": "123457",
+        "client_name": "John Doe",
+        "client_address": "123 Main Street, Tbilisi",
+        "client_phone": "+995555123456",
+        "sum": 150,
+        "Status": "Accepted"
+      },
+      {
+        "tracking_code": "789103",
+        "client_name": "Alice Smith",
+        "client_address": "456 Elm Street, Batumi",
+        "client_phone": "+995577654321",
+        "sum": 200,
+        "Status": "Waiting"
+      },
+      {
+        "tracking_code": "123458",
+        "client_name": "John Doe",
+        "client_address": "123 Main Street, Tbilisi",
+        "client_phone": "+995555123456",
+        "sum": 150,
+        "Status": "Accepted"
+      },
+      {
+        "tracking_code": "789104",
+        "client_name": "Alice Smith",
+        "client_address": "456 Elm Street, Batumi",
+        "client_phone": "+995577654321",
+        "sum": 200,
+        "Status": "Waiting"
+      }
+    ]
+  }
