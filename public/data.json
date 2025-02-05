@@ -5,7 +5,7 @@
         "client_name": "John Doe",
         "client_address": "123 Main Street, Tbilisi",
         "client_phone": "+995555123456",
-        "sum": 150,
+        "sum": 140,
         "Status": "Accepted"
       },
       {
@@ -21,7 +21,7 @@
         "client_name": "John Doe",
         "client_address": "123 Main Street, Tbilisi",
         "client_phone": "+995555123456",
-        "sum": 150,
+        "sum": 130,
         "Status": "Accepted"
       },
       {

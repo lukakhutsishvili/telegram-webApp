@@ -8,6 +8,7 @@ import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
 import { axiosInstance } from "../api/apiClient";
 import { ORDER_LIST } from "../api/Constants";
+import { useLocation } from "react-router-dom";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +35,9 @@ const OrderPage = () => {
   const receiptOrder = recieptTasks.find((task) => task.tracking_code === id);
 
   const order = sendingOrder || receiptOrder;
+
+  const location = useLocation();
+  const { selectedOrdersList } = location.state || { selectedOrdersList: [] };
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -112,15 +116,15 @@ const OrderPage = () => {
 
       {/* Order Details */}
       <div className="border rounded-lg divide-y divide-gray-200 text-gray-700">
-        <div className="p-4 flex justify-between">
+        <div className="p-2 flex justify-between">
           <span>{t("name")} :</span>
           <span className="font-medium">{order.client_name}</span>
         </div>
-        <div className="p-4 flex justify-between">
+        <div className="p-2 flex justify-between">
           <span>{t("address")}:</span>
           <span className="font-medium text-right">{order.client_address}</span>
         </div>
-        <div className="p-4 flex justify-between">
+        <div className="p-2 flex justify-between">
           <span>{t("phone")} :</span>
           <span
             onClick={() => navigator.clipboard.writeText(order.client_phone)}
@@ -129,25 +133,32 @@ const OrderPage = () => {
             {order.client_phone}
           </span>
         </div>
-
-        <div className="p-4 flex justify-between">
-          <span>{t("barcode")} :</span>
-          <span
-            onClick={() => navigator.clipboard.writeText(order.tracking_code)}
-            className="font-medium text-blue-500 underline cursor-pointer"
-          >
-            {order.tracking_code}
-          </span>
-        </div>
-        <div className="p-4 flex justify-between">
-          <span>{t("sum")} :</span>
-          <span className="font-medium">{order.sum} ₾</span>
-        </div>
-        <div className="p-4 flex justify-between">
+        <div className="p-2 flex justify-between">
           <span>{t("status")} :</span>
           <span className="font-medium">{order.Status}</span>
         </div>
       </div>
+
+      <ul className="mt-6">
+        {selectedOrdersList.map((order: { tracking_code: string; sum: number }) => (
+          <li key={order.tracking_code}
+          className="border border-black text-gray-700 rounded-lg"> 
+              <div className="p-1 flex justify-between">
+                <span>{t("barcode")} :</span>
+                <span
+                  onClick={() => navigator.clipboard.writeText(order.tracking_code)}
+                  className="font-medium text-blue-500 underline cursor-pointer"
+                >
+                  {order.tracking_code}
+                </span>
+              </div>
+              <div className="p-1 flex justify-between">
+                <span>{t("sum")} :</span>
+                <span className="font-medium">{order.sum} ₾</span>
+              </div>
+          </li>
+        ))}
+      </ul>
 
       {/* Action Buttons */}
       <div className="flex justify-center p-8">
