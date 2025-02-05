@@ -187,9 +187,20 @@ const Order = ({ status }: { status: string | null }) => {
     }
   };
 
+  useEffect(() => {
+    fetch("/data.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setSendingTasks(data.sendingTasks);
+        console.log("data", data);
+      });
+  }, []);
+  console.log("sendingTasks", sendingTasks);
+
   if (!sendingTasks || sendingTasks.length === 0) {
-    return <p className="text-center text-gray-500">{t("you have no task")}</p>;
+    return <div>{t("No tasks available")}</div>;
   }
+
 
   return (
     <div className="relative px-4">
