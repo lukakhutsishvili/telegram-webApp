@@ -201,7 +201,9 @@ const Order = ({ status }: { status: string | null }) => {
     const selectedOrdersList = Object.keys(selectedOrders)
       .filter((trackingCode) => selectedOrders[trackingCode])
       .map((trackingCode) => {
-        const order = sendingTasks.find((task) => task.tracking_code === trackingCode);
+        const order = sendingTasks.find(
+          (task) => task.tracking_code === trackingCode
+        );
         return {
           tracking_code: order.tracking_code,
           sum: order.sum,
@@ -215,19 +217,21 @@ const Order = ({ status }: { status: string | null }) => {
       return;
     }
   
-    // Get the phone number of the first selected order
-    const firstPhoneNumber = selectedOrdersList[0].client_phone;
+    // Get the address of the first selected order
+    const firstAddress = selectedOrdersList[0].client_address;
   
-    // Filter orders that have the same phone number
-    const samePhoneOrders = selectedOrdersList.filter(
-      (order) => order.client_phone === firstPhoneNumber
+    // Find orders with a different address
+    const differentAddressOrders = selectedOrdersList.filter(
+      (order) => order.client_address != firstAddress
     );
   
-    // Navigate to the first selected order and pass filtered orders as state
+    // Navigate and pass only different address orders in state
     navigate(`/order/${selectedOrdersList[0].tracking_code}`, {
-      state: { selectedOrdersList: samePhoneOrders },
+      state: { selectedOrdersList, differentAddressOrders },
     });
   };
+  
+  
   
   
 
@@ -284,7 +288,7 @@ const Order = ({ status }: { status: string | null }) => {
           </div>
           <button
             onClick={() => handleConfirmAllTasks()}
-            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md"
+            className={`ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md`}
           >
             {t("confirm all")}
           </button>
