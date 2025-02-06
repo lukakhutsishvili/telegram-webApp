@@ -24,6 +24,7 @@ const OrderPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
 
   const openCancellationModal = () => setIsModalOpen(true);
   const closeCancellationModal = () => setIsModalOpen(false);
@@ -42,6 +43,22 @@ const OrderPage = () => {
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
+
+    // Handle checkbox selection
+    const handleCheckboxChange = (tracking_code: string) => {
+      setSelectedOrders((prev) => ({
+        ...prev,
+        [tracking_code]: !prev[tracking_code],
+      }));
+    };
+  
+    // Calculate total sum of checked orders
+    const totalSum = selectedOrdersList
+      .filter((order: { tracking_code: string; sum: number }) => selectedOrders[order.tracking_code])
+      .reduce((sum: number, order: { tracking_code: string; sum: number }) => sum + order.sum, 0);
+
+    const totalQuantity = selectedOrdersList.filter((order: { tracking_code: string; sum: number }) => selectedOrders[order.tracking_code]).length;
+    
 
   const fetchUpdatedOrderList = async () => {
     try {
@@ -102,7 +119,7 @@ const OrderPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white px-4 pt-24">
+    <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {/* Header */}
       <header className="flex items-center mb-6">
         <button
@@ -121,8 +138,8 @@ const OrderPage = () => {
           <span className="font-medium">{order.client_name}</span>
         </div>
         <div className="p-2 flex justify-between">
-          <span>{t("address")}:</span>
-          <span className="font-medium text-right">{order.client_address}</span>
+            <span>{t("address")}:</span>
+            <span className="font-medium text-right">{order.client_address}</span>
         </div>
         <div className="p-2 flex justify-between">
           <span>{t("phone")} :</span>
@@ -139,10 +156,16 @@ const OrderPage = () => {
         </div>
       </div>
 
-      <ul className="mt-6">
-        {selectedOrdersList.map((order: { tracking_code: string; sum: number }) => (
+      <ul className="mt-6 flex flex-col gap-4">
+        {selectedOrdersList.map((order: { tracking_code: string; sum: number , client_address: string}) => (
           <li key={order.tracking_code}
-          className="border border-black text-gray-700 rounded-lg"> 
+          className="border border-black text-gray-700 rounded-lg flex gap-3 px-3"> 
+          <input
+              type="checkbox"
+              checked={!!selectedOrders[order.tracking_code]}
+              onChange={() => handleCheckboxChange(order.tracking_code)}
+            />
+          <div className="flex flex-col justify-between w-full">
               <div className="p-1 flex justify-between">
                 <span>{t("barcode")} :</span>
                 <span
@@ -152,13 +175,29 @@ const OrderPage = () => {
                   {order.tracking_code}
                 </span>
               </div>
+              <div className="p-1 flex justify-between items-center">
+                <span>{t("address")}:</span>
+                <span className="font-medium text-right">{order.client_address}</span>
+              </div>
               <div className="p-1 flex justify-between">
                 <span>{t("sum")} :</span>
                 <span className="font-medium">{order.sum} ₾</span>
               </div>
+          </div>
           </li>
         ))}
       </ul>
+
+      <div>
+      <div className="p-1 flex justify-between">
+          <span>{t("Total quantity")} :</span>
+          <span className="font-medium">{totalQuantity}</span>
+        </div>
+        <div className="p-1 flex justify-between">
+          <span>{t("Total amount")} :</span>
+          <span className="font-medium">{totalSum} ₾</span>
+        </div>
+      </div>
 
       {/* Action Buttons */}
       <div className="flex justify-center p-8">
