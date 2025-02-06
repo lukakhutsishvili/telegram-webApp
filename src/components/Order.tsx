@@ -205,6 +205,7 @@ const Order = ({ status }: { status: string | null }) => {
         return {
           tracking_code: order.tracking_code,
           sum: order.sum,
+          client_address: order.client_address,
           client_phone: order.client_phone,
         };
       });
