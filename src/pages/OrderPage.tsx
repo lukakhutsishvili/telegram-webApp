@@ -38,7 +38,7 @@ const OrderPage = () => {
   const order = sendingOrder || receiptOrder;
 
   const location = useLocation();
-  const { selectedOrdersList } = location.state || { selectedOrdersList: [] };
+  const { selectedOrdersList = [], differentAddressOrders = false } = location.state || {};
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -133,55 +133,56 @@ const OrderPage = () => {
 
       {/* Order Details */}
       <div className="border rounded-lg divide-y divide-gray-200 text-gray-700">
-        <div className="p-2 flex justify-between">
-          <span>{t("name")} :</span>
-          <span className="font-medium">{order.client_name}</span>
+        <div className="p-1 flex justify-between">
+          <span className="font-base text-sm">{t("name")} :</span>
+          <span className="font-base">{order.client_name}</span>
         </div>
-        <div className="p-2 flex justify-between">
-            <span>{t("address")}:</span>
-            <span className="font-medium text-right">{order.client_address}</span>
+        <div className="p-1 flex justify-between">
+            <span className="font-base text-sm">{t("address")}:</span>
+            <span className="font-base text-right">{order.client_address}</span>
         </div>
-        <div className="p-2 flex justify-between">
-          <span>{t("phone")} :</span>
+        <div className="p-1 flex justify-between">
+          <span className="font-base text-sm">{t("phone")} :</span>
           <span
             onClick={() => navigator.clipboard.writeText(order.client_phone)}
-            className="font-medium text-blue-500 underline cursor-pointer"
+            className="font-base text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
           </span>
         </div>
         <div className="p-2 flex justify-between">
-          <span>{t("status")} :</span>
-          <span className="font-medium">{order.Status}</span>
+          <span className="font-base text-sm">{t("status")} :</span>
+          <span className="font-base">{order.Status}</span>
         </div>
       </div>
 
-      <ul className="mt-6 flex flex-col gap-4">
+      <ul className="mt-6 flex flex-col gap-2 overflow-y-auto h-60">
         {selectedOrdersList.map((order: { tracking_code: string; sum: number , client_address: string}) => (
           <li key={order.tracking_code}
-          className="border border-black text-gray-700 rounded-lg flex gap-3 px-3"> 
+          className={`border-2 ${differentAddressOrders.some((diffOrder: any) => diffOrder.tracking_code === order.tracking_code) ? "border-red-600" : "border-black"} text-gray-700 rounded-lg flex gap-3 px-3`}
+          > 
           <input
               type="checkbox"
               checked={!!selectedOrders[order.tracking_code]}
               onChange={() => handleCheckboxChange(order.tracking_code)}
             />
           <div className="flex flex-col justify-between w-full">
-              <div className="p-1 flex justify-between">
-                <span>{t("barcode")} :</span>
+              <div className="flex justify-between items-center">
+                <span className="font-base text-xs">{t("barcode")} :</span>
                 <span
                   onClick={() => navigator.clipboard.writeText(order.tracking_code)}
-                  className="font-medium text-blue-500 underline cursor-pointer"
+                  className="text-sm text-blue-500 underline cursor-pointer"
                 >
                   {order.tracking_code}
                 </span>
               </div>
-              <div className="p-1 flex justify-between items-center">
-                <span>{t("address")}:</span>
-                <span className="font-medium text-right">{order.client_address}</span>
+              <div className="flex justify-between items-center">
+                <span className="font-base text-sm">{t("address")}:</span>
+                <span className="font-base text-sm text-right">{order.client_address}</span>
               </div>
-              <div className="p-1 flex justify-between">
-                <span>{t("sum")} :</span>
-                <span className="font-medium">{order.sum} ₾</span>
+              <div className="flex justify-between items-center">
+                <span className="font-base text-sm">{t("sum")} :</span>
+                <span className="font-base text-sm">{order.sum} ₾</span>
               </div>
           </div>
           </li>
@@ -200,7 +201,7 @@ const OrderPage = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-center p-8">
+      <div className="flex justify-center p-5">
         {order.Status === "Accepted" && (
           <div className="flex space-x-4">
             <Button
