@@ -23,6 +23,16 @@ import { axiosInstance } from "../api/apiClient";
 import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
 import SortableItem from "./SortableItem";
+import useOpenActiveTask from "../hooks/useOpenActiveTask";
+
+interface Order {
+  tracking_code: string;
+  client_phone: string;
+  client_name: string;
+  client_address: string;
+  Status: string;
+  sort_number?: number;
+}
 
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks, userInfo, setSendingTasks } = useContext(Context);
@@ -51,7 +61,7 @@ const Order = ({ status }: { status: string | null }) => {
 
   const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
-  const filteredTasks = useMemo(() => {
+  const filteredTasks: Order[] = useMemo(() => {
     if (!sendingTasks) return [];
     let tasks = status
       ? sendingTasks.filter((task: any) => task.Status === status)
@@ -197,42 +207,8 @@ const Order = ({ status }: { status: string | null }) => {
   }, []);
   console.log("sendingTasks", sendingTasks);
 
-  const handleConfirmAllTasks = () => {
-    const selectedOrdersList = Object.keys(selectedOrders)
-      .filter((trackingCode) => selectedOrders[trackingCode])
-      .map((trackingCode) => {
-        const order = sendingTasks.find(
-          (task) => task.tracking_code === trackingCode
-        );
-        return {
-          tracking_code: order.tracking_code,
-          sum: order.sum,
-          client_address: order.client_address,
-          client_phone: order.client_phone,
-        };
-      });
-  
-    if (selectedOrdersList.length === 0) {
-      alert(t("No orders selected!"));
-      return;
-    }
-  
-    // Get the address of the first selected order
-    const firstAddress = selectedOrdersList[0].client_address;
-  
-    // Find orders with a different address
-    const differentAddressOrders = selectedOrdersList.filter(
-      (order) => order.client_address != firstAddress
-    );
-  
-    // Navigate and pass only different address orders in state
-    navigate(`/order/${selectedOrdersList[0].tracking_code}`, {
-      state: { selectedOrdersList, differentAddressOrders },
-    });
-  };
-  
-  
-  
+
+  const { handleConfirmAllTasks } = useOpenActiveTask();
   
 
   return (
@@ -287,7 +263,7 @@ const Order = ({ status }: { status: string | null }) => {
             <span>{t("select all")}</span>
           </div>
           <button
-            onClick={() => handleConfirmAllTasks()}
+            onClick={() => handleConfirmAllTasks(selectedOrders)}
             className={`ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md`}
           >
             {t("confirm all")}
