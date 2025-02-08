@@ -23,7 +23,6 @@ import { axiosInstance } from "../api/apiClient";
 import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
 import SortableItem from "./SortableItem";
-import useOpenActiveTask from "../hooks/useOpenActiveTask";
 
 interface Order {
   tracking_code: string;
@@ -197,19 +196,9 @@ const Order = ({ status }: { status: string | null }) => {
     }
   };
 
-  useEffect(() => {
-    fetch("/data.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setSendingTasks(data.sendingTasks);
-        console.log("data", data);
-      });
-  }, []);
-  console.log("sendingTasks", sendingTasks);
-
-
-  const { handleConfirmAllTasks } = useOpenActiveTask();
-  
+  if (!sendingTasks || sendingTasks.length === 0) {
+    return <p className="text-center text-gray-500">{t("you have no task")}</p>;
+  }
 
   return (
     <div className="relative px-4">
@@ -250,26 +239,6 @@ const Order = ({ status }: { status: string | null }) => {
         </div>
       )}
 
-      {status === "Accepted" && filteredTasks.length > 0 && (
-        <div className="sticky top-[60px] z-30 flex items-center gap-2 py-2 px-3 border-b-2
-         border-gray-500 bg-white will-change-transform">
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={checkAll}
-              onChange={(e) => handleCheckAllChange(e.target.checked)}
-              className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
-            />
-            <span>{t("select all")}</span>
-          </div>
-          <button
-            onClick={() => handleConfirmAllTasks(Object.keys(selectedOrders).join(','))}
-            className={`ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md`}
-          >
-            {t("confirm all")}
-          </button>
-        </div>
-      )}
 
       <DndContext
         sensors={sensors}
