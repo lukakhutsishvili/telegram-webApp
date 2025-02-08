@@ -1,65 +1,40 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { Context } from "../App";
-import { t } from "i18next";
 
 const useOpenActiveTask = () => {
   const { sendingTasks } = useContext(Context);
   const navigate = useNavigate();
 
-  const handleConfirmAllTasks = (selectedOrders: { [key: string]: boolean }) => {
-    const selectedOrdersList = Object.keys(selectedOrders)
-      .filter((trackingCode) => selectedOrders[trackingCode])
-      .map((trackingCode) => {
-        console.log("trackingCode", trackingCode);
-        const order = sendingTasks.find(
-          (task) => task.tracking_code === trackingCode
-        );
-
-        if (!order) {
-          console.warn(`Order with tracking code ${trackingCode} not found`);
-          return null; // Return null if order is not found
-        }
-
-        return {
-          tracking_code: order.tracking_code,
-          sum: order.sum,
-          client_address: order.client_address,
-          client_phone: order.client_phone,
-        };
-      })
-      .filter((order) => order !== null);
-
-    if (selectedOrdersList.length === 0) {
-      alert(t("No orders selected!"));
+  const handleConfirmAllTasks = (trackingCode: string) => {
+    const task = sendingTasks.find((task) => task.tracking_code === trackingCode);
+    
+    if (!task) {
+      console.warn(`Order with tracking code ${trackingCode} not found`);
       return;
     }
 
-    // Group orders by client_phone
-    const phoneGroups: { [key: string]: any[] } = {};
-    selectedOrdersList.forEach((order) => {
-      if (!phoneGroups[order.client_phone]) {
-        phoneGroups[order.client_phone] = [];
-      }
-      phoneGroups[order.client_phone].push(order);
-    });
-
-    // Get the first group (first phone number)
-    const firstPhoneNumber = Object.keys(phoneGroups)[0];
-    const firstGroupOrders = phoneGroups[firstPhoneNumber];
-
-    const firstAddress = selectedOrdersList[0].client_address;
-
-    const differentAddressOrders = selectedOrdersList.filter(
-      (order) => order.client_address != firstAddress
+    // Find all orders with the same phone number
+    const samePhoneTasks = sendingTasks.filter(
+      (order) => order.client_phone === task.client_phone
     );
 
-    console.log("First group orders:", firstGroupOrders);
+    if (samePhoneTasks.length > 0) {
+      // Get the first address (assuming first order's address is the main address)
+      const mainAddress = samePhoneTasks[0].client_address;
 
-    // Open the first order and pass others as additional codes
-    navigate(`/order/${firstGroupOrders[0].tracking_code}`, {
-      state: { selectedOrdersList, additionalOrders: firstGroupOrders.slice(1) , differentAddressOrders},
-    });
+      // Separate same-address and different-address orders
+      const differentAddressOrders = samePhoneTasks.filter(
+        (order) => order.client_address !== mainAddress
+      );
+
+      navigate(`/order/${samePhoneTasks[0].tracking_code}`, {
+        state: {
+          selectedOrdersList: samePhoneTasks,
+          differentAddressOrders,
+        },
+      });
+    }
   };
 
   return { handleConfirmAllTasks };

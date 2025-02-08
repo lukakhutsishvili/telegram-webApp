@@ -8,7 +8,6 @@ const SortableItem = ({
   id,
   task,
   status,
-  // navigate,
   handleCheckboxChange,
   selectedOrders,
 }: any) => {
@@ -30,6 +29,7 @@ const SortableItem = ({
     opacity: isDragging ? 0.9 : 1,
   };
 
+
   const { handleConfirmAllTasks } = useOpenActiveTask();
 
   const handleClick = (e: React.MouseEvent) => {
@@ -38,10 +38,10 @@ const SortableItem = ({
       return;
     }
     if (!isDragging) {
-      // navigate(`/order/${task.tracking_code}`);
-      handleConfirmAllTasks(selectedOrders);
+      handleConfirmAllTasks(task.tracking_code);
     }
   };
+  
 
 
   return (
