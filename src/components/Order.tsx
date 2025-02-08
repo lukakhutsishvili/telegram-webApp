@@ -263,7 +263,7 @@ const Order = ({ status }: { status: string | null }) => {
             <span>{t("select all")}</span>
           </div>
           <button
-            onClick={() => handleConfirmAllTasks(selectedOrders)}
+            onClick={() => handleConfirmAllTasks(Object.keys(selectedOrders).join(','))}
             className={`ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md`}
           >
             {t("confirm all")}
