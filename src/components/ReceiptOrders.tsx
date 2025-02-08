@@ -190,11 +190,8 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
   return (
     <div className="relative px-4">
       {/* Search bar with corrected z-index */}
-      <div
-        className={`sticky  top-0 z-30 flex items-center bg-white shadow-md ${
-          tabButtons != "Waiting"  ? "pt-2" : "py-2"
-        }`}
-      >
+      <div className="sticky  top-0 z-30 flex items-center bg-white shadow-md py-2">
+
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input

@@ -9,6 +9,7 @@ const SortableItem = ({
   task,
   status,
   handleCheckboxChange,
+  navigate,
   selectedOrders,
 }: any) => {
   const {
@@ -38,7 +39,12 @@ const SortableItem = ({
       return;
     }
     if (!isDragging) {
-      handleConfirmAllTasks(task.tracking_code);
+      if (status === "Accepted") {
+        handleConfirmAllTasks(task.tracking_code);
+      } else{
+        return navigate(`/order/${task.tracking_code}`);
+      }
+        
     }
   };
   
@@ -54,22 +60,6 @@ const SortableItem = ({
         isDragging ? "ring-2 ring-yellow-500 scale-105" : "" } `}
     >
       {status === "Waiting" && (
-        <div 
-        className="flex items-center select-none"
-        onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>
-          <input
-            type="checkbox"
-            checked={!!selectedOrders[task.tracking_code]}
-            onClick={(e) => e.stopPropagation()}
-            onChange={(e) =>
-              handleCheckboxChange(task.tracking_code, e.target.checked)
-            }
-            className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
-          />
-        </div>
-      )}
-
-      {status === "Accepted" && (
         <div 
         className="flex items-center select-none"
         onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>

@@ -189,33 +189,33 @@ const OrderPage = () => {
         ))}
       </ul>
 
-      <div>
-      <div className="p-1 flex justify-between">
-          <span>{t("Total quantity")} :</span>
-          <span className="font-medium">{totalQuantity}</span>
-        </div>
-        <div className="p-1 flex justify-between">
-          <span>{t("Total amount")} :</span>
-          <span className="font-medium">{totalSum} ₾</span>
-        </div>
-      </div>
 
       {/* Action Buttons */}
       <div className="flex justify-center p-5">
         {order.Status === "Accepted" && (
+          <div className="flex flex-col gap-2">
+            <div className="p-1 flex justify-between">
+              <span>{t("Total quantity")} :</span>
+              <span className="font-medium">{totalQuantity}</span>
+            </div>
+            <div className="p-1 flex justify-between">
+              <span>{t("Total amount")} :</span>
+              <span className="font-medium">{totalSum} ₾</span>
+            </div>
           <div className="flex space-x-4">
-            <Button
-              onClick={openConfirmModal}
-              className="bg-yellow-400 text-black"
-            >
-              {t("hand over")}
-            </Button>
-            <Button
-              onClick={openCancellationModal}
-              className="bg-yellow-400 text-black"
-            >
-              {t("cancellation")}
-            </Button>
+              <Button
+                onClick={openConfirmModal}
+                className="bg-yellow-400 text-black"
+              >
+                {t("hand over")}
+              </Button>
+              <Button
+                onClick={openCancellationModal}
+                className="bg-yellow-400 text-black"
+              >
+                {t("cancellation")}
+              </Button>
+            </div>
           </div>
         )}
 

@@ -3,11 +3,14 @@ import { useContext } from "react";
 import { Context } from "../App";
 
 const useOpenActiveTask = () => {
-  const { sendingTasks } = useContext(Context);
+  const { sendingTasks, recieptTasks } = useContext(Context);
   const navigate = useNavigate();
 
+  const activeStatus =  "Accepted";
+
   const handleConfirmAllTasks = (trackingCode: string) => {
-    const task = sendingTasks.find((task) => task.tracking_code === trackingCode);
+    const task = sendingTasks.find((task) => task.tracking_code === trackingCode) ||
+      recieptTasks.find((task) => task.tracking_code === trackingCode);
     
     if (!task) {
       console.warn(`Order with tracking code ${trackingCode} not found`);
@@ -15,8 +18,10 @@ const useOpenActiveTask = () => {
     }
 
     // Find all orders with the same phone number
-    const samePhoneTasks = sendingTasks.filter(
-      (order) => order.client_phone === task.client_phone
+    const samePhoneTasks = [...sendingTasks, ...recieptTasks].filter(
+      (order) =>
+        order.client_phone === task.client_phone &&
+        order.Status === activeStatus
     );
 
     if (samePhoneTasks.length > 0) {
