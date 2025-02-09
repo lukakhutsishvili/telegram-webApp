@@ -13,6 +13,8 @@ import { Context } from "../App";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import useParcelStorage from "../hooks/useParcelStorage";
+import ThirdPerson from "./ThirdPerson";
+
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -35,6 +37,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [timer, setTimer] = useState(2);
   const [startTimer, setStartTimer] = useState(false);
+  const [thirdPerson, setThirdPerson] = useState(false);
   const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } =
     useContext(Context);
   const navigate = useNavigate();
@@ -277,6 +280,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      {thirdPerson && (
+        <ThirdPerson
+          onConfirm={onConfirm}
+          navigationfunction={navigationfunction}
+          closeModal={closeModal}
+          loading={loading}
+          confirmationMessage={confirmationMessage}
+        />
+      )}
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
         <h2 className="text-lg font-bold mb-4">
           {sendingOrder ? t("Confirm Handover") : t("Confirm Receiving")}
@@ -345,6 +357,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                         : t("Send OTP")}
                     </Button>
                   )}
+                  <Button onClick={() => setThirdPerson(!thirdPerson)}>
+                    მესამე პირი
+                  </Button>
+
                   {otpSent && (
                     <div className="text-green-500">{t("OTP Sent!")}</div>
                   )}
