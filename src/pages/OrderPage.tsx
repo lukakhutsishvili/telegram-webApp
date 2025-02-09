@@ -8,6 +8,7 @@ import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
 import { axiosInstance } from "../api/apiClient";
 import { ORDER_LIST } from "../api/Constants";
+import { useLocation } from "react-router-dom";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,7 @@ const OrderPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
 
   const openCancellationModal = () => setIsModalOpen(true);
   const closeCancellationModal = () => setIsModalOpen(false);
@@ -35,9 +37,28 @@ const OrderPage = () => {
 
   const order = sendingOrder || receiptOrder;
 
+  const location = useLocation();
+  const { selectedOrdersList = [], differentAddressOrders = false } = location.state || {};
+
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
+
+    // Handle checkbox selection
+    const handleCheckboxChange = (tracking_code: string) => {
+      setSelectedOrders((prev) => ({
+        ...prev,
+        [tracking_code]: !prev[tracking_code],
+      }));
+    };
+  
+    // Calculate total sum of checked orders
+    const totalSum = selectedOrdersList
+      .filter((order: { tracking_code: string; sum: number }) => selectedOrders[order.tracking_code])
+      .reduce((sum: number, order: { tracking_code: string; sum: number }) => sum + order.sum, 0);
+
+    const totalQuantity = selectedOrdersList.filter((order: { tracking_code: string; sum: number }) => selectedOrders[order.tracking_code]).length;
+    
 
   const fetchUpdatedOrderList = async () => {
     try {
@@ -98,7 +119,7 @@ const OrderPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white px-4 pt-24">
+    <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {/* Header */}
       <header className="flex items-center mb-6">
         <button
@@ -112,59 +133,89 @@ const OrderPage = () => {
 
       {/* Order Details */}
       <div className="border rounded-lg divide-y divide-gray-200 text-gray-700">
-        <div className="p-4 flex justify-between">
-          <span>{t("name")} :</span>
-          <span className="font-medium">{order.client_name}</span>
+        <div className="p-1 flex justify-between">
+          <span className="font-base text-sm">{t("name")} :</span>
+          <span className="font-base">{order.client_name}</span>
         </div>
-        <div className="p-4 flex justify-between">
-          <span>{t("address")}:</span>
-          <span className="font-medium text-right">{order.client_address}</span>
+        <div className="p-1 flex justify-between">
+            <span className="font-base text-sm">{t("address")}:</span>
+            <span className="font-base text-right">{order.client_address}</span>
         </div>
-        <div className="p-4 flex justify-between">
-          <span>{t("phone")} :</span>
+        <div className="p-1 flex justify-between">
+          <span className="font-base text-sm">{t("phone")} :</span>
           <span
             onClick={() => navigator.clipboard.writeText(order.client_phone)}
-            className="font-medium text-blue-500 underline cursor-pointer"
+            className="font-base text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
           </span>
         </div>
-
-        <div className="p-4 flex justify-between">
-          <span>{t("barcode")} :</span>
-          <span
-            onClick={() => navigator.clipboard.writeText(order.tracking_code)}
-            className="font-medium text-blue-500 underline cursor-pointer"
-          >
-            {order.tracking_code}
-          </span>
-        </div>
-        <div className="p-4 flex justify-between">
-          <span>{t("sum")} :</span>
-          <span className="font-medium">{order.sum} ₾</span>
-        </div>
-        <div className="p-4 flex justify-between">
-          <span>{t("status")} :</span>
-          <span className="font-medium">{order.Status}</span>
+        <div className="p-2 flex justify-between">
+          <span className="font-base text-sm">{t("status")} :</span>
+          <span className="font-base">{order.Status}</span>
         </div>
       </div>
 
+      <ul className="mt-6 flex flex-col gap-2 overflow-y-auto h-60">
+        {selectedOrdersList.map((order: { tracking_code: string; sum: number , client_address: string}) => (
+          <li key={order.tracking_code}
+          className={`border-2 ${differentAddressOrders.some((diffOrder: any) => diffOrder.tracking_code === order.tracking_code) ? "border-red-600" : "border-black"} text-gray-700 rounded-lg flex gap-3 px-3`}
+          > 
+          <input
+              type="checkbox"
+              checked={!!selectedOrders[order.tracking_code]}
+              onChange={() => handleCheckboxChange(order.tracking_code)}
+            />
+          <div className="flex flex-col justify-between w-full">
+              <div className="flex justify-between items-center">
+                <span className="font-base text-xs">{t("barcode")} :</span>
+                <span
+                  onClick={() => navigator.clipboard.writeText(order.tracking_code)}
+                  className="text-sm text-blue-500 underline cursor-pointer"
+                >
+                  {order.tracking_code}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-base text-sm">{t("address")}:</span>
+                <span className="font-base text-sm text-right">{order.client_address}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-base text-sm">{t("sum")} :</span>
+                <span className="font-base text-sm">{order.sum} ₾</span>
+              </div>
+          </div>
+          </li>
+        ))}
+      </ul>
+
+
       {/* Action Buttons */}
-      <div className="flex justify-center p-8">
+      <div className="flex justify-center p-5">
         {order.Status === "Accepted" && (
+          <div className="flex flex-col gap-2">
+            <div className="p-1 flex justify-between">
+              <span>{t("Total quantity")} :</span>
+              <span className="font-medium">{totalQuantity}</span>
+            </div>
+            <div className="p-1 flex justify-between">
+              <span>{t("Total amount")} :</span>
+              <span className="font-medium">{totalSum} ₾</span>
+            </div>
           <div className="flex space-x-4">
-            <Button
-              onClick={openConfirmModal}
-              className="bg-yellow-400 text-black"
-            >
-              {t("hand over")}
-            </Button>
-            <Button
-              onClick={openCancellationModal}
-              className="bg-yellow-400 text-black"
-            >
-              {t("cancellation")}
-            </Button>
+              <Button
+                onClick={openConfirmModal}
+                className="bg-yellow-400 text-black"
+              >
+                {t("hand over")}
+              </Button>
+              <Button
+                onClick={openCancellationModal}
+                className="bg-yellow-400 text-black"
+              >
+                {t("cancellation")}
+              </Button>
+            </div>
           </div>
         )}
 

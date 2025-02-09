@@ -2,13 +2,14 @@ import { useSortable } from "@dnd-kit/sortable";
 import { faBarcode, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSS } from "@dnd-kit/utilities";
+import useOpenActiveTask from "../hooks/useOpenActiveTask";
 
 const SortableItem = ({
   id,
   task,
   status,
-  navigate,
   handleCheckboxChange,
+  navigate,
   selectedOrders,
 }: any) => {
   const {
@@ -29,15 +30,25 @@ const SortableItem = ({
     opacity: isDragging ? 0.9 : 1,
   };
 
+
+  const { handleConfirmAllTasks } = useOpenActiveTask();
+
   const handleClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).tagName === "INPUT") {
       e.stopPropagation();
       return;
     }
     if (!isDragging) {
-      navigate(`/order/${task.tracking_code}`);
+      if (status === "Accepted") {
+        handleConfirmAllTasks(task.tracking_code);
+      } else{
+        return navigate(`/order/${task.tracking_code}`);
+      }
+        
     }
   };
+  
+
 
   return (
     <div

@@ -21,7 +21,7 @@ function Receipt() {
   }, [activeButton]);
 
   return (
-    <div className="flex flex-col h-screen bg-white pt-16 sm:pt-6">
+    <div className="flex flex-col h-screen bg-white pt-16 h-sm:pt-6">
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("pick up")}</h1>
@@ -44,7 +44,7 @@ function Receipt() {
                   }}
                   className={`px-4 py-2 transition-all ${
                     tabButtons === item.status
-                      ? "bg-yellow-600 border-2 border-yellow-800 "
+                      ? "bg-yellow-600"
                       : "bg-yellow-400"
                   } text-black font-semibold text-[14px] rounded-md w-full`}
                 >

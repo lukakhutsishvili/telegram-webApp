@@ -84,6 +84,6 @@
     "No orders selected": "შეკვეთები არ არის არჩეული",
     "Selected orders updated successfully!": "არჩეული შეკვეთები წარმატებით განახლდა!",
     "Failed to update orders. Please try again.": "შეკვეთების განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ ხელახლა.",
-    "Search": "ძიება"
-
+    "Search": "ძიება",
+    "confirm all": "ყველას დასრულება"
 }

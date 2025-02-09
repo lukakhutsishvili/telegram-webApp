@@ -84,5 +84,6 @@
     "No orders selected": "No orders selected",
     "Selected orders updated successfully!": "Selected orders updated successfully!",
     "Failed to update orders. Please try again.": "Failed to update orders. Please try again.",
-    "Search": "Search"
+    "Search": "Search",
+    "confirm all": "Confirm all"
 }

@@ -24,6 +24,15 @@ import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
 import SortableItem from "./SortableItem";
 
+interface Order {
+  tracking_code: string;
+  client_phone: string;
+  client_name: string;
+  client_address: string;
+  Status: string;
+  sort_number?: number;
+}
+
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks, userInfo, setSendingTasks } = useContext(Context);
   const navigate = useNavigate();
@@ -51,7 +60,7 @@ const Order = ({ status }: { status: string | null }) => {
 
   const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
-  const filteredTasks = useMemo(() => {
+  const filteredTasks: Order[] = useMemo(() => {
     if (!sendingTasks) return [];
     let tasks = status
       ? sendingTasks.filter((task: any) => task.Status === status)
@@ -229,6 +238,7 @@ const Order = ({ status }: { status: string | null }) => {
           </button>
         </div>
       )}
+
 
       <DndContext
         sensors={sensors}

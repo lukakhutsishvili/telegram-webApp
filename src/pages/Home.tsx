@@ -9,6 +9,7 @@ import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 import { t } from "i18next";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 function Home() {
   const {
@@ -305,6 +306,10 @@ function Home() {
               </ul>
             </div>
           </div>
+        </section>
+
+        <section className="mt-6">
+          <Button onClick={() => navigate('/requestlog')}>Open Chat</Button>
         </section>
       </div>
     </div>

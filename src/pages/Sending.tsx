@@ -41,7 +41,7 @@ function Sending() {
                   }}
                   className={`px-4 py-2 transition-all ${
                     tabButtons === item.status
-                      ? "bg-yellow-600 border-2 border-yellow-800 "
+                      ? "bg-yellow-600"
                       : "bg-yellow-400"
                   } text-black font-semibold text-[14px] rounded-md w-full`}
                 >
