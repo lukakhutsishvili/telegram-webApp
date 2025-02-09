@@ -25,7 +25,7 @@ import { changeOrderStatus } from "../api/requestHandlers";
 import SortableItem from "./SortableItem";
 
 const RecieptOrder = ({ status }: { status: string | null }) => {
-  const { recieptTasks, userInfo, setRecieptTasks, tabButtons } =
+  const { recieptTasks, userInfo, setRecieptTasks } =
     useContext(Context);
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState<{

@@ -7,6 +7,7 @@ import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
 import OrderPage from "./pages/OrderPage";
+import RequestLog from "./pages/RequestLog";
 
 const defaultContextValue: ContextType = {
   userInfo: {},
@@ -85,6 +86,7 @@ const App = () => {
         <Route element={<Sending />} path="/sending" />
         <Route element={<QRBarcodeScanner />} path="/scanner" />
         <Route path="/order/:id" element={<OrderPage />} />
+        <Route element={<RequestLog />} path="/requestlog" />
       </Routes>
       {location.pathname.toLowerCase() === "/home" ||
       location.pathname.toLowerCase() === "/sending" ||
