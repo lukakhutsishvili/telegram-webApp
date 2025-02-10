@@ -41,14 +41,7 @@ const ThirdPerson: React.FC<ThirdPersonTypes> = ({
         id="idNumber"
         className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <div className="grid gap-[20px]">
-        <Button
-          onClick={confirmationMessage ? navigationfunction : closeModal}
-          className="bg-gray-300 text-black"
-        >
-          {t("cancel")}
-        </Button>
-
+      <div className="grid gap-[20px] ">
         {!confirmationMessage && (
           <Button
             onClick={onConfirm}
@@ -67,6 +60,12 @@ const ThirdPerson: React.FC<ThirdPersonTypes> = ({
             )}
           </Button>
         )}
+        <Button
+          onClick={confirmationMessage ? navigationfunction : closeModal}
+          className="bg-gray-300 text-black"
+        >
+          {t("cancel")}
+        </Button>
       </div>
     </div>
   );
