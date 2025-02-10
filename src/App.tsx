@@ -7,6 +7,7 @@ import Reciept from "./pages/Reciept";
 import Sending from "./pages/Sending";
 import QRBarcodeScanner from "./components/Scanner";
 import OrderPage from "./pages/OrderPage";
+import RequestLog from "./pages/RequestLog";
 
 const defaultContextValue: ContextType = {
   userInfo: {},
@@ -23,6 +24,8 @@ const defaultContextValue: ContextType = {
   setNavbarButtons: () => {},
   amount: [{ cash: 0, bank: 0, sum: 0 }],
   setAmount: () => {},
+  activeButton: 0,
+  setActiveButton: () => {},
 };
 
 export const Context = createContext(defaultContextValue);
@@ -36,6 +39,7 @@ const App = () => {
   const [sendingTasks, setSendingTasks] = useState<any[]>([]);
   const [tabButtons, setTabButtons] = useState<string>("Accepted");
   const [amount, setAmount] = useState([{ cash: 0, bank: 0, sum: 0 }]);
+  const [activeButton, setActiveButton] = useState<number>(0);
 
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
@@ -71,6 +75,8 @@ const App = () => {
         setNavbarButtons,
         amount,
         setAmount,
+        activeButton,
+        setActiveButton,
       }}
     >
       <Routes>
@@ -80,6 +86,7 @@ const App = () => {
         <Route element={<Sending />} path="/sending" />
         <Route element={<QRBarcodeScanner />} path="/scanner" />
         <Route path="/order/:id" element={<OrderPage />} />
+        <Route element={<RequestLog />} path="/requestlog" />
       </Routes>
       {location.pathname.toLowerCase() === "/home" ||
       location.pathname.toLowerCase() === "/sending" ||

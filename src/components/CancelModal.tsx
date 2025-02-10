@@ -101,7 +101,7 @@ function CancelModal({
       }`}
       onTransitionEnd={handleAnimationEnd}
     >
-      <div className="bg-white rounded-lg p-6 w-1/2 max-sm:w-3/4">
+      <div className="bg-white rounded-lg p-6 w-2/3 max-sm:w-3/4">
         <h2 className="text-lg font-bold mb-4 text-center">
           {t("Select Reason")}
         </h2>

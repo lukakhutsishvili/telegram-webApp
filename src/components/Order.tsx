@@ -24,6 +24,15 @@ import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
 import { changeOrderStatus } from "../api/requestHandlers";
 import SortableItem from "./SortableItem";
 
+interface Order {
+  tracking_code: string;
+  client_phone: string;
+  client_name: string;
+  client_address: string;
+  Status: string;
+  sort_number?: number;
+}
+
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks, userInfo, setSendingTasks } = useContext(Context);
   const navigate = useNavigate();
@@ -51,7 +60,7 @@ const Order = ({ status }: { status: string | null }) => {
 
   const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
-  const filteredTasks = useMemo(() => {
+  const filteredTasks: Order[] = useMemo(() => {
     if (!sendingTasks) return [];
     let tasks = status
       ? sendingTasks.filter((task: any) => task.Status === status)
@@ -61,7 +70,7 @@ const Order = ({ status }: { status: string | null }) => {
       tasks = tasks.filter(
         (task: any) =>
           task.tracking_code.includes(searchTerm) ||
-          task.client_phone.includes(searchTerm)  ||
+          task.client_phone.includes(searchTerm) ||
           task.client_name.includes(searchTerm) ||
           task.client_address.includes(searchTerm)
       );
@@ -72,7 +81,7 @@ const Order = ({ status }: { status: string | null }) => {
   useEffect(() => {
     setSelectedOrders({});
     setCheckAll(false);
-  }, [status, searchTerm, sendingTasks]);
+  }, [status, sendingTasks]);
 
   const handleCheckboxChange = (trackingCode: string, checked: boolean) => {
     setSelectedOrders((prev) => ({ ...prev, [trackingCode]: checked }));
@@ -193,7 +202,8 @@ const Order = ({ status }: { status: string | null }) => {
 
   return (
     <div className="relative px-4">
-      <div className="sticky top-0 z-10 flex items-center bg-white">
+      {/* Search bar with corrected z-index */}
+      <div className="sticky  top-0 z-30 flex items-center bg-white shadow-md py-2">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
@@ -207,7 +217,10 @@ const Order = ({ status }: { status: string | null }) => {
       </div>
 
       {status === "Waiting" && filteredTasks.length > 0 && (
-        <div className="flex items-center gap-2 py-2 px-3 border-b-2 border-gray-500">
+        <div
+          className="sticky top-[60px] z-30 flex items-center gap-2 py-2 px-3 border-b-2
+         border-gray-500 bg-white will-change-transform"
+        >
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -225,6 +238,7 @@ const Order = ({ status }: { status: string | null }) => {
           </button>
         </div>
       )}
+
 
       <DndContext
         sensors={sensors}

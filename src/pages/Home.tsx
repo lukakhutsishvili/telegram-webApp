@@ -8,6 +8,8 @@ import { axiosInstance } from "../api/apiClient";
 import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 import { t } from "i18next";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 function Home() {
   const {
@@ -19,7 +21,11 @@ function Home() {
     sendingTasks,
     amount,
     setAmount,
+    setTabButtons,
+    setActiveButton
   } = useContext(Context);
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   // Fetch reasons
@@ -138,9 +144,21 @@ function Home() {
     return newTaskAmounts;
   }, [recieptTasks, sendingTasks]);
 
+  interface HandleNavigateToPagesParams {
+    buttonName: string;
+    path: string;
+    num: number;
+  }
+
+  const handleNavigeteToPages = ({ buttonName, path , num}: HandleNavigateToPagesParams): void => {
+    setTabButtons(buttonName);
+    setActiveButton(num);
+    navigate(path);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300">
-      <div className="container mx-auto px-6 pt-24 pb-[100px] max-sm:px-4">
+      <div className="container mx-auto px-6 pt-24 h-sm:pt-10 pb-[100px] max-sm:px-4">
         {/* Logo and Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-800">
@@ -222,19 +240,27 @@ function Home() {
               </div>
               <ul className="space-y-4">
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Completed Visits")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Completed', path: '/Reciept' , num: 1 })}
+                    className="text-black font-bold underline cursor-pointer"
+                    >{t("Completed Visits")}:</span>
                   <span>{taskAmounts.receiptCompleted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Canceled Visits")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Canceled', path: '/Reciept', num: 2 })}
+                    className="text-black font-bold underline cursor-pointer"
+                    >{t("Canceled Visits")}:</span>
                   <span>{taskAmounts.receiptCanceled}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Active Visits")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Accepted', path: '/Reciept' , num: 0 })}
+                    className="text-black font-bold underline cursor-pointer"
+                    >{t("Active Visits")}:</span>
                   <span>{taskAmounts.receiptAccepted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Waiting")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Waiting', path: '/Reciept' , num: 3})}
+                    className="text-black font-bold underline cursor-pointer"
+                    >{t("Waiting")}:</span>
                   <span>{taskAmounts.receiptWaiting}</span>
                 </li>
               </ul>
@@ -253,24 +279,37 @@ function Home() {
               </div>
               <ul className="space-y-4">
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Completed Visits")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Completed', path: '/Sending', num: 1 })}
+                    className="text-black font-bold underline cursor-pointer"
+                    >{t("Completed Visits")}:</span>
                   <span>{taskAmounts.sendingCompleted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Canceled Visits")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Canceled', path: '/Sending', num: 2 })}
+                    className="text-black font-bold underline cursor-pointer">
+                    {t("Canceled Visits")}:
+                    </span>
                   <span>{taskAmounts.sendingCanceled}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Active Visits")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Accepted', path: '/Sending', num: 0 })}
+                   className="text-black font-bold underline cursor-pointer" >
+                    {t("Active Visits")}:</span>
                   <span>{taskAmounts.sendingAccepted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span>{t("Waiting")}:</span>
+                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Waiting', path: '/Sending', num: 3 })}
+                    className="text-black font-bold underline cursor-pointer">
+                      {t("Waiting")}:</span>
                   <span>{taskAmounts.sendingWaiting}</span>
                 </li>
               </ul>
             </div>
           </div>
+        </section>
+
+        <section className="mt-6">
+          <Button onClick={() => navigate('/requestlog')}>Open Chat</Button>
         </section>
       </div>
     </div>
