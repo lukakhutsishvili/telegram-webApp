@@ -8,7 +8,6 @@ import { useContext } from "react";
 import Button from "../components/Button";
 
 function Reciept() {
-
   const { tabButtons, setTabButtons } = useContext(Context);
 
   return (
@@ -16,7 +15,6 @@ function Reciept() {
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("pick up")}</h1>
-
         {/* Tab Navigation */}
         <div className="mt-4">
           <Swiper spaceBetween={10} slidesPerView={2} freeMode={true}>
@@ -42,8 +40,6 @@ function Reciept() {
       <div className=" w-full overflow-y-auto pb-4">
         <ReceiptOrders status={tabButtons} />
       </div>
-
-    
     </div>
   );
 }
