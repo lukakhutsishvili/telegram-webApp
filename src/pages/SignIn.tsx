@@ -1,9 +1,8 @@
-
 import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../hooks/useLanguage";
 import { langButtons } from "../Lib/helpers";
 import { useTranslation } from "react-i18next";
-import Auth from "../components/Auth";
+import { Auth } from "../components/Auth";
 
 const SignIn = () => {
   const {

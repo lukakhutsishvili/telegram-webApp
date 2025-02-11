@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { RecaptchaVerifier, getAuth } from "firebase/auth";
+import type { Auth } from "firebase/auth";
 import { useAuth } from "../hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+
 
 export function Auth() {
   const { t } = useTranslation();
@@ -8,6 +12,29 @@ export function Auth() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
 
+
+  useEffect(() => {
+    const auth = getAuth(); 
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible", 
+          callback: () => {
+            console.log("reCAPTCHA verified!");
+          },
+          "expired-callback": () => {
+            console.log("reCAPTCHA expired. Please refresh and try again.");
+          },
+        },
+      );
+
+      window.recaptchaVerifier.render().catch(console.error);
+    }
+  }, []);
+  
+  
   return (
     <div className="space-y-4">
       {/* Visible reCAPTCHA */}
