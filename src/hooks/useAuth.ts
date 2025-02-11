@@ -55,14 +55,16 @@ export const useAuth = () => {
     }
     setLoading(true);
 
-    try {
-        const telegramResponse =  await axiosInstance.post(SEND_OTP, {
-        telegram_id: userInfo.telegram_id,
-        phone_number: phoneNumber,
-        type: "1",
-      });
+    const authData = {
+      telegram_id: userInfo.telegram_id,
+      phone_number: phoneNumber,
+      type: "1",
+    };
 
-      if (telegramResponse.data.status === "ok") {
+    try {
+        const telegramResponse =  await axiosInstance.post(SEND_OTP, authData);
+
+      if (telegramResponse.data.status === 200) {
         
         setErrorKey("");
 
@@ -80,7 +82,9 @@ export const useAuth = () => {
             await window.recaptchaVerifier.render();
         }
             const appVerifier = window.recaptchaVerifier;
-            const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+            const firePhoneNumber = `+995${phoneNumber}`;
+            console.log(firePhoneNumber);
+            const result = await signInWithPhoneNumber(auth, firePhoneNumber, appVerifier);
 
             setConfirmationResult(result);
             setShowOtpField(true);
