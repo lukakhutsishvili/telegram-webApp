@@ -6,11 +6,11 @@ declare global {
   }
 }
 import { useNavigate } from "react-router-dom";
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { signInWithCustomToken } from "firebase/auth"; 
 import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
 import { Context } from "../App";
+import { auth } from "../config/firebase";
 
 
 export const useAuth = () => {
@@ -20,14 +20,12 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const params = { telegram_id: userInfo.telegram_id };
 
   const handleSignIn = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(BOT_AUTH, {
-        params: { telegram_id: userInfo.telegram_id  },
-      });
+      const response = await axiosInstance.get(BOT_AUTH, { params });
 
       setUserInfo((prev: any) => ({
         ...prev,
@@ -54,49 +52,27 @@ export const useAuth = () => {
       return;
     }
     setLoading(true);
-
+  
     const authData = {
       telegram_id: userInfo.telegram_id,
       phone_number: phoneNumber,
       type: "1",
     };
-
-    try {
-        const telegramResponse =  await axiosInstance.post(SEND_OTP, authData);
-
-      if (telegramResponse.data.status === 200) {
-        
-        setErrorKey("");
-
-        if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-              size: "invisible",
-              callback: () => {
-                console.log("reCAPTCHA verified!");
-              },
-              "expired-callback": () => {
-                setErrorKey("reCAPTCHA expired. Please refresh and try again.");
-              },
-            });
   
-            await window.recaptchaVerifier.render();
-        }
-            const appVerifier = window.recaptchaVerifier;
-            const firePhoneNumber = `+995${phoneNumber}`;
-            console.log(firePhoneNumber);
-            const result = await signInWithPhoneNumber(auth, firePhoneNumber, appVerifier);
+    try {
+       await axiosInstance.post(SEND_OTP, authData);
 
-            setConfirmationResult(result);
-            setShowOtpField(true);
-        } else {
-            setErrorKey("error_sending_otp_telegram");
-        }
+        setErrorKey("");
+        setShowOtpField(true); 
+
     } catch (err: any) {
+      console.error("Error sending OTP:", err);
       setErrorKey("error_sending_otp");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleConfirmOtp = async (phoneNumber: string, otp: string) => {
     if (!otp.trim()) {
@@ -104,7 +80,7 @@ export const useAuth = () => {
       return;
     }
     setLoading(true);
-
+  
     try {
       const response = await axiosInstance.get(CHECK_OTP, {
         params: {
@@ -113,31 +89,28 @@ export const useAuth = () => {
           telegram_id: userInfo.telegram_id?.toString(),
         },
       });
-
+  
       if (response.data.status === "ok") {
-        if (!confirmationResult) {
-          setErrorKey("no_firebase_otp_found");
-          return;
-        }
-
-        await confirmationResult.confirm(otp);
+        const firebaseToken = response.data.firebase_token; 
+        await signInWithCustomToken(auth, firebaseToken);
+  
         setUserInfo((prev: any) => ({
           ...prev,
           name: response.data.response.courier_name,
           device_id: response.data.response.device_id,
         }));
-
+  
         navigate("/home");
       } else {
         setErrorKey("error_confirming_otp_telegram");
       }
     } catch (err) {
+      console.error("Error confirming OTP:", err);
       setErrorKey("error_confirming_otp");
     } finally {
       setLoading(false);
     }
   };
-
   return {
     handleSignIn,
     handleRegister,

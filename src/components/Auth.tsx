@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RecaptchaVerifier, getAuth } from "firebase/auth";
+import {  getAuth } from "firebase/auth";
 import type { Auth } from "firebase/auth";
 import { useAuth } from "../hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -14,31 +14,15 @@ export function Auth() {
 
 
   useEffect(() => {
-    const auth = getAuth(); 
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible", 
-          callback: () => {
-            console.log("reCAPTCHA verified!");
-          },
-          "expired-callback": () => {
-            console.log("reCAPTCHA expired. Please refresh and try again.");
-          },
-        },
-      );
+    
+    getAuth(); 
 
-      window.recaptchaVerifier.render().catch(console.error);
-    }
   }, []);
   
   
   return (
     <div className="space-y-4">
-      {/* Visible reCAPTCHA */}
-      <div id="recaptcha-container"></div>
+
 
       {/* Phone Number Input */}
       <input
