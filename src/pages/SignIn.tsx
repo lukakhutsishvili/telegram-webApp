@@ -1,108 +1,25 @@
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../api/apiClient";
-import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
-import { Context } from "../App";
 import { useTranslation } from "react-i18next";
 import { langButtons } from "../Lib/helpers";
+import useLanguage from "../hooks/useLanguage"; // Import the custom hook
+import useAuth from "../hooks/useAuth"; // Import the useAuth hook
 
 const SignIn = () => {
-  const navigate = useNavigate();
-  const [showRegister, setShowRegister] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState("");
-  const [showOtpField, setShowOtpField] = useState(false);
-  const [errorKey, setErrorKey] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { setUserInfo, userInfo } = useContext(Context);
-  const params = { telegram_id: userInfo.telegram_id || "1800276631" };
-  const { i18n, t } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const {
+    phoneNumber,
+    setPhoneNumber,
+    otp,
+    setOtp,
+    showRegister,
+    showOtpField,
+    errorKey,
+    loading,
+    handleSignIn,
+    handleRegister,
+    handleConfirmOtp,
+  } = useAuth(); // Using the hook
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    setSelectedLanguage(lng);
-    localStorage.setItem("selectedLanguage", lng);
-  };
-
-  const handleSignIn = async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get(BOT_AUTH, { params });
-      setUserInfo((prev: any) => ({
-        ...prev,
-        name: response.data.response.courier_name,
-        device_id: response.data.response.device_id,
-      }));
-      if (response.status === 200) {
-        navigate("/home");
-      } else {
-        setShowRegister(true);
-      }
-    } catch (error: any) {
-      setShowRegister(true);
-      setErrorKey("no_account_register");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-    changeLanguage(savedLanguage);
-  }, []);
-
-  const handleRegister = async () => {
-    if (!phoneNumber.trim()) {
-      setErrorKey("phone_number_required");
-      return;
-    }
-    setLoading(true);
-    const authData = {
-      telegram_id: userInfo.telegram_id,
-      phone_number: phoneNumber,
-      type: "1",
-    };
-
-    try {
-      await axiosInstance.post(SEND_OTP, authData);
-      setErrorKey("");
-      setShowOtpField(true);
-    } catch (err) {
-      console.error("Error sending OTP:", err);
-      setErrorKey("error_sending_otp");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleConfirmOtp = async () => {
-    if (!otp.trim()) {
-      setErrorKey("otp_required");
-      return;
-    }
-    setLoading(true);
-    const data = {
-      phone_number: phoneNumber,
-      otp,
-      telegram_id: userInfo.telegram_id?.toString(),
-    };
-
-    try {
-      const response = await axiosInstance.get(CHECK_OTP, { params: data });
-      setUserInfo((prev: any) => ({
-        ...prev,
-        name: response.data.response.courier_name,
-        device_id: response.data.response.device_id,
-      }));
-      navigate("/home");
-    } catch (err) {
-      console.error("Error confirming OTP:", err);
-      setErrorKey("error_confirming_otp");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { t } = useTranslation();
+  const { selectedLanguage, changeLanguage } = useLanguage(); // Use the custom hook
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-yellow-300 via-white to-yellow-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -114,7 +31,6 @@ const SignIn = () => {
               : t("register_account")
             : t("sign_in")}
         </h2>
-
         {loading ? (
           <div className="flex justify-center items-center">
             <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-yellow-500 border-t-yellow-300"></div>
@@ -138,7 +54,7 @@ const SignIn = () => {
               <div className="space-y-4">
                 <input
                   type="text"
-                  placeholder="Enter your phone number"
+                  placeholder={t("enter_phone")}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="w-full px-3 py-2 border border-yellow-500 rounded-md focus:ring-yellow-500 focus:border-yellow-500 shadow-sm"
