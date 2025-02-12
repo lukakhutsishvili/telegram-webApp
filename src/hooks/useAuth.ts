@@ -11,6 +11,7 @@ import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
 import { Context } from "../App";
 import { auth } from "../config/firebase";
+import axios from "axios";
 
 
 export const useAuth = () => {
@@ -54,7 +55,7 @@ export const useAuth = () => {
     setLoading(true);
   
     const authData = {
-      telegram_id: userInfo.telegram_id,
+      telegram_id: userInfo.telegram_id || "",
       phone_number: phoneNumber,
       type: "1",
     };
@@ -86,13 +87,31 @@ export const useAuth = () => {
         params: {
           phone_number: phoneNumber,
           otp,
-          telegram_id: userInfo.telegram_id?.toString(),
+          telegram_id: userInfo.telegram_id?.toString() || "1800276631",
         },
       });
+
+      console.log("Response:", response.data);
   
-      if (response.data.status === "ok") {
-        const firebaseToken = response.data.firebase_token; 
-        await signInWithCustomToken(auth, firebaseToken);
+      if (response.data.status) {
+
+        const getFirebaseToken = async () => {
+          const firebaseToken = response.data.response.device_id; 
+          try {
+            const fireBaseResponse  = await axios.post("http://localhost:5000/generate-token", {
+              telegram_id: firebaseToken,
+            });
+            console.log("Firebase Token:", fireBaseResponse.data.firebase_token);
+            return fireBaseResponse.data.firebase_token;
+          } catch (error) {
+            console.error("Error generating token:", error);
+            throw error;
+          }
+        };
+
+        const newToken = await getFirebaseToken();
+        await signInWithCustomToken(auth, newToken); 
+            
   
         setUserInfo((prev: any) => ({
           ...prev,
