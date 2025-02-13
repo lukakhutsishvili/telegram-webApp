@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { Context } from "../App";
 
 const useAuth = () => {
