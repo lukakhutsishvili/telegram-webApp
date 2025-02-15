@@ -12,9 +12,16 @@ import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
-import useParcelStorage from "../hooks/useParcelStorage";
 import ThirdPerson from "./ThirdPerson";
+import useOrderLogs from "../hooks/useRequestLogs";
+<<<<<<< Updated upstream
 
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
+
+>>>>>>> Stashed changes
 interface ConfirmModalProps {
   closeModal: () => void;
   receiptOrder: any;
@@ -41,7 +48,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     useContext(Context);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-  const { addParcel } = useParcelStorage();
 
   const order = sendingOrder || receiptOrder;
 
@@ -54,6 +60,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       }
     }
   };
+
+  
+  const { saveLog } = useOrderLogs();
 
   useEffect(() => {
     if (startTimer) {
@@ -165,12 +174,26 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const checkClientOtp = async () => {
     if (!confirmationValue) {
       setErrorMessage(t("Please enter the OTP."));
+<<<<<<< Updated upstream
       addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+=======
+>>>>>>> Stashed changes
+      saveLog(
+>>>>>>> Stashed changes
         order.tracking_code,
         confirmationValue,
         order.client_name,
         "failed"
       );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       return;
     }
 
@@ -187,12 +210,18 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         setConfirmationMessage(t("OTP confirmed!"));
         setErrorMessage("");
         setStartTimer(true);
+<<<<<<< Updated upstream
         addParcel(
           order.tracking_code,
           confirmationValue,
           order.client_name,
           "completed"
         );
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+        addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+>>>>>>> Stashed changes
       } else {
         setErrorMessage(
           response.data.message || t("Invalid OTP. Please try again.")
@@ -205,27 +234,75 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         );
       }
     } catch (error: any) {
+<<<<<<< Updated upstream
       setErrorMessage(
         error.response?.data?.message || t("Invalid OTP. Please try again.")
       );
       addParcel(
+=======
+      setErrorMessage(error.response?.data?.message || t("Invalid OTP. Please try again."));
+      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+=======
+>>>>>>> Stashed changes
+        saveLog(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "completed"
+        );
+      } else {
+        setErrorMessage(
+          response.data.message || t("Invalid OTP. Please try again.")
+        );
+        saveLog(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "failed"
+        );
+      }
+    } catch (error: any) {
+      setErrorMessage(
+        error.response?.data?.message || t("Invalid OTP. Please try again.")
+      );
+      saveLog(
+>>>>>>> Stashed changes
         order.tracking_code,
         confirmationValue,
         order.client_name,
         "failed"
       );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
   };
 
   const postClientID = async () => {
     if (!confirmationValue.trim()) {
       setErrorMessage(t("Please enter the ID number."));
+<<<<<<< Updated upstream
       addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+=======
+>>>>>>> Stashed changes
+      saveLog(
+>>>>>>> Stashed changes
         order.tracking_code,
         confirmationValue,
         order.client_name,
         "failed"
       );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       return;
     }
 
@@ -240,12 +317,26 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       if (response.status === 202) {
         await confirmDelivery();
         setConfirmationMessage(t("ID Number confirmed!"));
+<<<<<<< Updated upstream
         addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+        addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+=======
+=======
+>>>>>>> Stashed changes
+        saveLog(
+>>>>>>> Stashed changes
           order.tracking_code,
           confirmationValue,
           order.client_name,
           "completed"
         );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         setErrorMessage("");
         setStartTimer(true);
       } else {
@@ -267,12 +358,26 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     try {
       if (receiptOrder) {
         await confirmDelivery();
+<<<<<<< Updated upstream
         addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+        addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+=======
+=======
+>>>>>>> Stashed changes
+        saveLog(
+>>>>>>> Stashed changes
           order.tracking_code,
           confirmationValue,
           order.client_name,
           "completed"
         );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         setConfirmationMessage(t("Receipt order confirmed!"));
         setStartTimer(true);
         await fetchUpdatedOrderList();
@@ -280,65 +385,137 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         try {
           await checkClientOtp();
         } catch (error) {
+<<<<<<< Updated upstream
           addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+          addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+=======
+>>>>>>> Stashed changes
+          saveLog(
+>>>>>>> Stashed changes
             order.tracking_code,
             confirmationValue,
             order.client_name,
             "failed"
           );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         }
         await fetchUpdatedOrderList();
       } else if (confirmationMethod === "ID Number") {
         if (order.client_id) {
           if (order.client_id === confirmationValue) {
             await confirmDelivery();
+<<<<<<< Updated upstream
             addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+            addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+=======
+=======
+>>>>>>> Stashed changes
+            saveLog(
+>>>>>>> Stashed changes
               order.tracking_code,
               confirmationValue,
               order.client_name,
               "completed"
             );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
             setConfirmationMessage(t("ID Number confirmed!"));
             setStartTimer(true);
             await fetchUpdatedOrderList();
           } else {
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+            setErrorMessage(t("The ID Number does not match the client's ID. Please try again."));
+            addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+>>>>>>> Stashed changes
             setErrorMessage(
               t(
                 "The ID Number does not match the client's ID. Please try again."
               )
             );
+<<<<<<< Updated upstream
             addParcel(
+=======
+            saveLog(
+>>>>>>> Stashed changes
               order.tracking_code,
               confirmationValue,
               order.client_name,
               "failed"
             );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
           }
         } else {
           try {
             await postClientID();
           } catch (error) {
+<<<<<<< Updated upstream
             addParcel(
+=======
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+            addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+=======
+>>>>>>> Stashed changes
+            saveLog(
+>>>>>>> Stashed changes
               order.tracking_code,
               confirmationValue,
               order.client_name,
               "failed"
             );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
           }
           await fetchUpdatedOrderList();
         }
       }
     } catch (error) {
       console.error("An error occurred:", error);
+<<<<<<< Updated upstream
       setErrorMessage(
         t("An unexpected error occurred. Please try again later.")
       );
       addParcel(
+=======
+<<<<<<< Updated upstream
+      setErrorMessage(t("An unexpected error occurred. Please try again later."));
+      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+=======
+      setErrorMessage(
+        t("An unexpected error occurred. Please try again later.")
+      );
+      saveLog(
+>>>>>>> Stashed changes
         order.tracking_code,
         confirmationValue,
         order.client_name,
         "failed"
       );
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     } finally {
       setLoading(false);
     }

@@ -21,7 +21,11 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
+<<<<<<< Updated upstream
   const params = { telegram_id: userInfo.telegram_id  };
+=======
+  const params = { telegram_id: userInfo.telegram_id || "1800276631" };
+>>>>>>> Stashed changes
 
   const user = auth.currentUser;
 
@@ -57,7 +61,11 @@ export const useAuth = () => {
     setLoading(true);
   
     const authData = {
+<<<<<<< Updated upstream
       telegram_id: userInfo.telegram_id ,
+=======
+      telegram_id: userInfo.telegram_id || "",
+>>>>>>> Stashed changes
       phone_number: phoneNumber,
       type: "1",
     };
@@ -89,7 +97,11 @@ export const useAuth = () => {
         params: {
           phone_number: phoneNumber,
           otp,
+<<<<<<< Updated upstream
           telegram_id: userInfo.telegram_id?.toString(),
+=======
+          telegram_id: userInfo.telegram_id?.toString() || "1800276631",
+>>>>>>> Stashed changes
         },
       });
 
