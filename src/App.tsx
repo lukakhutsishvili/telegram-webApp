@@ -41,8 +41,6 @@ const App = () => {
   const [amount, setAmount] = useState([{ cash: 0, bank: 0, sum: 0 }]);
   const [activeButton, setActiveButton] = useState<number>(0);
 
-
-
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
 
