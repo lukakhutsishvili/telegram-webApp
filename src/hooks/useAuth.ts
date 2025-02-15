@@ -21,20 +21,22 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
-  const params = { telegram_id: userInfo.telegram_id };
+  const params = { telegram_id: userInfo.telegram_id  };
+
+  const user = auth.currentUser;
+
 
   const handleSignIn = async () => {
     setLoading(true);
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
 
-      setUserInfo((prev: any) => ({
-        ...prev,
-        name: response.data.response.courier_name,
-        device_id: response.data.response.device_id,
-      }));
-
-      if (response.status === 200) {
+      if(user !== null && response.status === 200) {
+        setUserInfo((prev: any) => ({
+          ...prev,
+          name: response.data.response.courier_name,
+          device_id: response.data.response.device_id,
+        }));
         navigate("/home");
       } else {
         setShowRegister(true);
@@ -55,7 +57,7 @@ export const useAuth = () => {
     setLoading(true);
   
     const authData = {
-      telegram_id: userInfo.telegram_id || "",
+      telegram_id: userInfo.telegram_id ,
       phone_number: phoneNumber,
       type: "1",
     };
@@ -87,7 +89,7 @@ export const useAuth = () => {
         params: {
           phone_number: phoneNumber,
           otp,
-          telegram_id: userInfo.telegram_id?.toString() || "1800276631",
+          telegram_id: userInfo.telegram_id?.toString(),
         },
       });
 
@@ -96,12 +98,11 @@ export const useAuth = () => {
       if (response.data.status) {
 
         const getFirebaseToken = async () => {
-          const firebaseToken = response.data.response.device_id; 
+          const firebaseToken = response.data.response.device_id;
           try {
             const fireBaseResponse  = await axios.post("http://localhost:5000/generate-token", {
               telegram_id: firebaseToken,
             });
-            console.log("Firebase Token:", fireBaseResponse.data.firebase_token);
             return fireBaseResponse.data.firebase_token;
           } catch (error) {
             console.error("Error generating token:", error);
@@ -110,6 +111,7 @@ export const useAuth = () => {
         };
 
         const newToken = await getFirebaseToken();
+        console.log(auth, newToken);
         await signInWithCustomToken(auth, newToken); 
             
   
