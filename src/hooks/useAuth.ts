@@ -100,10 +100,12 @@ export const useAuth = () => {
         const getFirebaseToken = async () => {
           const firebaseToken = response.data.response.device_id;
           try {
-            const fireBaseResponse  = await axios.post("https://tbot-test-backend-production.up.railway.app/", {
+            const fireBaseResponse  = await axios.post("https://tbot-test-backend-production.up.railway.app/generate-token", {
               telegram_id: firebaseToken,
             });
+            console.log(fireBaseResponse.data.firebase_token)
             return fireBaseResponse.data.firebase_token;
+            
           } catch (error) {
             console.error("Error generating token:", error);
             throw error;
