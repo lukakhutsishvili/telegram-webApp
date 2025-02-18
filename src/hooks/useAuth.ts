@@ -98,20 +98,33 @@ export const useAuth = () => {
       if (response.data.status) {
 
         const getFirebaseToken = async () => {
-          const firebaseToken = response.data.response.device_id;
+          console.log(response); // Check full response structure
+          console.log(response.data);
+          console.log(response.data.response);
+          console.log(response.data.response.device_id);
+
           try {
-            const fireBaseResponse  = await axios.post("https://tbot-test-backend-production.up.railway.app/generate-token", {
-              telegram_id: firebaseToken,
-            });
-            console.log(fireBaseResponse.data.firebase_token)
+            const firebaseToken = response?.data?.response?.device_id; // Optional chaining to avoid errors
+            if (!firebaseToken) {
+              throw new Error("device_id is undefined or null");
+            }
+        
+            console.log("Sending request with telegram_id:", firebaseToken);
+        
+            const fireBaseResponse = await axios.post(
+              "http://localhost:3000/generate-token",
+              { telegram_id: firebaseToken }
+            );
+        
+            console.log("Response received:", fireBaseResponse.data);
+        
             return fireBaseResponse.data.firebase_token;
-            
           } catch (error) {
             console.error("Error generating token:", error);
-            throw error;
+            return null; // Avoid throwing error unless necessary
           }
         };
-
+        
         const newToken = await getFirebaseToken();
         console.log(auth, newToken);
         await signInWithCustomToken(auth, newToken); 
