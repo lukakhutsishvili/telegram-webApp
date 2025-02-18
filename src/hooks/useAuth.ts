@@ -112,7 +112,7 @@ export const useAuth = () => {
             console.log("Sending request with telegram_id:", firebaseToken);
         
             const fireBaseResponse = await axios.post(
-              "http://localhost:3000/generate-token",
+              "tbot-test-backend-production.up.railway.app/generate-token",
               { telegram_id: firebaseToken }
             );
         
