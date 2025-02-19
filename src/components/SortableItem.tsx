@@ -30,7 +30,6 @@ const SortableItem = ({
     opacity: isDragging ? 0.9 : 1,
   };
 
-
   const { handleConfirmAllTasks } = useOpenActiveTask();
 
   const handleClick = (e: React.MouseEvent) => {
@@ -41,14 +40,11 @@ const SortableItem = ({
     if (!isDragging) {
       if (status === "Accepted") {
         handleConfirmAllTasks(task.tracking_code);
-      } else{
+      } else {
         return navigate(`/order/${task.tracking_code}`);
       }
-        
     }
   };
-  
-
 
   return (
     <div
@@ -57,12 +53,19 @@ const SortableItem = ({
       {...attributes}
       {...listeners}
       className={`relative z-0 first:border-t-2 border-b-2 py-2 px-3 border-gray-500 flex gap-4 ${
-        isDragging ? "ring-2 ring-yellow-500 scale-105" : "" } `}
+        isDragging ? "ring-2 ring-yellow-500 scale-105" : ""
+      } `}
     >
       {status === "Waiting" && (
-        <div 
-        className="flex items-center select-none"
-        onClick={() => handleCheckboxChange(task.tracking_code, !selectedOrders[task.tracking_code])}>
+        <div
+          className="flex items-center select-none"
+          onClick={() =>
+            handleCheckboxChange(
+              task.tracking_code,
+              !selectedOrders[task.tracking_code]
+            )
+          }
+        >
           <input
             type="checkbox"
             checked={!!selectedOrders[task.tracking_code]}
@@ -75,9 +78,10 @@ const SortableItem = ({
         </div>
       )}
 
-      <div 
-      className={`relative w-full flex flex-col gap-1  select-none`}
-      onClick={handleClick}>
+      <div
+        className={`relative w-full flex flex-col gap-1  select-none`}
+        onClick={handleClick}
+      >
         <div className="flex justify-between">
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
