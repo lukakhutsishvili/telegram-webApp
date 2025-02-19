@@ -14,9 +14,7 @@ export function Auth() {
 
 
   useEffect(() => {
-    
     getAuth(); 
-
   }, []);
   
   

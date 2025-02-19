@@ -6,13 +6,9 @@ declare global {
   }
 }
 import { useNavigate } from "react-router-dom";
-import { signInWithCustomToken } from "firebase/auth"; 
 import { axiosInstance } from "../api/apiClient";
 import { BOT_AUTH, CHECK_OTP, SEND_OTP } from "../api/Constants";
 import { Context } from "../App";
-import { auth } from "../config/firebase";
-import axios from "axios";
-
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -21,9 +17,8 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
-  const params = { telegram_id: userInfo.telegram_id || "1800276631" };
+  const params = { telegram_id: userInfo.telegram_id || "6087086146" };
 
-  const user = auth.currentUser;
 
 
   const handleSignIn = async () => {
@@ -31,7 +26,7 @@ export const useAuth = () => {
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
 
-      if(user !== null && response.status === 200) {
+      if(response.status === 200) {
         setUserInfo((prev: any) => ({
           ...prev,
           name: response.data.response.courier_name,
@@ -89,34 +84,10 @@ export const useAuth = () => {
         params: {
           phone_number: phoneNumber,
           otp,
-          telegram_id: userInfo.telegram_id?.toString() || "1800276631",
+          telegram_id: userInfo.telegram_id?.toString() || "6087086146",
         },
       });
 
-      console.log("Response:", response.data);
-  
-      if (response.data.status) {
-
-        const getFirebaseToken = async () => {
-          const firebaseToken = response.data.response.device_id;
-          try {
-            const fireBaseResponse  = await axios.post("https://tbot-test-backend-production.up.railway.app/generate-token", {
-              telegram_id: firebaseToken,
-            });
-            console.log(fireBaseResponse.data.firebase_token)
-            return fireBaseResponse.data.firebase_token;
-            
-          } catch (error) {
-            console.error("Error generating token:", error);
-            throw error;
-          }
-        };
-
-        const newToken = await getFirebaseToken();
-        console.log(auth, newToken);
-        await signInWithCustomToken(auth, newToken); 
-            
-  
         setUserInfo((prev: any) => ({
           ...prev,
           name: response.data.response.courier_name,
@@ -124,10 +95,7 @@ export const useAuth = () => {
         }));
   
         navigate("/home");
-      } else {
-        setErrorKey("error_confirming_otp_telegram");
-      }
-    } catch (err) {
+      } catch (err) {
       console.error("Error confirming OTP:", err);
       setErrorKey("error_confirming_otp");
     } finally {
