@@ -33,12 +33,6 @@ interface Order {
   sort_number?: number;
 }
 
-declare global {
-  interface Window {
-    sortUpdateTimeout?: NodeJS.Timeout;
-  }
-}
-
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks, userInfo, setSendingTasks } = useContext(Context);
   const navigate = useNavigate();
@@ -164,6 +158,7 @@ const Order = ({ status }: { status: string | null }) => {
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
 
+    // Ensure there's a valid drag-over target
     if (!over || active.id === over.id) return;
 
     const oldIndex = sendingTasks.findIndex(
@@ -176,40 +171,29 @@ const Order = ({ status }: { status: string | null }) => {
     const reorderedTasks = arrayMove(sendingTasks, oldIndex, newIndex);
     setSendingTasks(reorderedTasks);
 
-    // Update sort numbers and save to localStorage
+    // Update sort numbers for all reordered tasks
     const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
       ...task,
       sort_number: index + 1,
     }));
     setSendingTasks(updatedTasks);
-    localStorage.setItem("sortedOrders", JSON.stringify(updatedTasks));
 
-    // Clear previous timeout and set a new one for 10 seconds
-    if (window.sortUpdateTimeout) {
-      clearTimeout(window.sortUpdateTimeout);
-    }
-
-    window.sortUpdateTimeout = setTimeout(async () => {
-      try {
-        const storedOrders = JSON.parse(
-          localStorage.getItem("sortedOrders") || "[]"
-        );
-        for (const task of storedOrders) {
-          const payload = {
-            device_id: userInfo.device_id,
-            tracking_code: task.tracking_code,
-            sort_number: task.sort_number,
-            pickup_task: false,
-          };
-          await axiosInstance.post(MODIFY_SORT_NUMBER, payload);
-        }
-        console.log("Sort numbers updated successfully.");
-        localStorage.removeItem("sortedOrders"); // Clear after successful update
-      } catch (error) {
-        console.error("Failed to update sort numbers:", error);
-        alert(t("Failed to update sort order. Please try again."));
+    try {
+      // Send updated sort numbers to the server
+      for (const task of updatedTasks) {
+        const payload = {
+          device_id: userInfo.device_id,
+          tracking_code: task.tracking_code,
+          sort_number: task.sort_number,
+          pickup_task: false,
+        };
+        await axiosInstance.post(MODIFY_SORT_NUMBER, payload);
       }
-    }, 10000); // 10 seconds delay
+      console.log("Sort numbers updated successfully.");
+    } catch (error) {
+      console.error("Failed to update sort numbers:", error);
+      alert(t("Failed to update sort order. Please try again."));
+    }
   };
 
   if (!sendingTasks || sendingTasks.length === 0) {
