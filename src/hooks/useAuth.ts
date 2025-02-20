@@ -17,16 +17,15 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
-  const params = { telegram_id: userInfo.telegram_id || "6087086146" };
-
-
+  const params = { telegram_id: userInfo.telegram_id  };
+  const [signInloader, setSignInloader] = useState(true);
 
   const handleSignIn = async () => {
     setLoading(true);
     try {
       const response = await axiosInstance.get(BOT_AUTH, { params });
 
-      if(response.status === 200) {
+      if (response.status === 200) {
         setUserInfo((prev: any) => ({
           ...prev,
           name: response.data.response.courier_name,
@@ -37,6 +36,7 @@ export const useAuth = () => {
         setShowRegister(true);
       }
     } catch (error: any) {
+      setSignInloader(false);
       setShowRegister(true);
       setErrorKey("no_account_register");
     } finally {
@@ -50,19 +50,18 @@ export const useAuth = () => {
       return;
     }
     setLoading(true);
-  
+
     const authData = {
       telegram_id: userInfo.telegram_id || "",
       phone_number: phoneNumber,
       type: "1",
     };
-  
+
     try {
-       await axiosInstance.post(SEND_OTP, authData);
+      await axiosInstance.post(SEND_OTP, authData);
 
-        setErrorKey("");
-        setShowOtpField(true); 
-
+      setErrorKey("");
+      setShowOtpField(true);
     } catch (err: any) {
       console.error("Error sending OTP:", err);
       setErrorKey("error_sending_otp");
@@ -70,7 +69,6 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
-  
 
   const handleConfirmOtp = async (phoneNumber: string, otp: string) => {
     if (!otp.trim()) {
@@ -78,7 +76,7 @@ export const useAuth = () => {
       return;
     }
     setLoading(true);
-  
+
     try {
       const response = await axiosInstance.get(CHECK_OTP, {
         params: {
@@ -88,14 +86,14 @@ export const useAuth = () => {
         },
       });
 
-        setUserInfo((prev: any) => ({
-          ...prev,
-          name: response.data.response.courier_name,
-          device_id: response.data.response.device_id,
-        }));
-  
-        navigate("/home");
-      } catch (err) {
+      setUserInfo((prev: any) => ({
+        ...prev,
+        name: response.data.response.courier_name,
+        device_id: response.data.response.device_id,
+      }));
+
+      navigate("/home");
+    } catch (err) {
       console.error("Error confirming OTP:", err);
       setErrorKey("error_confirming_otp");
     } finally {
@@ -110,5 +108,6 @@ export const useAuth = () => {
     errorKey,
     showRegister,
     showOtpField,
+    signInloader,
   };
 };
