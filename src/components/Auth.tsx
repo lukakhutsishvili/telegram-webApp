@@ -9,7 +9,6 @@ export function Auth() {
   const [otp, setOtp] = useState("");
 
 
-
   return (
     <div className="space-y-4">
       {/* Phone Number Input */}

@@ -85,5 +85,15 @@
     "Selected orders updated successfully!": "არჩეული შეკვეთები წარმატებით განახლდა!",
     "Failed to update orders. Please try again.": "შეკვეთების განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ ხელახლა.",
     "Search": "ძიება",
-    "confirm all": "ყველას დასრულება"
+    "confirm all": "ყველას დასრულება",
+    "Open Logs": "მოთხოვნების გახსნა",
+    "Delete Logs": "მოთხოვნების წაშლა",
+    "orderLogs": 
+    {
+    "title": "შეკვეთების ლოგები",
+    "client": "👤 კლიენტი",
+    "trackingNumber": "📦 ტრეკინგ ნომერი",
+    "idOtp": "🔑 ID/OTP",
+    "noData": "🚫 მონაცემები არ არის ხელმისაწვდომი."
+    }
 }

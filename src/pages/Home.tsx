@@ -1,148 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
-import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
+import { faMoneyCheckDollar, faBox, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.webp";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext } from "react";
 import { Context } from "../App";
-import { axiosInstance } from "../api/apiClient";
-import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 import { t } from "i18next";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import useRequestLogs from "../hooks/useRequestLogs";
+import useHomeData from "../hooks/useHomeData";
 
 function Home() {
-  const {
-    userInfo,
-    setReasons,
-    setRecieptTasks,
-    setSendingTasks,
-    recieptTasks,
-    sendingTasks,
-    amount,
-    setAmount,
-    setTabButtons,
-    setActiveButton
-  } = useContext(Context);
-
+  const { setTabButtons, setActiveButton, userInfo } = useContext(Context);
   const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(false);
-  // Fetch reasons
-  const fetchReasons = async () => {
-    try {
-      const response = await axiosInstance.get(GET_REASONS);
-      setReasons(response.data.response);
-    } catch (error) {
-      console.error("Error fetching reasons:", error);
-    }
-  };
-
-  // Fetch amount
-  const fetchAmount = async () => {
-    try {
-      const response = await axiosInstance.get(AMOUNT, {
-        params: {
-          cashregistry_data: btoa(
-            JSON.stringify({
-              device_id: userInfo.device_id,
-            })
-          ),
-        },
-      });
-      setAmount(response.data.response);
-    } catch (error) {
-      console.error("Error fetching amount:", error);
-    }
-  };
-
-  // Fetch receipt tasks
-  const fetchRecieptTasks = async () => {
-    try {
-      const response = await axiosInstance.get(ORDER_LIST, {
-        params: {
-          tasklist_data: btoa(
-            JSON.stringify({
-              device_id: userInfo.device_id,
-              pickup_task: true,
-              status: ["Waiting", "Accepted", "Completed", "Canceled"],
-            })
-          ),
-        },
-      });
-      setRecieptTasks(response.data.response);
-    } catch (error) {
-      console.error("Error fetching receipt tasks:", error);
-    }
-  };
-
-  // Fetch sending tasks
-  const fetchSendingTasks = async () => {
-    try {
-      const response = await axiosInstance.get(ORDER_LIST, {
-        params: {
-          tasklist_data: btoa(
-            JSON.stringify({
-              device_id: userInfo.device_id,
-              pickup_task: false,
-              status: ["Waiting", "Accepted", "Completed", "Canceled"],
-            })
-          ),
-        },
-      });
-      setSendingTasks(response.data.response);
-    } catch (error) {
-      console.error("Error fetching sending tasks:", error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchAllData = async () => {
-      setLoading(true);
-      try {
-        await fetchRecieptTasks();
-        await fetchSendingTasks();
-        await fetchAmount();
-        await fetchReasons();
-      } catch (error) {
-        console.log(error);  // changed alert to console.error
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllData();
-  }, []);
-
-  // Calculate task amounts using useMemo
-  const taskAmounts = useMemo(() => {
-    const newTaskAmounts = {
-      receiptAccepted: 0,
-      receiptCompleted: 0,
-      receiptCanceled: 0,
-      receiptWaiting: 0,
-      sendingAccepted: 0,
-      sendingCompleted: 0,
-      sendingCanceled: 0,
-      sendingWaiting: 0,
-    };
-
-    recieptTasks.forEach((task) => {
-      if (task.Status === "Accepted") newTaskAmounts.receiptAccepted++;
-      else if (task.Status === "Completed") newTaskAmounts.receiptCompleted++;
-      else if (task.Status === "Canceled") newTaskAmounts.receiptCanceled++;
-      else newTaskAmounts.receiptWaiting++;
-    });
-
-    sendingTasks.forEach((task) => {
-      if (task.Status === "Accepted") newTaskAmounts.sendingAccepted++;
-      else if (task.Status === "Completed") newTaskAmounts.sendingCompleted++;
-      else if (task.Status === "Canceled") newTaskAmounts.sendingCanceled++;
-      else newTaskAmounts.sendingWaiting++;
-    });
-
-    return newTaskAmounts;
-  }, [recieptTasks, sendingTasks]);
+  const { clearLogs } = useRequestLogs();
+  
+  const { loading, amount, taskAmounts } = useHomeData();
 
   interface HandleNavigateToPagesParams {
     buttonName: string;
@@ -150,11 +23,12 @@ function Home() {
     num: number;
   }
 
-  const handleNavigeteToPages = ({ buttonName, path , num}: HandleNavigateToPagesParams): void => {
+  const handleNavigeteToPages = ({ buttonName, path, num }: HandleNavigateToPagesParams): void => {
     setTabButtons(buttonName);
     setActiveButton(num);
     navigate(path);
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300">
@@ -308,8 +182,9 @@ function Home() {
           </div>
         </section>
 
-        <section className="mt-6">
-          <Button onClick={() => navigate('/requestlog')}>Open Chat</Button>
+        <section className="mt-6 flex gap-4">
+          <Button onClick={() => navigate('/requestlog')}>{t("Open Logs")}</Button>
+          <Button onClick={clearLogs}>{t("Delete Logs")}</Button>
         </section>
       </div>
     </div>
