@@ -178,6 +178,9 @@ const Order = ({ status }: { status: string | null }) => {
     }));
     setSendingTasks(updatedTasks);
 
+    // Store updated tasks in local storage
+    localStorage.setItem("reorderedTasks", JSON.stringify(updatedTasks));
+
     try {
       // Send updated sort numbers to the server
       for (const task of updatedTasks) {
@@ -238,7 +241,6 @@ const Order = ({ status }: { status: string | null }) => {
           </button>
         </div>
       )}
-
 
       <DndContext
         sensors={sensors}
