@@ -6,25 +6,26 @@ type ThirdPersonTypes = {
   onConfirm(): void;
   loading: boolean;
   navigationfunction(): void;
-  closeModal: () => void;
+  closeThirdPerosnModal: () => void;
   confirmationMessage: string;
 };
 
 const ThirdPerson: React.FC<ThirdPersonTypes> = ({
   onConfirm,
   navigationfunction,
-  closeModal,
+  closeThirdPerosnModal,
   loading,
   confirmationMessage,
 }) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [connection, setConnection] = useState("");
   const [errors, setErrors] = useState({ name: "", surname: "", idNumber: "" });
 
   // Validation function
   const validateFields = () => {
-    let newErrors = { name: "", surname: "", idNumber: "" };
+    let newErrors = { name: "", surname: "", idNumber: "", connection: "" };
     let isValid = true;
 
     if (!name.trim()) {
@@ -57,49 +58,74 @@ const ThirdPerson: React.FC<ThirdPersonTypes> = ({
 
   return (
     <div className="flex flex-col h-[500px] fixed  p-6 bg-white shadow-lg rounded-2xl w-96">
-      <label htmlFor="name" className="text-lg font-semibold mt-4">
-        სახელი
-      </label>
-      <input
-        id="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          errors.name ? "border-red-500" : "border-gray-300"
-        }`}
-      />
-      {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-
-      <label htmlFor="surname" className="text-lg font-semibold mt-4">
-        გვარი
-      </label>
-      <input
-        id="surname"
-        value={surname}
-        onChange={(e) => setSurname(e.target.value)}
-        className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          errors.surname ? "border-red-500" : "border-gray-300"
-        }`}
-      />
-      {errors.surname && (
-        <p className="text-red-500 text-sm">{errors.surname}</p>
-      )}
-
-      <label htmlFor="idNumber" className="text-lg font-semibold mt-4">
-        პირადი ნომერი
-      </label>
-      <input
-        id="idNumber"
-        value={idNumber}
-        onChange={(e) => setIdNumber(e.target.value)}
-        className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          errors.idNumber ? "border-red-500" : "border-gray-300"
-        }`}
-      />
-      {errors.idNumber && (
-        <p className="text-red-500 text-sm">{errors.idNumber}</p>
-      )}
-
+      <div className="relative flex flex-col  ">
+        <label htmlFor="name" className="text-lg font-semibold mt-4">
+          სახელი
+        </label>
+        <input
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            errors.name ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.name && (
+          <p className="text-red-500 text-sm absolute bottom-[-20px]">
+            {errors.name}
+          </p>
+        )}
+      </div>
+      <div className="relative flex flex-col  ">
+        <label htmlFor="surname" className="text-lg font-semibold mt-4">
+          გვარი
+        </label>
+        <input
+          id="surname"
+          value={surname}
+          onChange={(e) => setSurname(e.target.value)}
+          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            errors.surname ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.surname && (
+          <p className="text-red-500 text-sm  absolute bottom-[-20px]">
+            {errors.surname}
+          </p>
+        )}
+      </div>
+      <div className="relative flex flex-col  ">
+        <label htmlFor="idNumber" className="text-lg font-semibold mt-4">
+          პირადი ნომერი
+        </label>
+        <input
+          id="idNumber"
+          value={idNumber}
+          onChange={(e) => setIdNumber(e.target.value)}
+          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            errors.idNumber ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.idNumber && (
+          <p className="text-red-500 text-sm  absolute bottom-[-20px]">
+            {errors.idNumber}
+          </p>
+        )}
+      </div>
+      <div className="relative flex flex-col ">
+        <label htmlFor="connection" className="text-lg font-semibold mt-4">
+          კავშირი
+        </label>
+        <input
+          id="connection"
+          value={connection}
+          onChange={(e) => setConnection(e.target.value)}
+          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            errors.name ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+      </div>
       <div className="grid gap-[20px] mt-auto">
         {!confirmationMessage && (
           <Button
@@ -120,7 +146,9 @@ const ThirdPerson: React.FC<ThirdPersonTypes> = ({
           </Button>
         )}
         <Button
-          onClick={confirmationMessage ? navigationfunction : closeModal}
+          onClick={
+            confirmationMessage ? navigationfunction : closeThirdPerosnModal
+          }
           className="bg-gray-300 text-black"
         >
           {t("cancel")}

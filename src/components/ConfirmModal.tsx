@@ -54,7 +54,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     }
   };
 
-  
   const { addParcel } = useRequestLogs();
 
   useEffect(() => {
@@ -304,7 +303,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             setStartTimer(true);
             await fetchUpdatedOrderList();
           } else {
-            setErrorMessage(t("The ID Number does not match the client's ID. Please try again."));
+            setErrorMessage(
+              t(
+                "The ID Number does not match the client's ID. Please try again."
+              )
+            );
             addParcel(
               order.tracking_code,
               confirmationValue,
@@ -328,17 +331,22 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       }
     } catch (error) {
       console.error("An error occurred:", error);
-      setErrorMessage(t("An unexpected error occurred. Please try again later."));
+      setErrorMessage(
+        t("An unexpected error occurred. Please try again later.")
+      );
       addParcel(
         order.tracking_code,
         confirmationValue,
         order.client_name,
         "failed"
       );
-
     } finally {
       setLoading(false);
     }
+  };
+
+  const closeThirdPerosnModal = () => {
+    setThirdPerson(false);
   };
 
   return (
@@ -347,8 +355,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <ThirdPerson
           onConfirm={onConfirm}
           navigationfunction={navigationfunction}
-          closeModal={closeModal}
           loading={loading}
+          closeThirdPerosnModal={closeThirdPerosnModal}
           confirmationMessage={confirmationMessage}
         />
       )}
