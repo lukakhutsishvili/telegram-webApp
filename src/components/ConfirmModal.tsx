@@ -13,7 +13,7 @@ import { Context } from "../App";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import ThirdPerson from "./ThirdPerson";
-import useOrderLogs from "../hooks/useRequestLogs";
+import useRequestLogs from "../hooks/useRequestLogs";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -55,7 +55,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   
-  const { saveLog } = useOrderLogs();
+  const { addParcel } = useRequestLogs();
 
   useEffect(() => {
     if (startTimer) {
@@ -167,7 +167,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const checkClientOtp = async () => {
     if (!confirmationValue) {
       setErrorMessage(t("Please enter the OTP."));
-      saveLog(
+      addParcel(
         order.tracking_code,
         confirmationValue,
         order.client_name,
@@ -189,7 +189,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         setConfirmationMessage(t("OTP confirmed!"));
         setErrorMessage("");
         setStartTimer(true);
-        saveLog(
+        addParcel(
           order.tracking_code,
           confirmationValue,
           order.client_name,
@@ -199,7 +199,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         setErrorMessage(
           response.data.message || t("Invalid OTP. Please try again.")
         );
-        saveLog(
+        addParcel(
           order.tracking_code,
           confirmationValue,
           order.client_name,
@@ -210,7 +210,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       setErrorMessage(
         error.response?.data?.message || t("Invalid OTP. Please try again.")
       );
-      saveLog(
+      addParcel(
         order.tracking_code,
         confirmationValue,
         order.client_name,
@@ -222,7 +222,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const postClientID = async () => {
     if (!confirmationValue.trim()) {
       setErrorMessage(t("Please enter the ID number."));
-      saveLog(
+      addParcel(
         order.tracking_code,
         confirmationValue,
         order.client_name,
@@ -242,7 +242,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       if (response.status === 202) {
         await confirmDelivery();
         setConfirmationMessage(t("ID Number confirmed!"));
-        saveLog(
+        addParcel(
           order.tracking_code,
           confirmationValue,
           order.client_name,
@@ -269,7 +269,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     try {
       if (receiptOrder) {
         await confirmDelivery();
-        saveLog(
+        addParcel(
           order.tracking_code,
           confirmationValue,
           order.client_name,
@@ -282,7 +282,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         try {
           await checkClientOtp();
         } catch (error) {
-          saveLog(
+          addParcel(
             order.tracking_code,
             confirmationValue,
             order.client_name,
@@ -294,7 +294,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         if (order.client_id) {
           if (order.client_id === confirmationValue) {
             await confirmDelivery();
-            saveLog(
+            addParcel(
               order.tracking_code,
               confirmationValue,
               order.client_name,
@@ -305,7 +305,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             await fetchUpdatedOrderList();
           } else {
             setErrorMessage(t("The ID Number does not match the client's ID. Please try again."));
-            saveLog(
+            addParcel(
               order.tracking_code,
               confirmationValue,
               order.client_name,
@@ -316,7 +316,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           try {
             await postClientID();
           } catch (error) {
-            saveLog(
+            addParcel(
               order.tracking_code,
               confirmationValue,
               order.client_name,
@@ -329,7 +329,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     } catch (error) {
       console.error("An error occurred:", error);
       setErrorMessage(t("An unexpected error occurred. Please try again later."));
-      saveLog(
+      addParcel(
         order.tracking_code,
         confirmationValue,
         order.client_name,

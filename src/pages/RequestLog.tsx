@@ -1,11 +1,11 @@
 
-import useOrderLogs from "../hooks/useRequestLogs";
+import useRequestLogs from "../hooks/useRequestLogs";
 
 
 
 function RequestLog() {
 
-  const { orderLogs} = useOrderLogs();
+  const { parcels: orderLogs } = useRequestLogs();
 
 
 
