@@ -6,20 +6,18 @@ interface Parcel {
   trackingNumber: string;
   idOrOtp: string;
   clientName: string;
-  status: "completed" | "failed"; // Add status tracking
+  status: "completed" | "failed";
   timestamp: string;
 }
 
 const useRequestLogs = () => {
   const [parcels, setParcels] = useState<Parcel[]>([]);
 
-  // Load parcels from local storage on mount
   useEffect(() => {
     const storedParcels = JSON.parse(localStorage.getItem(PARCELS_KEY) || "[]");
     setParcels(storedParcels);
   }, []);
 
-  // Function to add a new parcel
   const addParcel = (trackingNumber: string, idOrOtp: string, clientName: string, status: "completed" | "failed") => {
     const newParcel: Parcel = {
       trackingNumber,
@@ -36,7 +34,13 @@ const useRequestLogs = () => {
     });
   };
 
-  return { parcels, addParcel };
+  // Function to clear all parcels from local storage and state
+  const clearLogs = () => {
+    localStorage.removeItem(PARCELS_KEY);
+    setParcels([]);
+  };
+
+  return { parcels, addParcel, clearLogs };
 };
 
 export default useRequestLogs;

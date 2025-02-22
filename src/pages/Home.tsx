@@ -10,6 +10,7 @@ import { t } from "i18next";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import useRequestLogs from "../hooks/useRequestLogs";
 
 function Home() {
   const {
@@ -155,6 +156,8 @@ function Home() {
     setActiveButton(num);
     navigate(path);
   };
+
+  const { clearLogs } = useRequestLogs();
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300">
@@ -308,8 +311,9 @@ function Home() {
           </div>
         </section>
 
-        <section className="mt-6">
-          <Button onClick={() => navigate('/requestlog')}>Open Chat</Button>
+        <section className="mt-6 flex gap-4">
+          <Button onClick={() => navigate('/requestlog')}>{t("Open Logs")}</Button>
+          <Button onClick={clearLogs}>{t("Delete Logs")}</Button>
         </section>
       </div>
     </div>
