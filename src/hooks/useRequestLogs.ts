@@ -10,7 +10,7 @@ interface Parcel {
   timestamp: string;
 }
 
-const useParcelStorage = () => {
+const useRequestLogs = () => {
   const [parcels, setParcels] = useState<Parcel[]>([]);
 
   // Load parcels from local storage on mount
@@ -39,4 +39,4 @@ const useParcelStorage = () => {
   return { parcels, addParcel };
 };
 
-export default useParcelStorage;
+export default useRequestLogs;

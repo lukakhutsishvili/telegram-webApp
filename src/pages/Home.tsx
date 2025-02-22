@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
 import { faMoneyCheckDollar, faBox } from "@fortawesome/free-solid-svg-icons";
-import logo from "../assets/delivo-logo.jpg";
+import logo from "../assets/delivo-logo.webp";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";

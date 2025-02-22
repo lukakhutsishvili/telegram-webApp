@@ -12,9 +12,8 @@ import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
-import useParcelStorage from "../hooks/useParcelStorage";
 import ThirdPerson from "./ThirdPerson";
-
+import useRequestLogs from "../hooks/useRequestLogs";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -42,7 +41,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     useContext(Context);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-  const { addParcel } = useParcelStorage();
 
   const order = sendingOrder || receiptOrder;
 
@@ -55,6 +53,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       }
     }
   };
+
+  
+  const { addParcel } = useRequestLogs();
 
   useEffect(() => {
     if (startTimer) {
@@ -166,16 +167,21 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const checkClientOtp = async () => {
     if (!confirmationValue) {
       setErrorMessage(t("Please enter the OTP."));
-      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+      addParcel(
+        order.tracking_code,
+        confirmationValue,
+        order.client_name,
+        "failed"
+      );
       return;
     }
-  
+
     const data = {
       device_id: userInfo.device_id,
       tracking_code: order.tracking_code,
       otp: confirmationValue,
     };
-  
+
     try {
       const response = await axiosInstance.post(VERIFY_CLIENT_OTP_URL, data);
       if (response.status === 200) {
@@ -183,22 +189,45 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         setConfirmationMessage(t("OTP confirmed!"));
         setErrorMessage("");
         setStartTimer(true);
-        addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+        addParcel(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "completed"
+        );
       } else {
-        setErrorMessage(response.data.message || t("Invalid OTP. Please try again."));
-        addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+        setErrorMessage(
+          response.data.message || t("Invalid OTP. Please try again.")
+        );
+        addParcel(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "failed"
+        );
       }
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || t("Invalid OTP. Please try again."));
-      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+      setErrorMessage(
+        error.response?.data?.message || t("Invalid OTP. Please try again.")
+      );
+      addParcel(
+        order.tracking_code,
+        confirmationValue,
+        order.client_name,
+        "failed"
+      );
     }
   };
-  
 
   const postClientID = async () => {
     if (!confirmationValue.trim()) {
       setErrorMessage(t("Please enter the ID number."));
-      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+      addParcel(
+        order.tracking_code,
+        confirmationValue,
+        order.client_name,
+        "failed"
+      );
       return;
     }
 
@@ -213,7 +242,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       if (response.status === 202) {
         await confirmDelivery();
         setConfirmationMessage(t("ID Number confirmed!"));
-        addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+        addParcel(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "completed"
+        );
         setErrorMessage("");
         setStartTimer(true);
       } else {
@@ -235,7 +269,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     try {
       if (receiptOrder) {
         await confirmDelivery();
-        addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+        addParcel(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "completed"
+        );
         setConfirmationMessage(t("Receipt order confirmed!"));
         setStartTimer(true);
         await fetchUpdatedOrderList();
@@ -243,26 +282,46 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         try {
           await checkClientOtp();
         } catch (error) {
-          addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+          addParcel(
+            order.tracking_code,
+            confirmationValue,
+            order.client_name,
+            "failed"
+          );
         }
         await fetchUpdatedOrderList();
       } else if (confirmationMethod === "ID Number") {
         if (order.client_id) {
           if (order.client_id === confirmationValue) {
             await confirmDelivery();
-            addParcel(order.tracking_code, confirmationValue, order.client_name, "completed");
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "completed"
+            );
             setConfirmationMessage(t("ID Number confirmed!"));
             setStartTimer(true);
             await fetchUpdatedOrderList();
           } else {
             setErrorMessage(t("The ID Number does not match the client's ID. Please try again."));
-            addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "failed"
+            );
           }
         } else {
           try {
             await postClientID();
           } catch (error) {
-            addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "failed"
+            );
           }
           await fetchUpdatedOrderList();
         }
@@ -270,13 +329,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     } catch (error) {
       console.error("An error occurred:", error);
       setErrorMessage(t("An unexpected error occurred. Please try again later."));
-      addParcel(order.tracking_code, confirmationValue, order.client_name, "failed");
+      addParcel(
+        order.tracking_code,
+        confirmationValue,
+        order.client_name,
+        "failed"
+      );
+
     } finally {
       setLoading(false);
     }
   };
-  
-  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -320,6 +383,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 </select>
               </div>
             )}
+
             {sendingOrder && (
               <>
                 <div className="mb-4">
@@ -337,6 +401,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <option value="ID Number">{t("ID Number")}</option>
                   </select>
                 </div>
+                <button
+                  className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-all"
+                  onClick={() => setThirdPerson(!thirdPerson)}
+                >
+                  მესამე პირი
+                </button>
 
                 <div className="mb-4">
                   <label className="block font-medium mb-2">
@@ -357,9 +427,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                         : t("Send OTP")}
                     </Button>
                   )}
-                  <Button onClick={() => setThirdPerson(!thirdPerson)}>
-                    მესამე პირი
-                  </Button>
 
                   {otpSent && (
                     <div className="text-green-500">{t("OTP Sent!")}</div>

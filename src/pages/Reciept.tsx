@@ -25,7 +25,6 @@ function Receipt() {
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("pick up")}</h1>
-
         {/* Tab Navigation */}
         <div className="mt-4">
           <Swiper
