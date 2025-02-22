@@ -19,12 +19,16 @@ interface ConfirmModalProps {
   closeModal: () => void;
   receiptOrder: any;
   sendingOrder: any;
+  selectedOrders: { [key: string]: boolean };
+  totalSum: string;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
   closeModal,
   receiptOrder,
   sendingOrder,
+  selectedOrders,
+  totalSum,
 }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>("Cash");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
@@ -94,27 +98,35 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   const confirmDelivery = async () => {
+    const checkedOrders = Object.keys(selectedOrders)
+      .filter((tracking_code) => selectedOrders[tracking_code]) 
+      .map((tracking_code) => ({
+        tracking_code,
+        successfully: "True",
+        reason_id: "",
+        reason_commentary: "",
+      }));
+  
+    if (checkedOrders.length === 0) {
+      console.warn("No orders selected for confirmation");
+      return;
+    }
+  
     const params = {
       device_id: userInfo.device_id,
-      payment_type: order.sum == 0 ? null : paymentMethod,
-      orders: [
-        {
-          tracking_code: order.tracking_code,
-          successfully: "True",
-          reason_id: "",
-          reason_commentary: "",
-        },
-      ],
+      payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
+      orders: checkedOrders, 
     };
-
+  
     try {
-      const url = order == receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
+      const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
       await axiosInstance.post(url, params);
       console.log("Request sent successfully to:", url);
     } catch (error) {
       console.error("Error sending request:", error);
     }
   };
+  
 
   const sendOtp = async () => {
     if (!order.client_phone) {
@@ -368,7 +380,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           </div>
         ) : (
           <>
-            {order.sum != 0 && (
+            {(order.sum != 0 || parseFloat(totalSum) != 0) && (
               <div className="mb-4">
                 <label className="block font-medium mb-2">
                   {t("Payment Method")}
