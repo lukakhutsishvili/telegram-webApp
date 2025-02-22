@@ -1,9 +1,6 @@
 import { useState } from "react";
-import {  getAuth } from "firebase/auth";
-import type { Auth } from "firebase/auth";
 import { useAuth } from "../hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 
 
 export function Auth() {
@@ -13,10 +10,6 @@ export function Auth() {
   const [otp, setOtp] = useState("");
 
 
-  useEffect(() => {
-    getAuth(); 
-  }, []);
-  
   
   return (
     <div className="space-y-4">
