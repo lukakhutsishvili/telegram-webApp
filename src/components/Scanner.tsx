@@ -8,6 +8,7 @@ import {
   changeStatusesOfOrder,
 } from "../api/Constants";
 import { t } from "i18next";
+import { useNavigate } from "react-router-dom";
 
 const BarcodeScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -21,12 +22,13 @@ const BarcodeScanner = () => {
   const [restart, setRestart] = useState(false);
   const { setRecieptTasks, setSendingTasks } = useContext(Context);
   const [isFetchingTasks, setIsFetchingTasks] = useState(false);
+  const navigate = useNavigate();
 
   const sendGetRequest = async (trackingCode: string) => {
     try {
       setIsLoading(true);
       const requestData = {
-        device_id: userInfo.device_id,
+        device_id: userInfo.device_id || "6087086146",
         tracking_code: trackingCode,
       };
 
@@ -42,6 +44,11 @@ const BarcodeScanner = () => {
 
       const firstResponseData = response.data.response.value;
       const status = firstResponseData.status;
+
+      if (response.data.response.type == "parcel") {
+        navigate(`order/${firstResponseData.tracking_code}`);
+        return;
+      }
 
       if (status === "Waiting") {
         const trackingCodes = firstResponseData.tracking_codes.map(
