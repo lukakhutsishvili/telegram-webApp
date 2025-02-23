@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import Button from "../components/Button";
 import {
+  CHECK_OTP_CONFIRMATION,
   DELIVERY_ORDERS,
   ORDER_LIST,
   PICKUP_ORDERS,
@@ -45,7 +46,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     useContext(Context);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-
+  const { addParcel } = useRequestLogs();
+  const PARCELS_KEY = "parcels";
+  const storedParcels = JSON.parse(localStorage.getItem(PARCELS_KEY) || "[]");
+  console.log(storedParcels);
   const order = sendingOrder || receiptOrder;
 
   const navigationfunction = () => {
@@ -58,7 +62,25 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     }
   };
 
-  const { addParcel } = useRequestLogs();
+  useEffect(() => {
+    const getOtp = async () => {
+      try {
+        const response = await axiosInstance.get(CHECK_OTP_CONFIRMATION, {
+          params: {
+            telegram_id: "6087086146",
+            tracking_code: order.tracking_code,
+          },
+        });
+        if (response.data.response.otp_confirmed) {
+          const parcel = storedParcels.find(
+            (parcel: any) => parcel.trackingNumber == order.tracking_code
+          );
+          setConfirmationValue(parcel.idOrOtp);
+        }
+      } catch (error) {}
+    };
+    getOtp();
+  }, []);
 
   useEffect(() => {
     if (startTimer) {
