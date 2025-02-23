@@ -67,13 +67,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             tracking_code: order.tracking_code,
           },
         });
-        // console.log(order.tracking_code);
-        console.log(storedParcels);
         if (response.data.response.otp_confirmed) {
-          const otp = storedParcels.find(
-            (barcode: any) => barcode == order.trackingNumber
+          const parcel = storedParcels.find(
+            (parcel: any) => parcel.trackingNumber == order.tracking_code
           );
-          console.log(otp);
+          setConfirmationValue(parcel.idOrOtp);
         }
       } catch (error) {}
     };
