@@ -8,10 +8,13 @@ import { Context } from "../App";
 import { useContext, useEffect, useRef } from "react";
 import Button from "../components/Button";
 import { Navigation } from "swiper/modules";
+import { useGetAllTasks } from "../hooks/useGetAllTasks";
 
 function Sending() {
-  const { tabButtons, setTabButtons, activeButton, setActiveButton } = useContext(Context);
+  const { tabButtons, setTabButtons, activeButton, setActiveButton } =
+    useContext(Context);
   const swiperRef = useRef<SwiperClass | null>(null); // Correct type
+  const { fetchUpdatedOrderList } = useGetAllTasks();
 
   // Auto-scroll to active tab when activeButton changes
   useEffect(() => {
@@ -25,7 +28,7 @@ function Sending() {
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("delivery")}</h1>
         <div className="mt-4">
-        <Swiper
+          <Swiper
             onSwiper={(swiper) => (swiperRef.current = swiper)} // Correct ref assignment
             spaceBetween={10}
             slidesPerView={2}
@@ -38,6 +41,8 @@ function Sending() {
                   onClick={() => {
                     setTabButtons(item.status);
                     setActiveButton(index);
+                    fetchUpdatedOrderList([item.status]); // Pass an array
+                    console.log(item.status);
                   }}
                   className={`px-4 py-2 transition-all ${
                     tabButtons === item.status
@@ -56,8 +61,6 @@ function Sending() {
       <div className=" w-full overflow-y-auto pb-4">
         <Order status={tabButtons} />
       </div>
-
-     
     </div>
   );
 }
