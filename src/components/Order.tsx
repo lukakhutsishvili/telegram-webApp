@@ -178,20 +178,21 @@ const Order = ({ status }: { status: string | null }) => {
     }));
     setSendingTasks(updatedTasks);
 
-    // Store updated tasks in local storage
-    localStorage.setItem("reorderedTasks", JSON.stringify(updatedTasks));
-
     try {
-      // Send updated sort numbers to the server
-      for (const task of updatedTasks) {
+      // Use reduce to accumulate all POST requests into an array
+      const updateRequests = updatedTasks.reduce((acc: any[], task: any) => {
         const payload = {
           device_id: userInfo.device_id,
           tracking_code: task.tracking_code,
           sort_number: task.sort_number,
           pickup_task: false,
         };
-        await axiosInstance.post(MODIFY_SORT_NUMBER, payload);
-      }
+        acc.push(axiosInstance.post(MODIFY_SORT_NUMBER, payload));
+        return acc;
+      }, []);
+
+      // Execute all POST requests concurrently
+      await Promise.all(updateRequests);
       console.log("Sort numbers updated successfully.");
     } catch (error) {
       console.error("Failed to update sort numbers:", error);

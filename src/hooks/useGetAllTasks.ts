@@ -9,7 +9,6 @@ export const useGetAllTasks = () => {
   const { userInfo, setSendingTasks } = useContext(Context);
   const location = useLocation();
   const pickUp = location.pathname == "/Sending" ? false : true;
-  console.log(location.pathname)
 
   const fetchUpdatedOrderList = async (status: string[]) => {
     try {
