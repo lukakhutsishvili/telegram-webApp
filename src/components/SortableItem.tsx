@@ -46,6 +46,8 @@ const SortableItem = ({
     }
   };
 
+  console.log(task)
+
   return (
     <div
       ref={setNodeRef}
@@ -83,6 +85,7 @@ const SortableItem = ({
         onClick={handleClick}
       >
         <div className="flex justify-between">
+          <p>  {task.sort_number}</p>
           <h2 className="text-sm">{task.client_name}</h2>
           <p className="text-sm">{task.sum} ₾</p>
         </div>
