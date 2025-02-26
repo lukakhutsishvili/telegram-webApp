@@ -178,22 +178,17 @@ const Order = ({ status }: { status: string | null }) => {
     }));
     setSendingTasks(updatedTasks);
 
-    try {
-      // Use reduce to accumulate all POST requests into an array
-      const updateRequests = updatedTasks.reduce((acc: any[], task: any) => {
-        const payload = {
-          device_id: userInfo.device_id,
-          tracking_code: task.tracking_code,
-          sort_number: task.sort_number,
-          pickup_task: false,
-        };
-        acc.push(axiosInstance.post(MODIFY_SORT_NUMBER, payload));
-        return acc;
-      }, []);
+    const payLoad = {
+      pickup_task: false,
+      device_id: userInfo.device_id || "6087086146",
+      orders: updatedTasks,
+    };
 
-      // Execute all POST requests concurrently
-      await Promise.all(updateRequests);
-      console.log("Sort numbers updated successfully.");
+    console.log(payLoad);
+
+    try {
+      const res = await axiosInstance.post(MODIFY_SORT_NUMBER, payLoad);
+      console.log(res);
     } catch (error) {
       console.error("Failed to update sort numbers:", error);
       alert(t("Failed to update sort order. Please try again."));
@@ -209,11 +204,7 @@ const Order = ({ status }: { status: string | null }) => {
       {/* Search bar with corrected z-index */}
       <div className="sticky  top-0 z-30 flex items-center bg-white shadow-md py-2">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
-          <FontAwesomeIcon
-            onClick={() => navigate("/scanner")}
-            icon={faBarcode}
-            className="text-gray-500 mr-2"
-          />
+          <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
           <input
             type="text"
             placeholder={t("Search")}
