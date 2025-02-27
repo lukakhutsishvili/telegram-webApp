@@ -147,32 +147,55 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-
+  
     if (!over || active.id === over.id) return;
-
-    const oldIndex = recieptTasks.findIndex(
+  
+    // Find the status of the dragged item
+    const draggedTask = recieptTasks.find(
       (task: any) => task.tracking_code === active.id
     );
-    const newIndex = recieptTasks.findIndex(
+    if (!draggedTask) return;
+    const taskStatus = draggedTask.Status;
+  
+    // Filter tasks with the same status
+    const statusFilteredTasks = recieptTasks.filter(
+      (task: any) => task.Status === taskStatus
+    );
+  
+    const oldIndex = statusFilteredTasks.findIndex(
+      (task: any) => task.tracking_code === active.id
+    );
+    const newIndex = statusFilteredTasks.findIndex(
       (task: any) => task.tracking_code === over.id
     );
-
-    const reorderedTasks = arrayMove(recieptTasks, oldIndex, newIndex);
-    setRecieptTasks(reorderedTasks);
-
+  
+    const reorderedTasks = arrayMove(statusFilteredTasks, oldIndex, newIndex);
+  
+    // Update sort numbers for only the affected status group
     const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
       ...task,
       sort_number: index + 1,
     }));
-    setRecieptTasks(updatedTasks);
-
+  
+    // Merge updated tasks back into the main list without affecting other statuses
+    const finalTasks = recieptTasks.map((task: any) => {
+      const updatedTask = updatedTasks.find(
+        (updated: any) => updated.tracking_code === task.tracking_code
+      );
+      return updatedTask ? updatedTask : task;
+    });
+  
+    setRecieptTasks(finalTasks);
+    localStorage.setItem("reorderedTasks", JSON.stringify(finalTasks));
+  
     try {
+      // Send updates only for the reordered tasks
       for (const task of updatedTasks) {
         const payload = {
           device_id: userInfo.device_id,
           tracking_code: task.tracking_code,
           sort_number: task.sort_number,
-          pickup_task: true,
+          pickup_task: false,
         };
         await axiosInstance.post(MODIFY_SORT_NUMBER, payload);
       }

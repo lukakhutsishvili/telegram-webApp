@@ -157,32 +157,49 @@ const Order = ({ status }: { status: string | null }) => {
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-
-    // Ensure there's a valid drag-over target
+  
     if (!over || active.id === over.id) return;
-
-    const oldIndex = sendingTasks.findIndex(
+  
+    // Find the status of the dragged item
+    const draggedTask = sendingTasks.find(
       (task: any) => task.tracking_code === active.id
     );
-    const newIndex = sendingTasks.findIndex(
+    if (!draggedTask) return;
+    const taskStatus = draggedTask.Status;
+  
+    // Filter tasks with the same status
+    const statusFilteredTasks = sendingTasks.filter(
+      (task: any) => task.Status === taskStatus
+    );
+  
+    const oldIndex = statusFilteredTasks.findIndex(
+      (task: any) => task.tracking_code === active.id
+    );
+    const newIndex = statusFilteredTasks.findIndex(
       (task: any) => task.tracking_code === over.id
     );
-
-    const reorderedTasks = arrayMove(sendingTasks, oldIndex, newIndex);
-    setSendingTasks(reorderedTasks);
-
-    // Update sort numbers for all reordered tasks
+  
+    const reorderedTasks = arrayMove(statusFilteredTasks, oldIndex, newIndex);
+  
+    // Update sort numbers for only the affected status group
     const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
       ...task,
       sort_number: index + 1,
     }));
-    setSendingTasks(updatedTasks);
-
-    // Store updated tasks in local storage
-    localStorage.setItem("reorderedTasks", JSON.stringify(updatedTasks));
-
+  
+    // Merge updated tasks back into the main list without affecting other statuses
+    const finalTasks = sendingTasks.map((task: any) => {
+      const updatedTask = updatedTasks.find(
+        (updated: any) => updated.tracking_code === task.tracking_code
+      );
+      return updatedTask ? updatedTask : task;
+    });
+  
+    setSendingTasks(finalTasks);
+    localStorage.setItem("reorderedTasks", JSON.stringify(finalTasks));
+  
     try {
-      // Send updated sort numbers to the server
+      // Send updates only for the reordered tasks
       for (const task of updatedTasks) {
         const payload = {
           device_id: userInfo.device_id,
@@ -198,6 +215,7 @@ const Order = ({ status }: { status: string | null }) => {
       alert(t("Failed to update sort order. Please try again."));
     }
   };
+  
 
   if (!sendingTasks || sendingTasks.length === 0) {
     return <p className="text-center text-gray-500">{t("you have no task")}</p>;
