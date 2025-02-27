@@ -79,6 +79,7 @@ const useHomeData = () => {
           ),
         },
       });
+      console.log(response);
       setSendingTasks(response.data.response);
     } catch (error) {
       console.error("Error fetching sending tasks:", error);
