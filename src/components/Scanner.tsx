@@ -25,6 +25,7 @@ const BarcodeScanner = () => {
   const navigate = useNavigate();
 
   const sendGetRequest = async (trackingCode: string) => {
+    console.log(trackingCode);
     try {
       setIsLoading(true);
       const requestData = {
@@ -46,7 +47,8 @@ const BarcodeScanner = () => {
       const status = firstResponseData.status;
 
       if (response.data.response.type == "parcel") {
-        navigate(`order/${firstResponseData.tracking_code}`);
+        const newPath = window.location.pathname.replace("/scanner", "");
+        navigate(`${newPath}/order/${firstResponseData.tracking_code}`);
         return;
       }
 

@@ -3,7 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/src/assets/delivo-logo.jpg" />
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <script>
+      function sessionStorageSet(key, value) {
+        try {
+          window.sessionStorage.setItem('__telegram__' + key, JSON.stringify(value));
+          return true;
+        } catch (e) {}
+        return false;
+      }
+    
+      function sessionStorageGet(key) {
+        try {
+          return JSON.parse(window.sessionStorage.getItem('__telegram__' + key));
+        } catch (e) {}
+        return null;
+      }
+    
+      var webAppVersion = 8.0;
+    
+      var initParams = sessionStorageGet('initParams');
+      if (initParams) {
+        if (!initParams.tgWebAppVersion) {
+          initParams.tgWebAppVersion = webAppVersion;
+        }
+      } else {
+        initParams = {
+          tgWebAppVersion: webAppVersion
+        };
+      }
+    
+      sessionStorageSet('initParams', initParams);
+    </script>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Delivo Web App</title>
   </head>

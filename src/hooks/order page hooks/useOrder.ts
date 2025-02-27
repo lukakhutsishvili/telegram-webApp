@@ -14,7 +14,7 @@ const useOrder = (selectedOrdersList: { tracking_code: string; sum: number }[]) 
   // Calculate total sum of checked orders
   const totalSum = selectedOrdersList
     .filter((order) => selectedOrders[order.tracking_code])
-    .reduce((sum, order) => sum + order.sum, 0);
+    .reduce((sum, order) => sum + order.sum, 0).toFixed(2);
 
   const totalQuantity = selectedOrdersList.filter((order) => selectedOrders[order.tracking_code]).length;
 
