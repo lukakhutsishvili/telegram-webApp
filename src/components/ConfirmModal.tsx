@@ -73,7 +73,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         });
         if (response.data.response.otp_confirmed) {
           const parcel = storedParcels.find(
-            (parcel: any) => parcel.trackingNumber == order.tracking_code
+            (parcel: any) =>
+              parcel.trackingNumber == order.tracking_code &&
+              parcel.status == "completed"
           );
           setConfirmationValue(parcel.idOrOtp);
         }
@@ -120,25 +122,25 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const confirmDelivery = async () => {
     const checkedOrders = Object.keys(selectedOrders)
-      .filter((tracking_code) => selectedOrders[tracking_code]) 
+      .filter((tracking_code) => selectedOrders[tracking_code])
       .map((tracking_code) => ({
         tracking_code,
         successfully: "True",
         reason_id: "",
         reason_commentary: "",
       }));
-  
+
     if (checkedOrders.length === 0) {
       console.warn("No orders selected for confirmation");
       return;
     }
-  
+
     const params = {
       device_id: userInfo.device_id,
       payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
-      orders: checkedOrders, 
+      orders: checkedOrders,
     };
-  
+
     try {
       const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
       await axiosInstance.post(url, params);
@@ -147,7 +149,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       console.error("Error sending request:", error);
     }
   };
-  
 
   const sendOtp = async () => {
     if (!order.client_phone) {
