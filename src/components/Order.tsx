@@ -184,7 +184,11 @@ const Order = ({ status }: { status: string | null }) => {
       {/* Search Bar */}
       <div className="sticky top-0 z-30 flex items-center bg-white shadow-md py-2 px-4">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
-          <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
+          <FontAwesomeIcon
+            onClick={() => navigate("/scanner")}
+            icon={faBarcode}
+            className="text-gray-500 mr-2"
+          />
           <input
             type="text"
             placeholder={t("Search")}
@@ -196,7 +200,7 @@ const Order = ({ status }: { status: string | null }) => {
       </div>
 
       {/* Sorting Control Buttons */}
-      <div className="relative z-50">
+      <div className="relative z-0">
         {startSorting ? (
           <button
             onClick={async () => {
@@ -248,29 +252,44 @@ const Order = ({ status }: { status: string | null }) => {
 
       {/* Sortable UI */}
       <div className="relative z-20">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis]}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={filteredTasks.map((task: any) => task.tracking_code)}
-            strategy={verticalListSortingStrategy}
+        {startSorting ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={handleDragEnd}
           >
-            {filteredTasks.map((item: any) => (
-              <SortableItem
-                key={item.tracking_code}
-                id={item.tracking_code}
-                task={item}
-                status={status}
-                navigate={navigate}
-                handleCheckboxChange={handleCheckboxChange}
-                selectedOrders={selectedOrders}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
+            <SortableContext
+              items={filteredTasks.map((task: any) => task.tracking_code)}
+              strategy={verticalListSortingStrategy}
+            >
+              {filteredTasks.map((item: any) => (
+                <SortableItem
+                  key={item.tracking_code}
+                  id={item.tracking_code}
+                  task={item}
+                  status={status}
+                  navigate={navigate}
+                  handleCheckboxChange={handleCheckboxChange}
+                  selectedOrders={selectedOrders}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+        ) : (
+          // Render static list when sorting is disabled
+          filteredTasks.map((item: any) => (
+            <SortableItem
+              key={item.tracking_code}
+              id={item.tracking_code}
+              task={item}
+              status={status}
+              navigate={navigate}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedOrders={selectedOrders}
+            />
+          ))
+        )}
       </div>
     </div>
   );
