@@ -27,7 +27,9 @@ import SortableItem from "./SortableItem";
 const RecieptOrder = ({ status }: { status: string | null }) => {
   const { recieptTasks, userInfo, setRecieptTasks } = useContext(Context);
   const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
+  const [selectedOrders, setSelectedOrders] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [reorderedTasks, setReorderedTasks] = useState<any>([]);
@@ -284,8 +286,14 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
 
       {/* Spinner overlay shown during the async sorting update */}
       {isSorting && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-opacity-50 bg-white">
-          <FontAwesomeIcon icon={faSpinner} spin size="3x" className="text-blue-500" />
+        <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center z-50 bg-opacity-50 bg-white">
+          <FontAwesomeIcon
+            icon={faSpinner}
+            spin
+            size="3x"
+            className="text-blue-500"
+          />
+          <p className="mt-4 text-blue-500">please wait for sorting</p>
         </div>
       )}
     </div>
