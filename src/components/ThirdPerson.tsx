@@ -59,6 +59,24 @@ const ThirdPerson: React.FC<ThirdPersonTypes> = ({
   return (
     <div className="flex flex-col h-[500px] fixed  p-6 bg-white shadow-lg rounded-2xl w-96">
       <div className="relative flex flex-col  ">
+        <div className="relative flex flex-col  ">
+          <label htmlFor="idNumber" className="text-lg font-semibold mt-4">
+            პირადი ნომერი
+          </label>
+          <input
+            id="idNumber"
+            value={idNumber}
+            onChange={(e) => setIdNumber(e.target.value)}
+            className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.idNumber ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.idNumber && (
+            <p className="text-red-500 text-sm  absolute bottom-[-20px]">
+              {errors.idNumber}
+            </p>
+          )}
+        </div>
         <label htmlFor="name" className="text-lg font-semibold mt-4">
           სახელი
         </label>
@@ -94,24 +112,7 @@ const ThirdPerson: React.FC<ThirdPersonTypes> = ({
           </p>
         )}
       </div>
-      <div className="relative flex flex-col  ">
-        <label htmlFor="idNumber" className="text-lg font-semibold mt-4">
-          პირადი ნომერი
-        </label>
-        <input
-          id="idNumber"
-          value={idNumber}
-          onChange={(e) => setIdNumber(e.target.value)}
-          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.idNumber ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.idNumber && (
-          <p className="text-red-500 text-sm  absolute bottom-[-20px]">
-            {errors.idNumber}
-          </p>
-        )}
-      </div>
+
       <div className="relative flex flex-col ">
         <label htmlFor="connection" className="text-lg font-semibold mt-4">
           კავშირი
