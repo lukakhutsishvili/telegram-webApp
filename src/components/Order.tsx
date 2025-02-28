@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { faBarcode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
 import {
   closestCenter,
@@ -43,6 +43,7 @@ const Order = ({ status }: { status: string | null }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [reorderedTasks, setReorderedTasks] = useState<any>([]);
   const [startSorting, setStartSorting] = useState(false);
+  const [isSorting, setIsSorting] = useState(false);
 
   // Configure sensors for DnD
   const mouseSensor = useSensor(MouseSensor, {
@@ -166,7 +167,6 @@ const Order = ({ status }: { status: string | null }) => {
       response: reorderedTasks,
       pickup_task: false,
     };
-    console.log(payLoad);
     try {
       const res = await axiosInstance.post(MODIFY_SORT_NUMBER, payLoad);
       console.log(res);
@@ -200,11 +200,13 @@ const Order = ({ status }: { status: string | null }) => {
       </div>
 
       {/* Sorting Control Buttons */}
-      <div className="relative z-0">
+      <div className="relative z-20">
         {startSorting ? (
           <button
             onClick={async () => {
+              setIsSorting(true);
               await handleSorting();
+              setIsSorting(false);
               setStartSorting(false);
             }}
             className="m-2 p-2 bg-blue-500 text-white rounded"
@@ -291,6 +293,18 @@ const Order = ({ status }: { status: string | null }) => {
           ))
         )}
       </div>
+
+      {/* Spinner overlay shown during the async sorting update */}
+      {isSorting && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-opacity-50 bg-white">
+          <FontAwesomeIcon
+            icon={faSpinner}
+            spin
+            size="3x"
+            className="text-blue-500"
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { faBarcode, faSpinner } from "@fortawesome/free-solid-svg-icons"; // Added faSpinner
 import { t } from "i18next";
 import {
   closestCenter,
@@ -27,28 +27,21 @@ import SortableItem from "./SortableItem";
 const RecieptOrder = ({ status }: { status: string | null }) => {
   const { recieptTasks, userInfo, setRecieptTasks } = useContext(Context);
   const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [reorderedTasks, setReorderedTasks] = useState<any>([]);
   const [startSorting, setStartSorting] = useState(false);
+  const [isSorting, setIsSorting] = useState(false); // Added spinner state
 
   // Configure Sensors
   const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: {
-      distance: 10, // Drag starts after moving 10px
-    },
+    activationConstraint: { distance: 10 },
   });
   const keyboardSensor = useSensor(KeyboardSensor);
   const touchSensor = useSensor(TouchSensor, {
-    activationConstraint: {
-      delay: 250, // Start drag after 250ms of touch
-      tolerance: 5, // Move 5px before drag activates
-    },
+    activationConstraint: { delay: 250, tolerance: 5 },
   });
-
   const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
   const filteredTasks = useMemo(() => {
@@ -56,7 +49,6 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     let tasks = status
       ? recieptTasks.filter((task: any) => task.Status === status)
       : recieptTasks;
-
     if (searchTerm.trim()) {
       tasks = tasks.filter(
         (task: any) =>
@@ -148,19 +140,15 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-
     if (!over || active.id === over.id) return;
-
     const oldIndex = recieptTasks.findIndex(
       (task: any) => task.tracking_code === active.id
     );
     const newIndex = recieptTasks.findIndex(
       (task: any) => task.tracking_code === over.id
     );
-
     const reorderedTasks = arrayMove(recieptTasks, oldIndex, newIndex);
     setRecieptTasks(reorderedTasks);
-
     const updatedTasks = reorderedTasks.map((task: any, index: number) => ({
       ...task,
       sort_number: index + 1,
@@ -191,7 +179,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
   return (
     <div className="relative px-4">
       {/* Search bar with corrected z-index */}
-      <div className="sticky  top-0 z-30 flex items-center bg-white shadow-md py-2">
+      <div className="sticky top-0 z-30 flex items-center bg-white shadow-md py-2">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon
             onClick={() => navigate("/scanner")}
@@ -213,7 +201,9 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
         {startSorting ? (
           <button
             onClick={async () => {
+              setIsSorting(true);
               await handleSorting();
+              setIsSorting(false);
               setStartSorting(false);
             }}
             className="m-2 p-2 bg-blue-500 text-white rounded"
@@ -291,6 +281,13 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
           ))
         )}
       </div>
+
+      {/* Spinner overlay shown during the async sorting update */}
+      {isSorting && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-opacity-50 bg-white">
+          <FontAwesomeIcon icon={faSpinner} spin size="3x" className="text-blue-500" />
+        </div>
+      )}
     </div>
   );
 };
