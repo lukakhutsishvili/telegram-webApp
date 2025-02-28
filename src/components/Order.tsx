@@ -303,6 +303,7 @@ const Order = ({ status }: { status: string | null }) => {
             size="3x"
             className="text-blue-500"
           />
+          please wait for sorting
         </div>
       )}
     </div>
