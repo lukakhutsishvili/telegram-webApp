@@ -6,17 +6,19 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
-import { openLink, miniApp } from "@telegram-apps/sdk";
+import { openLink, miniApp , init} from "@telegram-apps/sdk";
 
 
 
 const OrderPage = () => {
+  init();
   const { id } = useParams<{ id: string }>();
   const { selectedOrdersList = [], differentAddressOrders = false } = useLocation().state || {};
 
   const { selectedOrders, totalSum, totalQuantity, handleCheckboxChange } = useOrder(selectedOrdersList);
   const { order, sendingOrder, receiptOrder, loading, handleStatusChangeAndFetch, handleRecoveryClick } = useOrderStatus(id!);
   const { isModalOpen, isConfirmModalOpen, openCancellationModal, closeCancellationModal, openConfirmModal, closeConfirmModal} = useModal();
+
 
   const handlePhoneClick = (phone: string) => {
     if (miniApp) {
