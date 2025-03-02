@@ -6,7 +6,7 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
-import { openLink, miniApp , init} from "@telegram-apps/sdk";
+import { openLink, init} from "@telegram-apps/sdk-react";
 
 
 
@@ -21,11 +21,12 @@ const OrderPage = () => {
 
 
   const handlePhoneClick = (phone: string) => {
-    if (miniApp) {
-      alert("calling")
-      openLink(`tel:${phone}`);
-    } else {
-      window.location.href = `tel:${phone}`;
+    
+    if (openLink.isAvailable()) {
+      openLink(`tel:${phone}`, {
+        tryBrowser: 'chrome',
+        tryInstantView: true,
+      });
     }
   };
   
