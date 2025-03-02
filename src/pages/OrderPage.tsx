@@ -21,12 +21,16 @@ const OrderPage = () => {
 
 
   const handlePhoneClick = (phone: string) => {
-    
+    alert(`Phone number: ${phone}`); // Debugging: Log the phone number
     if (openLink.isAvailable()) {
+      alert("openLink is available"); // Debugging: Log if openLink is available
       openLink(`tel:${phone}`, {
         tryBrowser: 'chrome',
         tryInstantView: true,
       });
+    } else {
+      alert("openLink is not available, using fallback"); // Debugging: Log if openLink is not available
+      window.location.href = `tel:${phone}`; // Fallback mechanism
     }
   };
   
