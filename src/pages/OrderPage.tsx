@@ -6,7 +6,7 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
-import { openLink } from "@telegram-apps/sdk";
+import { openLink, miniApp } from "@telegram-apps/sdk";
 
 
 
@@ -18,6 +18,14 @@ const OrderPage = () => {
   const { order, sendingOrder, receiptOrder, loading, handleStatusChangeAndFetch, handleRecoveryClick } = useOrderStatus(id!);
   const { isModalOpen, isConfirmModalOpen, openCancellationModal, closeCancellationModal, openConfirmModal, closeConfirmModal} = useModal();
 
+  const handlePhoneClick = (phone: string) => {
+    if (miniApp) {
+      alert("calling")
+      openLink(`tel:${phone}`);
+    } else {
+      window.location.href = `tel:${phone}`;
+    }
+  };
   
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -58,12 +66,12 @@ const OrderPage = () => {
         </div>
         <div className="p-1 flex justify-between">
           <span className="font-base text-sm">{t("phone")} :</span>
-          <span
-            onClick={() => openLink(`tel:${order.client_phone}`)}
+          <a
+            onClick={() => handlePhoneClick(order.client_phone)} 
             className="font-base text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
-          </span>
+          </a>
         </div>
         {order.Status !== "Accepted" && (
           <div className="p-1 flex justify-between">
