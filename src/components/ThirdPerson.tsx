@@ -1,159 +1,92 @@
-import { useState } from "react";
+
 import { t } from "i18next";
-import Button from "./Button";
+import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirmation";
 
-type ThirdPersonTypes = {
-  onConfirm(): void;
-  loading: boolean;
-  navigationfunction(): void;
-  closeThirdPerosnModal: () => void;
-  confirmationMessage: string;
-};
+interface ThirdPersonProps {
+  name: string;
+  surname: string;
+  connection: string;
+  additionalComment: string;
+  setName: (value: string) => void;
+  setSurname: (value: string) => void;
+  setConnection: (value: string) => void;
+  setAdditionalComment: (value: string) => void;
+  errors: { name: string; surname: string; connection: string };
+  setErrors: React.Dispatch<React.SetStateAction<{ name: string; surname: string; connection: string }>>;
+  receiptOrder: any;
+  sendingOrder: any;
+  selectedOrders: { [key: string]: boolean };
+  totalSum: string;
+}
 
-const ThirdPerson: React.FC<ThirdPersonTypes> = ({
-  onConfirm,
-  navigationfunction,
-  closeThirdPerosnModal,
-  loading,
-  confirmationMessage,
-}) => {
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [connection, setConnection] = useState("");
-  const [errors, setErrors] = useState({ name: "", surname: "", idNumber: "" });
 
-  // Validation function
-  const validateFields = () => {
-    let newErrors = { name: "", surname: "", idNumber: "", connection: "" };
-    let isValid = true;
+const ThirdPerson: React.FC<ThirdPersonProps> = (
+  { name, surname, connection, additionalComment, setName, setSurname, setConnection, setAdditionalComment, errors, setErrors, selectedOrders, totalSum, sendingOrder, receiptOrder}
+) => {
 
-    if (!name.trim()) {
-      newErrors.name = t("Name is required.");
-      isValid = false;
-    }
-
-    if (!surname.trim()) {
-      newErrors.surname = t("Surname is required.");
-      isValid = false;
-    }
-
-    if (!idNumber.trim()) {
-      newErrors.idNumber = t("ID Number is required.");
-      isValid = false;
-    } else if (!/^\d{11}$/.test(idNumber)) {
-      newErrors.idNumber = t("ID Number must be 11 digits.");
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleConfirm = () => {
-    if (validateFields()) {
-      onConfirm();
-    }
-  };
+  const {otherClientName, otherClientSurname} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder)
 
   return (
-    <div className="flex flex-col h-[500px] fixed  p-6 bg-white shadow-lg rounded-2xl w-96">
-      <div className="relative flex flex-col  ">
-        <label htmlFor="name" className="text-lg font-semibold mt-4">
-          სახელი
-        </label>
-        <input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.name ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.name && (
-          <p className="text-red-500 text-sm absolute bottom-[-20px]">
-            {errors.name}
-          </p>
-        )}
-      </div>
-      <div className="relative flex flex-col  ">
-        <label htmlFor="surname" className="text-lg font-semibold mt-4">
-          გვარი
-        </label>
-        <input
-          id="surname"
-          value={surname}
-          onChange={(e) => setSurname(e.target.value)}
-          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.surname ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.surname && (
-          <p className="text-red-500 text-sm  absolute bottom-[-20px]">
-            {errors.surname}
-          </p>
-        )}
-      </div>
-      <div className="relative flex flex-col  ">
-        <label htmlFor="idNumber" className="text-lg font-semibold mt-4">
-          პირადი ნომერი
-        </label>
-        <input
-          id="idNumber"
-          value={idNumber}
-          onChange={(e) => setIdNumber(e.target.value)}
-          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.idNumber ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.idNumber && (
-          <p className="text-red-500 text-sm  absolute bottom-[-20px]">
-            {errors.idNumber}
-          </p>
-        )}
-      </div>
-      <div className="relative flex flex-col ">
-        <label htmlFor="connection" className="text-lg font-semibold mt-4">
-          კავშირი
-        </label>
-        <input
-          id="connection"
-          value={connection}
-          onChange={(e) => setConnection(e.target.value)}
-          className={`p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.name ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-      </div>
-      <div className="grid gap-[20px] mt-auto">
-        {!confirmationMessage && (
-          <Button
-            onClick={handleConfirm}
-            disabled={loading}
-            className={`bg-gray-300 text-black ${
-              loading ? "bg-yellow-300 cursor-not-allowed" : "bg-yellow-400"
-            }`}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-black rounded-full animate-spin"></div>
-                <span className="ml-2">{t("loading")}</span>
-              </div>
-            ) : (
-              t("confirm")
-            )}
-          </Button>
-        )}
-        <Button
-          onClick={
-            confirmationMessage ? navigationfunction : closeThirdPerosnModal
-          }
-          className="bg-gray-300 text-black"
-        >
-          {t("cancel")}
-        </Button>
-      </div>
+    <div className="flex flex-col gap-3">
+     <div className="relative w-full">
+      <input
+        placeholder="Name"
+        value={otherClientName ? otherClientName : name}
+        onChange={(e) => {
+          setName(e.target.value);
+          errors.name && setErrors((prev) => ({ ...prev, name: "" }));
+        }}
+        className={`w-full p-2 border rounded-sm text-xs placeholder:text-xs pr-12 ${
+          errors.name ? "border-red-500 text-red-600" : "border-gray-300"
+        }`}
+      />
+      {errors.name && (
+        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-xs bg-white px-1">
+          {errors.name}
+        </span>
+      )}
+    </div>
+    <div className="relative w-full">
+      <input
+        placeholder="Surname"
+        value={otherClientSurname ? otherClientName : surname}
+        onChange={(e) => {
+          setSurname(e.target.value);
+          errors.surname && setErrors((prev) => ({ ...prev, surname: "" }));
+        }}
+        className={`w-full p-2 border rounded-sm text-xs placeholder:text-xs pr-12 ${
+          errors.surname ? "border-red-500 text-red-600" : "border-gray-300"
+        }`}
+      />
+      {errors.surname && (
+        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-xs bg-white px-1">
+          {errors.surname}
+        </span>
+      )}
+    </div>
+
+
+      <select
+        value={connection}
+        onChange={(e) => {
+          setConnection(e.target.value);
+
+        }}
+        className={`p-2 border text-xs ${errors.connection ? "border-red-500" : "border-gray-300"}`}
+      >
+        <option value="">Choose Connection</option>
+        <option value="parent">Parent</option>
+        <option value="child">Child</option>
+        <option value="neighbor">Neighbor</option>
+      </select>
+
+      <input
+        type="text"
+        value={additionalComment}
+        onChange={(e) => setAdditionalComment(e.target.value)}
+        placeholder={t("დამატებითი კომენტარი")}
+        className="w-full text-xs p-2 border rounded placeholder:text-xs"
+      />
     </div>
   );
 };
