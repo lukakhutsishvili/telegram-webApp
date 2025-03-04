@@ -6,11 +6,13 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
+import { openLink, init} from "@telegram-apps/sdk-react";
+
+
 
 
 
 const OrderPage = () => {
-
   const { id } = useParams<{ id: string }>();
   const { selectedOrdersList = [], differentAddressOrders = false } = useLocation().state || {};
 
@@ -59,12 +61,13 @@ const OrderPage = () => {
         </div>
         <div className="p-1 flex justify-between">
           <span className="font-base text-sm">{t("phone")} :</span>
+
           <span
             onClick={() => navigator.clipboard.writeText(order.client_phone)} 
             className="font-base text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
-          </span>
+          </a>
         </div>
         {order.Status !== "Accepted" && (
           <div className="p-1 flex justify-between">

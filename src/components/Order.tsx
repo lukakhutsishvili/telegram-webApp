@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { faBarcode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
 import {
   closestCenter,
@@ -43,6 +43,7 @@ const Order = ({ status }: { status: string | null }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [reorderedTasks, setReorderedTasks] = useState<any>([]);
   const [startSorting, setStartSorting] = useState(false);
+  const [isSorting, setIsSorting] = useState(false);
 
   // Configure sensors for DnD
   const mouseSensor = useSensor(MouseSensor, {
@@ -166,7 +167,6 @@ const Order = ({ status }: { status: string | null }) => {
       response: reorderedTasks,
       pickup_task: false,
     };
-    console.log(payLoad);
     try {
       const res = await axiosInstance.post(MODIFY_SORT_NUMBER, payLoad);
       console.log(res);
@@ -184,7 +184,11 @@ const Order = ({ status }: { status: string | null }) => {
       {/* Search Bar */}
       <div className="sticky top-0 z-30 flex items-center bg-white shadow-md py-2 px-4">
         <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
-          <FontAwesomeIcon icon={faBarcode} className="text-gray-500 mr-2" />
+          <FontAwesomeIcon
+            onClick={() => navigate("/scanner")}
+            icon={faBarcode}
+            className="text-gray-500 mr-2"
+          />
           <input
             type="text"
             placeholder={t("Search")}
@@ -196,11 +200,13 @@ const Order = ({ status }: { status: string | null }) => {
       </div>
 
       {/* Sorting Control Buttons */}
-      <div className="relative z-50">
+      <div className="relative z-20">
         {startSorting ? (
           <button
             onClick={async () => {
+              setIsSorting(true);
               await handleSorting();
+              setIsSorting(false);
               setStartSorting(false);
             }}
             className="m-2 p-2 bg-blue-500 text-white rounded"
@@ -248,30 +254,58 @@ const Order = ({ status }: { status: string | null }) => {
 
       {/* Sortable UI */}
       <div className="relative z-20">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis]}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={filteredTasks.map((task: any) => task.tracking_code)}
-            strategy={verticalListSortingStrategy}
+        {startSorting ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={handleDragEnd}
           >
-            {filteredTasks.map((item: any) => (
-              <SortableItem
-                key={item.tracking_code}
-                id={item.tracking_code}
-                task={item}
-                status={status}
-                navigate={navigate}
-                handleCheckboxChange={handleCheckboxChange}
-                selectedOrders={selectedOrders}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
+            <SortableContext
+              items={filteredTasks.map((task: any) => task.tracking_code)}
+              strategy={verticalListSortingStrategy}
+            >
+              {filteredTasks.map((item: any) => (
+                <SortableItem
+                  key={item.tracking_code}
+                  id={item.tracking_code}
+                  task={item}
+                  status={status}
+                  navigate={navigate}
+                  handleCheckboxChange={handleCheckboxChange}
+                  selectedOrders={selectedOrders}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+        ) : (
+          // Render static list when sorting is disabled
+          filteredTasks.map((item: any) => (
+            <SortableItem
+              key={item.tracking_code}
+              id={item.tracking_code}
+              task={item}
+              status={status}
+              navigate={navigate}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedOrders={selectedOrders}
+            />
+          ))
+        )}
       </div>
+
+      {/* Spinner overlay shown during the async sorting update */}
+      {isSorting && (
+        <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center z-50 bg-opacity-50 bg-white">
+          <FontAwesomeIcon
+            icon={faSpinner}
+            spin
+            size="3x"
+            className="text-blue-500"
+          />
+          <p className="mt-4 text-blue-500">please wait for sorting</p>
+        </div>
+      )}
     </div>
   );
 };
