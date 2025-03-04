@@ -6,8 +6,6 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
-import { openLink, init} from "@telegram-apps/sdk-react";
-
 
 
 
@@ -67,7 +65,7 @@ const OrderPage = () => {
             className="font-base text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
-          </a>
+          </span>
         </div>
         {order.Status !== "Accepted" && (
           <div className="p-1 flex justify-between">
