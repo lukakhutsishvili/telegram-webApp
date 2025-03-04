@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import {  useContext, useEffect, useState } from "react";
 import Button from "../components/Button";
 import {
   CHECK_OTP_CONFIRMATION,
@@ -10,6 +10,8 @@ import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirm
 import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
 import useValidation from "../hooks/confirm modal hooks/useValidation";
+// import useRelationships from "../hooks/confirm modal hooks/useRelationship";
+import { Context } from "../App";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -47,6 +49,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const initialState = {name: "",surname: "",connection: ""};
   const [errors, setErrors] = useState(initialState);
   const { validateAll } = useValidation(setErrors);
+  const { userInfo } = useContext(Context);
 
 
   const navigationfunction = () => {
@@ -64,7 +67,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       try {
         const response = await axiosInstance.get(CHECK_OTP_CONFIRMATION, {
           params: {
-            telegram_id: "6087086146",
+            telegram_id: userInfo.telegram_id,
             tracking_code: order.tracking_code,
           },
         });

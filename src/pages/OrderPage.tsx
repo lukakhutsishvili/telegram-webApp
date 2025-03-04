@@ -10,8 +10,9 @@ import { openLink, init} from "@telegram-apps/sdk-react";
 
 
 
+
+
 const OrderPage = () => {
-  init();
   const { id } = useParams<{ id: string }>();
   const { selectedOrdersList = [], differentAddressOrders = false } = useLocation().state || {};
 
@@ -20,23 +21,10 @@ const OrderPage = () => {
   const { isModalOpen, isConfirmModalOpen, openCancellationModal, closeCancellationModal, openConfirmModal, closeConfirmModal} = useModal();
 
 
-  const handlePhoneClick = (phone: string) => {
-    alert(`Phone number: ${phone}`); // Debugging: Log the phone number
-    if (openLink.isAvailable()) {
-      alert("openLink is available"); // Debugging: Log if openLink is available
-      openLink(`tel:${phone}`, {
-        tryBrowser: 'chrome',
-        tryInstantView: true,
-      });
-    } else {
-      alert("openLink is not available, using fallback"); // Debugging: Log if openLink is not available
-      window.location.href = `tel:${phone}`; // Fallback mechanism
-    }
-  };
-  
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
+  
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {/* Header */}
@@ -73,8 +61,9 @@ const OrderPage = () => {
         </div>
         <div className="p-1 flex justify-between">
           <span className="font-base text-sm">{t("phone")} :</span>
-          <a
-            onClick={() => handlePhoneClick(order.client_phone)} 
+
+          <span
+            onClick={() => navigator.clipboard.writeText(order.client_phone)} 
             className="font-base text-blue-500 underline cursor-pointer"
           >
             {order.client_phone}
