@@ -42,11 +42,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     setConfirmationMessage, setStartTimer,fetchUpdatedOrderList, checkClientOtp ,setErrorMessage, checkOtherClient,
     otherPersonInfo} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder);
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
+  const [otherClientName, setOtherClientName] = useState<string>("");
+  const [otherClientSurname, setOtherClientSurname] = useState<string>("");
   const [connection, setConnection] = useState("");
   const [additionalComment, setAdditionalComment] = useState("");
-  const initialState = {name: "",surname: "",connection: ""};
+  const initialState = {otherClientName: "",otherClientSurname: "",connection: ""};
   const [errors, setErrors] = useState(initialState);
   const { validateAll } = useValidation(setErrors);
   const { userInfo } = useContext(Context);
@@ -111,7 +111,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const onConfirm = async () => {
     setLoading(true);
-    const isValid = validateAll({ name, surname, connection });
+    const isValid = validateAll({ otherClientName, otherClientSurname, connection });
 
     if (!isValid) {
       setLoading(false); 
@@ -300,12 +300,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   {
                     otherPersonInfo && (
                       <ThirdPerson
-                      name={name}
-                      surname={surname}
+                      otherClientName={otherClientName}
+                      otherClientSurname={otherClientSurname}
                       connection = {connection}
                       additionalComment={additionalComment}
-                      setName={setName}
-                      setSurname={setSurname}
+                      setOtherClientName={setOtherClientName}
+                      setOtherClientSurname={setOtherClientSurname}
                       setConnection = {setConnection}
                       setAdditionalComment={setAdditionalComment}
                       errors={errors}

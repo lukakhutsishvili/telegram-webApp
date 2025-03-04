@@ -1,18 +1,18 @@
 
 import { t } from "i18next";
-import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirmation";
+import useRelationships from "../hooks/confirm modal hooks/useRelationship";
 
 interface ThirdPersonProps {
-  name: string;
-  surname: string;
+  otherClientName: string;
+  otherClientSurname: string;
   connection: string;
   additionalComment: string;
-  setName: (value: string) => void;
-  setSurname: (value: string) => void;
+  setOtherClientName: (value: string) => void;
+  setOtherClientSurname: (value: string) => void;
   setConnection: (value: string) => void;
   setAdditionalComment: (value: string) => void;
-  errors: { name: string; surname: string; connection: string };
-  setErrors: React.Dispatch<React.SetStateAction<{ name: string; surname: string; connection: string }>>;
+  errors: { otherClientName: string; otherClientSurname: string; connection: string };
+  setErrors: React.Dispatch<React.SetStateAction<{ otherClientName: string; otherClientSurname: string; connection: string }>>;
   receiptOrder: any;
   sendingOrder: any;
   selectedOrders: { [key: string]: boolean };
@@ -21,64 +21,68 @@ interface ThirdPersonProps {
 
 
 const ThirdPerson: React.FC<ThirdPersonProps> = (
-  { name, surname, connection, additionalComment, setName, setSurname, setConnection, setAdditionalComment, errors, setErrors, selectedOrders, totalSum, sendingOrder, receiptOrder}
+  {otherClientName, otherClientSurname, connection, additionalComment, setOtherClientName, setOtherClientSurname, setConnection, setAdditionalComment, errors, setErrors}
 ) => {
 
-  const {otherClientName, otherClientSurname} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder)
+  const { relationshipData } = useRelationships();
 
+
+  console.log(relationshipData)
   return (
     <div className="flex flex-col gap-3">
      <div className="relative w-full">
       <input
         placeholder="Name"
-        value={otherClientName ? otherClientName : name}
+        value={otherClientName}
         onChange={(e) => {
-          setName(e.target.value);
-          errors.name && setErrors((prev) => ({ ...prev, name: "" }));
+          setOtherClientName(e.target.value);
+          errors.otherClientName && setErrors((prev) => ({ ...prev, name: "" }));
         }}
         className={`w-full p-2 border rounded-sm text-xs placeholder:text-xs pr-12 ${
-          errors.name ? "border-red-500 text-red-600" : "border-gray-300"
+          errors.otherClientName ? "border-red-500 text-red-600" : "border-gray-300"
         }`}
       />
-      {errors.name && (
+      {errors.otherClientName && (
         <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-xs bg-white px-1">
-          {errors.name}
+          {errors.otherClientName}
         </span>
       )}
     </div>
     <div className="relative w-full">
       <input
         placeholder="Surname"
-        value={otherClientSurname ? otherClientName : surname}
+        value={otherClientSurname}
         onChange={(e) => {
-          setSurname(e.target.value);
-          errors.surname && setErrors((prev) => ({ ...prev, surname: "" }));
+          setOtherClientSurname(e.target.value);
+          errors.otherClientSurname && setErrors((prev) => ({ ...prev, surname: "" }));
         }}
         className={`w-full p-2 border rounded-sm text-xs placeholder:text-xs pr-12 ${
-          errors.surname ? "border-red-500 text-red-600" : "border-gray-300"
+          errors.otherClientSurname ? "border-red-500 text-red-600" : "border-gray-300"
         }`}
       />
-      {errors.surname && (
+      {errors.otherClientSurname && (
         <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-xs bg-white px-1">
-          {errors.surname}
+          {errors.otherClientSurname}
         </span>
       )}
     </div>
 
 
-      <select
-        value={connection}
-        onChange={(e) => {
-          setConnection(e.target.value);
-
-        }}
-        className={`p-2 border text-xs ${errors.connection ? "border-red-500" : "border-gray-300"}`}
-      >
-        <option value="">Choose Connection</option>
-        <option value="parent">Parent</option>
-        <option value="child">Child</option>
-        <option value="neighbor">Neighbor</option>
-      </select>
+    <select
+      value={connection}
+      onChange={(e) => {
+        setConnection(e.target.value);
+        errors.connection && setErrors((prev) => ({ ...prev, connection: "" }));
+      }}
+      className={`p-2 border text-xs ${errors.connection ? "border-red-500" : "border-gray-300"}`}
+    >
+      <option value="">{t("Choose Connection")}</option>
+      {relationshipData?.map((relationship, index) => (
+        <option key={index} value={relationship.Code}>
+          {relationship.Description}
+        </option>
+      ))}
+    </select>
 
       <input
         type="text"

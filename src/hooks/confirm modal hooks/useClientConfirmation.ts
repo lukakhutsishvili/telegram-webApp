@@ -31,10 +31,7 @@ const useClientConfirmation = (
     const [otherClientSurname, setOtherClientSurname] = useState<string>("");
 
     const order = sendingOrder || receiptOrder;
-    
-
-
-    const { addParcel } = useRequestLogs();
+  const { addParcel } = useRequestLogs();
 
 
     const handleConfirmationMethodChange = (method: string) => {
@@ -51,33 +48,18 @@ const useClientConfirmation = (
         }
     };
 
-    const getCheckedOrders = () => {
-      return Object.keys(selectedOrders)
-        .filter((tracking_code) => selectedOrders[tracking_code]) 
-        .map((tracking_code) => ({
-          tracking_code,
-          successfully: "True",
-          reason_id: "",
-          reason_commentary: "",
-        }));
-    };
     
     // **Check if another client exists**
     const checkOtherClient = async () => {
-      const checkedOrders = getCheckedOrders();
-      
-      if (checkedOrders.length === 0) {
-        console.warn("No orders selected for confirmation");
-        return;
-      }
     
-      const params = {
-        device_id: userInfo.device_id,
-        client_id: confirmationValue,
-      };
+      // const params = {
+      //   client_id: confirmationValue,
+      // };
+
+      // console.log(params)
     
       try {
-        const response = await axiosInstance.get(CHECK_OTHER_PERSON, { params });
+        const response = await axiosInstance.get(CHECK_OTHER_PERSON, { params: { client_id: confirmationValue } });
     
         if (response.data.status) {
           setOtherPersonInfo(true);
@@ -93,18 +75,11 @@ const useClientConfirmation = (
     
     // **Add another client**
     const addOtherClient = async (clientName: string, clientSurname: string) => {
-      const checkedOrders = getCheckedOrders();
-      
-      if (checkedOrders.length === 0) {
-        console.warn("No orders selected for confirmation");
-        return;
-      }
     
       const params = {
-        device_id: userInfo.device_id,
         client_id: confirmationValue,
-        client_name: clientName,
-        client_surname: clientSurname,
+        client_first_name: otherClientName,
+        client_last_name:otherClientSurname,
       };
     
       try {
@@ -143,7 +118,7 @@ const useClientConfirmation = (
           payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
           orders: checkedOrders, 
           other_recipient : confirmationValue,
-          relationship_code: "",
+          relationship_code: '',
           relationship_commentary : "",
         };
 
