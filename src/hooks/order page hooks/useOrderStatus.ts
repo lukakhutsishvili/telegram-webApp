@@ -5,13 +5,21 @@ import { axiosInstance } from "../../api/apiClient";
 import { ORDER_LIST } from "../../api/Constants";
 
 const useOrderStatus = (id: string) => {
-  const { sendingTasks, recieptTasks, userInfo, setSendingTasks, setRecieptTasks, navbarButtons } = useContext(Context);
+  const {
+    sendingTasks,
+    recieptTasks,
+    userInfo,
+    setSendingTasks,
+    setRecieptTasks,
+    navbarButtons,
+  } = useContext(Context);
   const [loading, setLoading] = useState(false);
 
   const sendingOrder = sendingTasks.find((task) => task.tracking_code === id);
   const receiptOrder = recieptTasks.find((task) => task.tracking_code === id);
 
   const order = sendingOrder || receiptOrder;
+
 
   const fetchUpdatedOrderList = async () => {
     try {
@@ -49,7 +57,10 @@ const useOrderStatus = (id: string) => {
       await fetchUpdatedOrderList();
       window.history.back();
     } catch (error) {
-      console.error("Failed to update order status or fetch updated list:", error);
+      console.error(
+        "Failed to update order status or fetch updated list:",
+        error
+      );
     } finally {
       setLoading(false);
     }

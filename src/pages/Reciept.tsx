@@ -21,7 +21,7 @@ function Receipt() {
   }, [activeButton]);
 
   return (
-    <div className="flex flex-col h-screen bg-white pt-16 h-sm:pt-6">
+    <div className="flex flex-col h-screen bg-white pt-16 h-sm:pt-6 pb-[104px]">
       {/* Header */}
       <div className="p-4">
         <h1 className="text-2xl font-bold text-center">{t("pick up")}</h1>

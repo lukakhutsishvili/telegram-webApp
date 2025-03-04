@@ -7,6 +7,7 @@ interface ButtonProps {
   disabled?: boolean;
   isActive?: boolean;
   type?: "button" | "submit" | "reset"; // Restrict to valid button types
+
 }
 
 const Button: React.FC<ButtonProps> = ({
