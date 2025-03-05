@@ -3,6 +3,8 @@ import { useState } from "react";
 const useOrder = (selectedOrdersList: { tracking_code: string; sum: number }[]) => {
   const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
 
+  console.log(selectedOrdersList)
+
   // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
     setSelectedOrders((prev) => ({
@@ -10,6 +12,7 @@ const useOrder = (selectedOrdersList: { tracking_code: string; sum: number }[]) 
       [tracking_code]: !prev[tracking_code],
     }));
   };
+  console.log(selectedOrders)
 
   // Calculate total sum of checked orders
   const totalSum = selectedOrdersList
