@@ -5,29 +5,35 @@ import useRelationships from "../hooks/confirm modal hooks/useRelationship";
 interface ThirdPersonProps {
   otherClientName: string;
   otherClientSurname: string;
-  connection: string;
-  additionalComment: string;
   setOtherClientName: (value: string) => void;
   setOtherClientSurname: (value: string) => void;
+  connection: string;
+  additionalComment: string;
   setConnection: (value: string) => void;
   setAdditionalComment: (value: string) => void;
   errors: { otherClientName: string; otherClientSurname: string; connection: string };
   setErrors: React.Dispatch<React.SetStateAction<{ otherClientName: string; otherClientSurname: string; connection: string }>>;
-  receiptOrder: any;
-  sendingOrder: any;
-  selectedOrders: { [key: string]: boolean };
-  totalSum: string;
+  otherPersonInfo: boolean;
 }
 
 
-const ThirdPerson: React.FC<ThirdPersonProps> = (
-  {otherClientName, otherClientSurname, connection, additionalComment, setOtherClientName, setOtherClientSurname, setConnection, setAdditionalComment, errors, setErrors}
-) => {
+const ThirdPerson: React.FC<ThirdPersonProps> = ({
+  otherClientName,
+  otherClientSurname,
+  setOtherClientName,
+  setOtherClientSurname,
+  connection,
+  additionalComment,
+  setConnection,
+  setAdditionalComment,
+  errors,
+  setErrors,
+  otherPersonInfo
+}) => {
 
   const { relationshipData } = useRelationships();
 
 
-  console.log(relationshipData)
   return (
     <div className="flex flex-col gap-3">
      <div className="relative w-full">
@@ -38,6 +44,7 @@ const ThirdPerson: React.FC<ThirdPersonProps> = (
           setOtherClientName(e.target.value);
           errors.otherClientName && setErrors((prev) => ({ ...prev, name: "" }));
         }}
+        disabled={otherPersonInfo}
         className={`w-full p-2 border rounded-sm text-xs placeholder:text-xs pr-12 ${
           errors.otherClientName ? "border-red-500 text-red-600" : "border-gray-300"
         }`}
@@ -56,6 +63,7 @@ const ThirdPerson: React.FC<ThirdPersonProps> = (
           setOtherClientSurname(e.target.value);
           errors.otherClientSurname && setErrors((prev) => ({ ...prev, surname: "" }));
         }}
+        disabled={otherPersonInfo}
         className={`w-full p-2 border rounded-sm text-xs placeholder:text-xs pr-12 ${
           errors.otherClientSurname ? "border-red-500 text-red-600" : "border-gray-300"
         }`}

@@ -10,7 +10,6 @@ import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirm
 import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
 import useValidation from "../hooks/confirm modal hooks/useValidation";
-// import useRelationships from "../hooks/confirm modal hooks/useRelationship";
 import { Context } from "../App";
 
 interface ConfirmModalProps {
@@ -39,18 +38,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const { paymentMethod, setPaymentMethod,confirmationMethod,confirmationValue,setConfirmationValue,otpSent,
     isOtpSending,otpCooldown,setOtpCooldown,confirmationMessage, errorMessage,timer,setTimer,startTimer,
     loading ,handleConfirmationMethodChange, sendOtp, confirmDelivery, setLoading, postClientID,
-    setConfirmationMessage, setStartTimer,fetchUpdatedOrderList, checkClientOtp ,setErrorMessage, checkOtherClient,
-    otherPersonInfo} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder);
+    setConfirmationMessage, setStartTimer,fetchUpdatedOrderList, checkClientOtp ,setErrorMessage, checkOtherClient,addOtherClient,
+    otherPersonInfo, otherClientName, otherClientSurname, setOtherClientName, setOtherClientSurname, connection, setConnection, additionalComment, setAdditionalComment} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder);
 
-  const [otherClientName, setOtherClientName] = useState<string>("");
-  const [otherClientSurname, setOtherClientSurname] = useState<string>("");
-  const [connection, setConnection] = useState("");
-  const [additionalComment, setAdditionalComment] = useState("");
   const initialState = {otherClientName: "",otherClientSurname: "",connection: ""};
   const [errors, setErrors] = useState(initialState);
   const { validateAll } = useValidation(setErrors);
   const { userInfo } = useContext(Context);
 
+
+  console.log(otherClientName)
 
   const navigationfunction = () => {
     if (confirmationMessage) {
@@ -144,6 +141,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         } else if (confirmationMethod === "ID Number") {
           if (order.client_id) {
             if (order.client_id === confirmationValue) {
+              console.log("დადასტურდა აიდით")
               await confirmDelivery();
               addParcel(
                 order.tracking_code,
@@ -155,11 +153,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               setStartTimer(true);
               await fetchUpdatedOrderList();
             } else {
-              setErrorMessage(
-                t(
-                  "The ID Number does not match the client's ID. Please try again."
-                )
-              );
+              setErrorMessage(t("The ID Number does not match the client's ID. Please try again."));
               addParcel(
                 order.tracking_code,
                 confirmationValue,
@@ -169,6 +163,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             }
           } else {
             try {
+              console.log("დაიპოსტა აიდით")
               await postClientID();
             } catch (error) {
               addParcel(
@@ -178,6 +173,32 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 "failed"
               );
             }
+            await fetchUpdatedOrderList();
+          }
+        }else if(confirmationMethod === "Other"){
+          if(otherPersonInfo){
+            console.log("გაიცა მე3 პირით იყო სწორი აიდი")
+            await confirmDelivery();
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "completed"
+            );
+            setConfirmationMessage(t("Other person confirmed!"));
+            setStartTimer(true);
+            await fetchUpdatedOrderList();
+          }else{
+            await addOtherClient(otherClientName, otherClientSurname)
+            await confirmDelivery();
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "completed"
+            );
+            setConfirmationMessage(t("Other person posted!"));
+            setStartTimer(true);
             await fetchUpdatedOrderList();
           }
         }
@@ -287,7 +308,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     }
                   />
                   {errorMessage && (
-                    <div className="text-red-500 text-xs">{errorMessage}</div>
+                    <div className="text-red-500 text-xs mt-1">{errorMessage}</div>
                   )}
                   {confirmationMethod === "Other" &&(
                     <Button
@@ -302,18 +323,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                       <ThirdPerson
                       otherClientName={otherClientName}
                       otherClientSurname={otherClientSurname}
-                      connection = {connection}
-                      additionalComment={additionalComment}
                       setOtherClientName={setOtherClientName}
                       setOtherClientSurname={setOtherClientSurname}
+                      connection = {connection}
+                      additionalComment={additionalComment}
                       setConnection = {setConnection}
                       setAdditionalComment={setAdditionalComment}
                       errors={errors}
                       setErrors={setErrors}
-                      selectedOrders={selectedOrders} 
-                      totalSum={totalSum}
-                      sendingOrder={sendingOrder}
-                      receiptOrder={receiptOrder}
+                      otherPersonInfo={otherPersonInfo}
                       />
                     )
                   }
