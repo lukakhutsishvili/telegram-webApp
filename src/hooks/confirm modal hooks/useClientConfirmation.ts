@@ -6,7 +6,6 @@ import { PICKUP_ORDERS, DELIVERY_ORDERS, SEND_CLIENT_OTP, VERIFY_CLIENT_OTP_URL,
 import { t } from "i18next";
 
 
-
 const useClientConfirmation = (
     selectedOrders: { [key: string]: boolean },
     totalSum: string,
@@ -29,8 +28,13 @@ const useClientConfirmation = (
     const [otherPersonInfo, setOtherPersonInfo] = useState<boolean>(false);
     const [otherClientName, setOtherClientName] = useState<string>("");
     const [otherClientSurname, setOtherClientSurname] = useState<string>("");
+    const [connection, setConnection] = useState("");
+    const [additionalComment, setAdditionalComment] = useState("");
 
     const order = sendingOrder || receiptOrder;
+
+    console.log(otherClientName, otherClientSurname)
+
   const { addParcel } = useRequestLogs();
 
 
@@ -52,21 +56,24 @@ const useClientConfirmation = (
     // **Check if another client exists**
     const checkOtherClient = async () => {
     
-      // const params = {
-      //   client_id: confirmationValue,
-      // };
-
-      // console.log(params)
-    
+      if(!confirmationValue){
+        setErrorMessage('ჩაწერე ჩამბარებელი პირის პირადი ნომერი!');
+        return;
+      }
+      
+      const params = {
+        client_id: confirmationValue,
+      };
       try {
-        const response = await axiosInstance.get(CHECK_OTHER_PERSON, { params: { client_id: confirmationValue } });
+        const response = await axiosInstance.get(CHECK_OTHER_PERSON, {params});
     
-        if (response.data.status) {
+        if (response.data.Is_Registered) {
           setOtherPersonInfo(true);
-          setOtherClientName(response.data.client_name || "");
-          setOtherClientSurname(response.data.client_surname || "");
+          setOtherClientName(response.data.response[0].First_Name);
+          setOtherClientSurname(response.data.response[0].Last_Name);
         } else {
-          setOtherPersonInfo(false);
+          setOtherPersonInfo(false);  // ეს გასასწორებელი მაქვს 
+          setErrorMessage('ჩაწერე ჩამბარებელი პირის მონაცემები!');
         }
       } catch (error) {
         console.error("Error checking other client:", error);
@@ -76,6 +83,11 @@ const useClientConfirmation = (
     // **Add another client**
     const addOtherClient = async (clientName: string, clientSurname: string) => {
     
+      if(!clientName || !clientSurname || !confirmationValue){
+        setErrorMessage('ჩაწერე ჩამბარებელი პირის მონაცემები!');
+        return;
+      }
+
       const params = {
         client_id: confirmationValue,
         client_first_name: otherClientName,
@@ -110,16 +122,14 @@ const useClientConfirmation = (
           console.warn("No orders selected for confirmation");
           return;
         }
-
-        checkOtherClient();
       
         const params = {
           device_id: userInfo.device_id,
           payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
           orders: checkedOrders, 
           other_recipient : confirmationValue,
-          relationship_code: '',
-          relationship_commentary : "",
+          relationship_code: connection,
+          relationship_commentary : additionalComment,
         };
 
         console.log(checkedOrders)
@@ -318,7 +328,13 @@ const useClientConfirmation = (
           otherPersonInfo,
           addOtherClient,
           otherClientName,
-          otherClientSurname
+          otherClientSurname,
+          setOtherClientName,
+          setOtherClientSurname,
+          connection, 
+          setConnection,
+          additionalComment,
+          setAdditionalComment
       };
   };
 
