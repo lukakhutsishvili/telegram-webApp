@@ -65,6 +65,7 @@ const useClientConfirmation = (
         client_id: confirmationValue,
       };
       try {
+        const response = await axiosInstance.get(CHECK_OTHER_PERSON, { params });
         if (response.data.Is_Registered) {
           setOtherPersonInfo(true);
           setOtherClientName(response.data.response[0].First_Name);
