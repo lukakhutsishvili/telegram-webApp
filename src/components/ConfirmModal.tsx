@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirmation";
 import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
-import useValidation from "../hooks/confirm modal hooks/useValidation";
 import { Context } from "../App";
 
 interface ConfirmModalProps {
@@ -39,15 +38,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     isOtpSending,otpCooldown,setOtpCooldown,confirmationMessage, errorMessage,timer,setTimer,startTimer,
     loading ,handleConfirmationMethodChange, sendOtp, confirmDelivery, setLoading, postClientID,
     setConfirmationMessage, setStartTimer,fetchUpdatedOrderList, checkClientOtp ,setErrorMessage, checkOtherClient,addOtherClient,
-    otherPersonInfo, otherClientName, otherClientSurname, setOtherClientName, setOtherClientSurname, connection, setConnection, additionalComment, setAdditionalComment} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder);
+    otherPersonInfo, otherClientName, otherClientSurname, setOtherClientName, setOtherClientSurname, 
+    connection, setConnection, additionalComment, setAdditionalComment, openThirdPersonModal} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder);
 
-  const initialState = {otherClientName: "",otherClientSurname: "",connection: ""};
+  const initialState = {otherClientName: "",otherClientSurname: "",connection: "", additionalComment};
   const [errors, setErrors] = useState(initialState);
-  const { validateAll } = useValidation(setErrors);
   const { userInfo } = useContext(Context);
 
-
-  console.log(otherClientName)
 
   const navigationfunction = () => {
     if (confirmationMessage) {
@@ -108,12 +105,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const onConfirm = async () => {
     setLoading(true);
-    const isValid = validateAll({ otherClientName, otherClientSurname, connection });
-
-    if (!isValid) {
-      setLoading(false); 
-      return;
-    }
       try {
         if (receiptOrder) {
           await confirmDelivery();
@@ -136,12 +127,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               order.client_name,
               "failed"
             );
+            console.log(error)
           }
           await fetchUpdatedOrderList();
         } else if (confirmationMethod === "ID Number") {
           if (order.client_id) {
             if (order.client_id === confirmationValue) {
-              console.log("დადასტურდა აიდით")
               await confirmDelivery();
               addParcel(
                 order.tracking_code,
@@ -163,7 +154,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             }
           } else {
             try {
-              console.log("დაიპოსტა აიდით")
               await postClientID();
             } catch (error) {
               addParcel(
@@ -177,7 +167,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           }
         }else if(confirmationMethod === "Other"){
           if(otherPersonInfo){
-            console.log("გაიცა მე3 პირით იყო სწორი აიდი")
+            if(errors.connection !== '' || errors.additionalComment !== ""){
+              setErrorMessage('შეავსე კავშირის ტიპი');
+              return;
+            }
             await confirmDelivery();
             addParcel(
               order.tracking_code,
@@ -190,6 +183,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             await fetchUpdatedOrderList();
           }else{
             await addOtherClient(otherClientName, otherClientSurname)
+            if(errors.connection !== '' || errors.additionalComment !== ""){
+              setErrorMessage('შეავსე კავშირის ტიპი');
+              return;
+            }
             await confirmDelivery();
             addParcel(
               order.tracking_code,
@@ -319,7 +316,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     </Button>   
                   )}
                   {
-                    otherPersonInfo && (
+                    openThirdPersonModal && (
                       <ThirdPerson
                       otherClientName={otherClientName}
                       otherClientSurname={otherClientSurname}

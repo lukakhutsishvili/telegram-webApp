@@ -11,8 +11,8 @@ interface ThirdPersonProps {
   additionalComment: string;
   setConnection: (value: string) => void;
   setAdditionalComment: (value: string) => void;
-  errors: { otherClientName: string; otherClientSurname: string; connection: string };
-  setErrors: React.Dispatch<React.SetStateAction<{ otherClientName: string; otherClientSurname: string; connection: string }>>;
+  errors: { otherClientName: string; otherClientSurname: string; connection: string; additionalComment: string };
+  setErrors: React.Dispatch<React.SetStateAction<{ otherClientName: string; otherClientSurname: string; connection: string; additionalComment: string }>>;
   otherPersonInfo: boolean;
 }
 
@@ -33,6 +33,7 @@ const ThirdPerson: React.FC<ThirdPersonProps> = ({
 
   const { relationshipData } = useRelationships();
 
+  console.log(relationshipData)
 
   return (
     <div className="flex flex-col gap-3">
@@ -79,8 +80,21 @@ const ThirdPerson: React.FC<ThirdPersonProps> = ({
     <select
       value={connection}
       onChange={(e) => {
-        setConnection(e.target.value);
+        const selectedValue = e.target.value;
+        setConnection(selectedValue);
         errors.connection && setErrors((prev) => ({ ...prev, connection: "" }));
+
+        // Find selected relationship object
+        const selectedRelationship = relationshipData?.find(
+          (relationship) => relationship.Code === selectedValue
+        );
+
+        // If Commentary_Required is true and additionalComment is empty, set error
+        if (selectedRelationship?.Commentary_Required && !additionalComment) {
+          setErrors((prev) => ({ ...prev, additionalComment: t("Please enter additional comment") }));
+        } else {
+          setErrors((prev) => ({ ...prev, additionalComment: "" }));
+        }
       }}
       className={`p-2 border text-xs ${errors.connection ? "border-red-500" : "border-gray-300"}`}
     >
@@ -92,13 +106,27 @@ const ThirdPerson: React.FC<ThirdPersonProps> = ({
       ))}
     </select>
 
-      <input
-        type="text"
-        value={additionalComment}
-        onChange={(e) => setAdditionalComment(e.target.value)}
-        placeholder={t("დამატებითი კომენტარი")}
-        className="w-full text-xs p-2 border rounded placeholder:text-xs"
-      />
+    <div className="relative w-full">
+        <input
+          type="text"
+          value={additionalComment}
+          onChange={(e) => {
+            setAdditionalComment(e.target.value);
+            if (errors.additionalComment) {
+              setErrors((prev) => ({ ...prev, additionalComment: "" }));
+            }
+          }}
+          placeholder={t("დამატებითი კომენტარი")}
+          className={`w-full text-xs p-2 border rounded placeholder:text-xs ${
+            errors.additionalComment ? "border-red-500 text-red-600" : "border-gray-300"
+          }`}
+        />
+        {errors.additionalComment && (
+          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-xs bg-white px-1">
+            {errors.additionalComment}
+          </span>
+        )}
+    </div>
     </div>
   );
 };
