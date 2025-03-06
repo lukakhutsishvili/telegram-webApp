@@ -6,16 +6,32 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
+import ConfimParcelScanner from "../components/confirmParcelScanner";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { selectedOrdersList = [], differentAddressOrders = false } = useLocation().state || {};
+  const { selectedOrdersList = [], differentAddressOrders = false } =
+    useLocation().state || {};
 
-  const { selectedOrders, totalSum, totalQuantity, handleCheckboxChange } = useOrder(selectedOrdersList);
-  const { order, sendingOrder, receiptOrder, loading, handleStatusChangeAndFetch, handleRecoveryClick } = useOrderStatus(id!);
-  const { isModalOpen, isConfirmModalOpen, openCancellationModal, closeCancellationModal, openConfirmModal, closeConfirmModal} = useModal();
+  const { selectedOrders, totalSum, totalQuantity, handleCheckboxChange } =
+    useOrder(selectedOrdersList);
+  const {
+    order,
+    sendingOrder,
+    receiptOrder,
+    loading,
+    handleStatusChangeAndFetch,
+    handleRecoveryClick,
+  } = useOrderStatus(id!);
+  const {
+    isModalOpen,
+    isConfirmModalOpen,
+    openCancellationModal,
+    closeCancellationModal,
+    openConfirmModal,
+    closeConfirmModal,
+  } = useModal();
 
-  
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
@@ -39,8 +55,8 @@ const OrderPage = () => {
           <span className="font-base">{order.client_name}</span>
         </div>
         <div className="p-1 flex justify-between">
-            <span className="font-base text-sm">{t("address")}:</span>
-            <span className="font-base text-right">{order.client_address}</span>
+          <span className="font-base text-sm">{t("address")}:</span>
+          <span className="font-base text-right">{order.client_address}</span>
         </div>
         <div className="p-1 flex justify-between">
           <span className="font-base text-sm">{t("phone")} :</span>
@@ -58,38 +74,55 @@ const OrderPage = () => {
       </div>
 
       <ul className="mt-6 flex flex-col gap-2 overflow-y-auto h-60">
-        {selectedOrdersList.map((order: { tracking_code: string; sum: number , client_address: string}) => (
-          <li key={order.tracking_code}
-          className={`border-2 ${differentAddressOrders.some((diffOrder: any) => diffOrder.tracking_code === order.tracking_code) ? "border-red-600" : "border-black"} text-gray-700 rounded-lg flex gap-3 px-3`}
-          > 
-          <input
-              type="checkbox"
-              checked={!!selectedOrders[order.tracking_code]}
-              onChange={() => handleCheckboxChange(order.tracking_code)}
-            />
-          <div className="flex flex-col justify-between w-full">
-              <div className="flex justify-between items-center">
-                <span className="font-base text-xs">{t("barcode")} :</span>
-                <span
-                  onClick={() => navigator.clipboard.writeText(order.tracking_code)}
-                  className="text-sm text-blue-500 underline cursor-pointer"
-                >
-                  {order.tracking_code}
-                </span>
+        {selectedOrdersList.map(
+          (order: {
+            tracking_code: string;
+            sum: number;
+            client_address: string;
+          }) => (
+            <li
+              key={order.tracking_code}
+              className={`border-2 ${
+                differentAddressOrders.some(
+                  (diffOrder: any) =>
+                    diffOrder.tracking_code === order.tracking_code
+                )
+                  ? "border-red-600"
+                  : "border-black"
+              } text-gray-700 rounded-lg flex gap-3 px-3`}
+            >
+              <input
+                type="checkbox"
+                checked={!!selectedOrders[order.tracking_code]}
+                onChange={() => handleCheckboxChange(order.tracking_code)}
+              />
+              <div className="flex flex-col justify-between w-full">
+                <div className="flex justify-between items-center">
+                  <span className="font-base text-xs">{t("barcode")} :</span>
+                  <span
+                    onClick={() =>
+                      navigator.clipboard.writeText(order.tracking_code)
+                    }
+                    className="text-sm text-blue-500 underline cursor-pointer"
+                  >
+                    {order.tracking_code}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-base text-sm">{t("address")}:</span>
+                  <span className="font-base text-sm text-right">
+                    {order.client_address}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-base text-sm">{t("sum")} :</span>
+                  <span className="font-base text-sm">{order.sum} ₾</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="font-base text-sm">{t("address")}:</span>
-                <span className="font-base text-sm text-right">{order.client_address}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-base text-sm">{t("sum")} :</span>
-                <span className="font-base text-sm">{order.sum} ₾</span>
-              </div>
-          </div>
-          </li>
-        ))}
+            </li>
+          )
+        )}
       </ul>
-
 
       {/* Action Buttons */}
       <div className="flex justify-center p-5">
@@ -103,7 +136,7 @@ const OrderPage = () => {
               <span>{t("Total amount")} :</span>
               <span className="font-medium">{totalSum} ₾</span>
             </div>
-          <div className="flex space-x-4">
+            <div className="flex space-x-4">
               <Button
                 onClick={openConfirmModal}
                 className="bg-yellow-400 text-black"
@@ -179,6 +212,8 @@ const OrderPage = () => {
           receiptOrder={receiptOrder}
         />
       )}
+
+      <ConfimParcelScanner selectedOrdersList={selectedOrdersList} />
     </div>
   );
 };
