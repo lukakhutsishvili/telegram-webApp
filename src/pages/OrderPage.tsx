@@ -54,6 +54,17 @@ const OrderPage = () => {
           <span className="font-base text-sm">{t("name")} :</span>
           <span className="font-base">{order.client_name}</span>
         </div>
+        {order.Status !== "Accepted" && (
+          <div className="p-1 flex justify-between">
+          <span className="font-base text-sm">{t("barcode")} :</span>
+          <span
+            onClick={() => navigator.clipboard.writeText(order.tracking_code)}
+            className="text-sm text-blue-500 underline cursor-pointer"
+          >
+            {order.tracking_code}
+          </span>
+        </div>
+        )}
         <div className="p-1 flex justify-between">
           <span className="font-base text-sm">{t("address")}:</span>
           <span className="font-base text-right">{order.client_address}</span>
@@ -67,7 +78,13 @@ const OrderPage = () => {
             {order.client_phone}
           </span>
         </div>
-        <div className="p-2 flex justify-between">
+        {order.Status !== "Accepted" && (
+          <div className="p-1 flex justify-between">
+            <span className="font-base text-sm">{t("sum")} :</span>
+            <span className="font-base text-sm">{order.sum} ₾</span>
+        </div>
+        )}
+        <div className="p-1 flex justify-between">
           <span className="font-base text-sm">{t("status")} :</span>
           <span className="font-base">{order.Status}</span>
         </div>
@@ -210,6 +227,8 @@ const OrderPage = () => {
           closeModal={closeConfirmModal}
           sendingOrder={sendingOrder}
           receiptOrder={receiptOrder}
+          selectedOrders={selectedOrders}
+          totalSum={totalSum}
         />
       )}
 
