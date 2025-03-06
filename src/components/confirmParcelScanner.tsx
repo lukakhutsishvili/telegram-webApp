@@ -1,11 +1,6 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { axiosInstance } from "../api/apiClient";
 import { Context } from "../App";
-import {
-  GET_DETAILS_BY_SCANNER,
-  changeStatusesOfOrder,
-} from "../api/Constants";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import useOrder from "../hooks/order page hooks/useOrder";
@@ -34,69 +29,6 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
 
   console.log(setSelectedOrderManually);
 
-  const sendGetRequest = async (trackingCode: string) => {
-    try {
-      setIsLoading(true);
-      const requestData = {
-        device_id: userInfo.device_id || "6087086146",
-        tracking_code: trackingCode,
-      };
-
-      const jsonData = JSON.stringify(requestData);
-      const base64Data = btoa(jsonData);
-
-      const params = { tracking_code_data: base64Data };
-
-      // First API call
-      const response = await axiosInstance.get(GET_DETAILS_BY_SCANNER, {
-        params,
-      });
-
-      const firstResponseData = response.data.response.value;
-      const status = firstResponseData.status;
-
-      if (response.data.response.type == "parcel") {
-        navigate(`order/${firstResponseData.tracking_code}`);
-        return;
-      }
-
-      if (status === "Waiting") {
-        const trackingCodes = firstResponseData.tracking_codes.map(
-          (item: { tracking_code: string }) => item.tracking_code
-        );
-
-        setOrderTrackingCodes(trackingCodes);
-
-        const orderParams = {
-          device_id: userInfo.device_id,
-          status: "accepted",
-          orders: trackingCodes,
-        };
-
-        // Second API call
-        const secResponse = await axiosInstance.post(
-          changeStatusesOfOrder,
-          orderParams
-        );
-
-        setSecRes(secResponse);
-      } else if (status === "Accepted") {
-        setOrderTrackingCodes({
-          error: "This reestr is already in tasks",
-        });
-      } else {
-        setOrderTrackingCodes({
-          error: "Unexpected status: " + status,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching barcode details:", error);
-      setOrderTrackingCodes({ error: "Failed to fetch details" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!videoRef.current) return;
     reader.current.decodeFromConstraints(
@@ -112,7 +44,6 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
           const scannedBarcode = result.getText();
           reader.current.reset();
           console.log(scannedBarcode);
-          sendGetRequest(scannedBarcode);
           setIsModalOpen(true);
         }
       }
@@ -126,7 +57,6 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (manualCode.trim()) {
-      sendGetRequest(manualCode.trim());
       setManualCode("");
     }
   };
