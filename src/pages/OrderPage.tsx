@@ -192,6 +192,7 @@ const OrderPage = () => {
           order={order}
           closeCancellationModal={closeCancellationModal}
           sendingOrder={sendingOrder}
+          selectedOrders={selectedOrders}
         />
       )}
       {isConfirmModalOpen && (

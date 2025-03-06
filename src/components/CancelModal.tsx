@@ -8,11 +8,12 @@ interface CancelModalProps {
   closeCancellationModal: () => void;
   order: any;
   sendingOrder: any;
+  selectedOrders: { [key: string]: boolean }
 }
 
 function CancelModal({
   closeCancellationModal,
-  order,
+  selectedOrders,
   sendingOrder,
 }: CancelModalProps) {
   const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } =
@@ -47,8 +48,23 @@ function CancelModal({
   };
 
   const confirmCancellation = async () => {
+    
     if (!selectedReason) {
       setError(t("You must choose a reason"));
+      return;
+    }
+
+    const checkedOrders = Object.keys(selectedOrders)
+      .filter((tracking_code) => selectedOrders[tracking_code]) 
+      .map((tracking_code) => ({
+        tracking_code,
+        successfully: "False",
+        reason_id: selectedReason,
+        reason_commentary: selectedReasonText,
+    }));
+      
+    if (checkedOrders.length === 0) {
+      setError("No orders selected for cancelation");
       return;
     }
 
@@ -58,25 +74,20 @@ function CancelModal({
     const params = {
       device_id: userInfo.device_id,
       payment_type: "cash",
-      orders: [
-        {
-          tracking_code: order.tracking_code,
-          successfully: "False",
-          reason_id: selectedReason,
-          reason_commentary: selectedReasonText,
-        },
-      ],
+      orders: checkedOrders,
+      other_recipient :  '',
+      relationship_code: '',
+      relationship_commentary : '',
     };
 
     try {
-      await axiosInstance.post(
-        sendingOrder ? DELIVERY_ORDERS : PICKUP_ORDERS,
-        params
-      );
+      const url = sendingOrder ? DELIVERY_ORDERS : PICKUP_ORDERS;
+      const response = await axiosInstance.post(url, params);
 
+      console.log(response)
       await fetchUpdatedOrderList();
-
       setIsClosing(true); // Trigger close animation
+      setError("");
     } catch (error) {
       console.error("Failed to cancel the order:", error);
       setError(
