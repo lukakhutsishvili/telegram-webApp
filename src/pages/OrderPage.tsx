@@ -6,6 +6,7 @@ import useModal from "../hooks/order page hooks/useModal";
 import CancelModal from "../components/CancelModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
+import ConfimParcelScanner from "../components/ConfirmScanner";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -111,7 +112,7 @@ const OrderPage = () => {
             >
               <input
                 type="checkbox"
-                checked={!!selectedOrders[order.tracking_code]}
+                checked={selectedOrders[order.tracking_code] || false}
                 onChange={() => handleCheckboxChange(order.tracking_code)}
               />
               <div className="flex flex-col justify-between w-full">
@@ -214,6 +215,7 @@ const OrderPage = () => {
           </div>
         )}
       </div>
+      <ConfimParcelScanner selectedOrdersList={selectedOrdersList} />
 
       {/* Modal for Cancellation Reasons */}
       {isModalOpen && (

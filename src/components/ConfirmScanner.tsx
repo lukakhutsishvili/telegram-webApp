@@ -27,10 +27,9 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
 
   const { setSelectedOrderManually } = useOrder(selectedOrdersList || []);
 
-  console.log(setSelectedOrderManually);
-
   useEffect(() => {
     if (!videoRef.current) return;
+
     reader.current.decodeFromConstraints(
       {
         audio: false,
@@ -44,6 +43,16 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
           const scannedBarcode = result.getText();
           reader.current.reset();
           console.log(scannedBarcode);
+
+          // Find if the scanned barcode exists in selectedOrdersList
+          const foundOrder = selectedOrdersList.find(
+            (order) => order.tracking_code === scannedBarcode
+          );
+
+          if (foundOrder) {
+            setSelectedOrderManually(scannedBarcode); // Mark the order as selected
+          }
+
           setIsModalOpen(true);
         }
       }
