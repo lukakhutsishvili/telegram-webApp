@@ -196,9 +196,8 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
             className="w-full focus:outline-none"
           />
         </div>
-      </div>
 
-      {/* Sorting Control Buttons */}
+        {/* Sorting Control Buttons */}
       <div className="relative z-[0]">
         {startSorting ? (
           <button
@@ -208,18 +207,19 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
               setIsSorting(false);
               setStartSorting(false);
             }}
-            className="m-2 p-2 bg-blue-500 text-white rounded"
+             className="px-2 py-3 bg-blue-500 text-sm text-nowrap text-white rounded"
           >
             Stop Sorting
           </button>
         ) : (
           <button
             onClick={() => setStartSorting(true)}
-            className="m-2 p-2 bg-green-500 text-white rounded"
+             className="px-2 py-3 bg-green-500 text-sm text-nowrap text-white rounded"
           >
             Start Sorting
           </button>
         )}
+      </div>
       </div>
 
       {status === "Waiting" && filteredTasks.length > 0 && (
