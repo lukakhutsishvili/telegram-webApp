@@ -120,7 +120,7 @@ const confirmDelivery = async () => {
         reason_id: "",
         reason_commentary: "",
     }));
-      
+      console.log(checkedOrders)
     if (checkedOrders.length === 0) {
       console.warn("No orders selected for confirmation");
       return;
