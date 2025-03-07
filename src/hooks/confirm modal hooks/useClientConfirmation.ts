@@ -56,7 +56,7 @@ const order = sendingOrder || receiptOrder;
     const checkOtherClient = async () => {
     
       if(!confirmationValue){
-        setErrorMessage('ჩაწერე ჩამბარებელი პირის პირადი ნომერი!');
+        setErrorMessage(t('input Client Information!'));
         setOtherClientName('');
         setOtherClientSurname('');
         return;
@@ -76,7 +76,7 @@ const order = sendingOrder || receiptOrder;
           setOtherPersonInfo(false);
           setOtherClientName('');
           setOtherClientSurname('');
-          setErrorMessage('ჩაწერე ჩამბარებელი პირის მონაცემები!');
+          setErrorMessage(t('input Client Information!'));
         }
       } catch (error) {
         console.error("Error checking other client:", error);
@@ -87,7 +87,7 @@ const order = sendingOrder || receiptOrder;
     const addOtherClient = async (clientName: string, clientSurname: string) => {
     
       if(!clientName || !clientSurname || !confirmationValue){
-        setErrorMessage('კლიენტი ვერ დარეგისტრირდა შეავსე მონაცემები');
+        setErrorMessage(t("Client failed to register!"));
         return;
       }
 
@@ -106,6 +106,7 @@ const order = sendingOrder || receiptOrder;
           setOtherClientSurname(clientSurname);
         }
       } catch (error) {
+        setErrorMessage(t("Client failed to register!"));
         console.error("Error adding other client:", error);
       }
     };
@@ -122,6 +123,7 @@ const confirmDelivery = async () => {
     }));
       console.log(checkedOrders)
     if (checkedOrders.length === 0) {
+      setErrorMessage(t("No orders selected for confirmation"));
       console.warn("No orders selected for confirmation");
       return;
     }
@@ -156,7 +158,8 @@ const confirmDelivery = async () => {
     
       const sendOtp = async () => {
         if (!order.client_phone) {
-          alert(t("Phone number is not available."));
+          setErrorMessage(t("Phone number is not available."));
+          console.log(t("Phone number is not available."));
           return;
         }
     
@@ -170,10 +173,12 @@ const confirmDelivery = async () => {
             setOtpSent(true);
             setOtpCooldown(30);
           } else {
-            alert(response.data.message || t("Failed to send OTP."));
+            setErrorMessage(t("Failed to send OTP."));
+            console.log(response.data.message || t("Failed to send OTP."));
           }
         } catch (error) {
-          alert(t("Error sending OTP."));
+          setErrorMessage(t("Error sending OTP."));
+          console.log(t("Error sending OTP."));
         } finally {
           setIsOtpSending(false);
         }
@@ -183,7 +188,7 @@ const confirmDelivery = async () => {
         try {
           const tasklistData = {
             device_id: userInfo.device_id,
-            pickup_task: navbarButtons !== "sending",
+            pickup_task: navbarButtons !== "sending",   // ეს ვკითხო ლუკას
             status: ["Waiting", "Accepted", "Completed", "Canceled"],
           };
           const response = await axiosInstance.get(ORDER_LIST, {

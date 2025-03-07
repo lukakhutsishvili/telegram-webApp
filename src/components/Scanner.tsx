@@ -208,7 +208,7 @@ const BarcodeScanner = () => {
 
             {secRes && secRes.status && orderTrackingCodes?.length > 0 && (
               <p className="text-gray-700">
-                {t("Total Parcels in Reestr")}: {orderTrackingCodes.length}
+                {t("Total Parcels in Register")}: {orderTrackingCodes.length}
               </p>
             )}
 

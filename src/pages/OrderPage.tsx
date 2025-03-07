@@ -8,12 +8,6 @@ import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
 import ConfimParcelScanner from "../components/ConfirmScanner";
 import { useState } from "react";
-import { Modal } from "antd";
-
-// Assuming webApp is a global object, you can declare it like this:
-declare const webApp: {
-  openLink: (url: string) => void;
-};
 import OrderWithComponents from "../components/order page components/OrderWithComponents";
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
 
@@ -33,19 +27,6 @@ const OrderPage = () => {
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
   };
-
-
-  const handleCallPhone = (phone: string) => {
-    Modal.confirm({
-      title: "Call Client?",
-      content: `Do you want to call ${phone}?`,
-      onOk: () => window.open(`tel:${phone}`, "_self"),
-      okText: "Call",
-      cancelText: "Cancel",
-    });
-  };
-  
-
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -74,7 +55,8 @@ const OrderPage = () => {
               <span className="font-base text-sm">{t("name")} :</span>
               <span className="font-base">{order.client_name}</span>
             </div>
-            {order.Status !== "Accepted" && (
+
+            {(order.Status !== "Accepted" || order?.places) && (
               <div className="p-1 flex justify-between">
                 <span className="font-base text-sm">{t("barcode")} :</span>
                 <span
@@ -96,16 +78,16 @@ const OrderPage = () => {
             <div className="p-1 flex justify-between">
               <span className="font-base text-sm">{t("phone")} :</span>
 
-              <a
+              <span
                 onClick={() =>
-                  handleCallPhone(order.client_phone)
+                  navigator.clipboard.writeText(order.client_phone)
                 }
                 className="font-base text-blue-500 underline cursor-pointer"
               >
                 {order.client_phone}
-              </a>
+              </span>
             </div>
-            {order.Status !== "Accepted" && (
+            {(order.Status !== "Accepted" || order?.places) && (
               <div className="p-1 flex justify-between">
                 <span className="font-base text-sm">{t("sum")} :</span>
                 <span className="font-base text-sm">{order.sum} ₾</span>
@@ -117,7 +99,7 @@ const OrderPage = () => {
             </div>
           </div>
 
-            {order?.places ? (
+            {order?.places? (
               <OrderWithComponents order={order} handleCheckboxChange={handleCheckboxChange}/> 
             ) : (
               <SameClientsOrders 

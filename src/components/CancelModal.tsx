@@ -11,13 +11,8 @@ interface CancelModalProps {
   selectedOrders: { [key: string]: boolean }
 }
 
-function CancelModal({
-  closeCancellationModal,
-  selectedOrders,
-  sendingOrder,
-}: CancelModalProps) {
-  const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } =
-    useContext(Context);
+function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,}: CancelModalProps) {
+  const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } = useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedReasonText, setSelectedReasonText] = useState<string>("");
   const [error, setError] = useState<string>("");

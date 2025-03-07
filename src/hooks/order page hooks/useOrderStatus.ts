@@ -5,19 +5,11 @@ import { axiosInstance } from "../../api/apiClient";
 import { ORDER_LIST } from "../../api/Constants";
 
 const useOrderStatus = (id: string) => {
-  const {
-    sendingTasks,
-    recieptTasks,
-    userInfo,
-    setSendingTasks,
-    setRecieptTasks,
-    navbarButtons,
-  } = useContext(Context);
+  
+  const {sendingTasks,recieptTasks,userInfo,setSendingTasks,setRecieptTasks,navbarButtons,} = useContext(Context);
   const [loading, setLoading] = useState(false);
-
   const sendingOrder = sendingTasks.find((task) => task.tracking_code === id);
   const receiptOrder = recieptTasks.find((task) => task.tracking_code === id);
-
   const order = sendingOrder || receiptOrder;
 
 

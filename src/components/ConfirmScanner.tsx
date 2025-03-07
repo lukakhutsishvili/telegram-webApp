@@ -11,11 +11,7 @@ interface ConfimParcelScannerProps {
   setIsScanning: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
-  selectedOrdersList,
-  setSelectedOrders,
-  setIsScanning,
-}) => {
+const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({selectedOrdersList,setSelectedOrders,setIsScanning,}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reader = useRef(new BrowserMultiFormatReader());
   const [isModalOpen, setIsModalOpen] = useState(false);
