@@ -10,7 +10,7 @@ const useOrder = (selectedOrdersList: { tracking_code: string; sum: number }[]) 
       initialSelection[order.tracking_code] = index === 0; // First parcel is true
     });
     setSelectedOrders(initialSelection);
-  }, [selectedOrders]);
+  }, []);
 
   console.log(selectedOrders)
   // Handle checkbox selection
