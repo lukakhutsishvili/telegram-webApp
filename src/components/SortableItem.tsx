@@ -83,20 +83,27 @@ const SortableItem = ({
         onClick={handleClick}
       >
         <div className="flex justify-between">
-          <h2 className="text-sm">{task.client_name}</h2>
-          <p className="text-sm">{task.sum} ₾</p>
+          <h2 className="text-xs">{task.client_name}</h2>
+          <p className="text-xs">{task.sum} ₾</p>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <FontAwesomeIcon icon={faBarcode} />
-            <p className="text-sm">{task.tracking_code}</p>
+            <p className="text-xs">{task.tracking_code}</p>
           </div>
           <div className="flex items-center gap-1">
             <FontAwesomeIcon icon={faPhone} />
-            <p className="text-sm">{task.client_phone}</p>
+            <p className="text-xs">{task.client_phone}</p>
           </div>
         </div>
-        <h2 className="text-sm">{task.client_address}</h2>
+        { task.places?.length > 0 && (
+          <div className="flex justify-between">
+            <h2 className="text-xs">კომპონენტები:</h2>
+            <p className="text-xs">{task.places.length}</p>
+          </div>
+        )}
+       
+        <h2 className="text-xs">{task.client_address}</h2>
       </div>
     </div>
   );

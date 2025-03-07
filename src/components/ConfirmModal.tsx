@@ -1,16 +1,12 @@
-import {  useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "../components/Button";
-import {
-  CHECK_OTP_CONFIRMATION,
-} from "../api/Constants";
+import { CHECK_OTP_CONFIRMATION } from "../api/Constants";
 import { axiosInstance } from "../api/apiClient";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirmation";
 import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
-import useValidation from "../hooks/confirm modal hooks/useValidation";
-// import useRelationships from "../hooks/confirm modal hooks/useRelationship";
 import { Context } from "../App";
 
 interface ConfirmModalProps {
@@ -28,7 +24,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   sendingOrder,
   totalSum,
 }) => {
-
   const navigate = useNavigate();
   const PARCELS_KEY = "parcels";
   const storedParcels = JSON.parse(localStorage.getItem(PARCELS_KEY) || "[]");
@@ -36,21 +31,59 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const { addParcel } = useRequestLogs();
 
-  const { paymentMethod, setPaymentMethod,confirmationMethod,confirmationValue,setConfirmationValue,otpSent,
-    isOtpSending,otpCooldown,setOtpCooldown,confirmationMessage, errorMessage,timer,setTimer,startTimer,
-    loading ,handleConfirmationMethodChange, sendOtp, confirmDelivery, setLoading, postClientID,
-    setConfirmationMessage, setStartTimer,fetchUpdatedOrderList, checkClientOtp ,setErrorMessage, checkOtherClient,
-    otherPersonInfo} = useClientConfirmation(selectedOrders, totalSum, sendingOrder, receiptOrder);
+  const {
+    paymentMethod,
+    setPaymentMethod,
+    confirmationMethod,
+    confirmationValue,
+    setConfirmationValue,
+    otpSent,
+    isOtpSending,
+    otpCooldown,
+    setOtpCooldown,
+    confirmationMessage,
+    errorMessage,
+    timer,
+    setTimer,
+    startTimer,
+    loading,
+    handleConfirmationMethodChange,
+    sendOtp,
+    confirmDelivery,
+    setLoading,
+    postClientID,
+    setConfirmationMessage,
+    setStartTimer,
+    fetchUpdatedOrderList,
+    checkClientOtp,
+    setErrorMessage,
+    checkOtherClient,
+    addOtherClient,
+    otherPersonInfo,
+    otherClientName,
+    otherClientSurname,
+    setOtherClientName,
+    setOtherClientSurname,
+    connection,
+    setConnection,
+    additionalComment,
+    setAdditionalComment,
+    openThirdPersonModal,
+  } = useClientConfirmation(
+    selectedOrders,
+    totalSum,
+    sendingOrder,
+    receiptOrder
+  );
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [connection, setConnection] = useState("");
-  const [additionalComment, setAdditionalComment] = useState("");
-  const initialState = {name: "",surname: "",connection: ""};
+  const initialState = {
+    otherClientName: "",
+    otherClientSurname: "",
+    connection: "",
+    additionalComment,
+  };
   const [errors, setErrors] = useState(initialState);
-  const { validateAll } = useValidation(setErrors);
   const { userInfo } = useContext(Context);
-
 
   const navigationfunction = () => {
     if (confirmationMessage) {
@@ -111,27 +144,60 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const onConfirm = async () => {
     setLoading(true);
-    const isValid = validateAll({ name, surname, connection });
-
-    if (!isValid) {
-      setLoading(false); 
-      return;
-    }
-      try {
-        if (receiptOrder) {
-          await confirmDelivery();
+    try {
+      if (receiptOrder) {
+        await confirmDelivery();
+        addParcel(
+          order.tracking_code,
+          confirmationValue,
+          order.client_name,
+          "completed"
+        );
+        setConfirmationMessage(t("Receipt order confirmed!"));
+        setStartTimer(true);
+        await fetchUpdatedOrderList();
+      } else if (confirmationMethod === "OTP") {
+        try {
+          await checkClientOtp();
+        } catch (error) {
           addParcel(
             order.tracking_code,
             confirmationValue,
             order.client_name,
-            "completed"
+            "failed"
           );
-          setConfirmationMessage(t("Receipt order confirmed!"));
-          setStartTimer(true);
-          await fetchUpdatedOrderList();
-        } else if (confirmationMethod === "OTP") {
+          console.log(error);
+        }
+        await fetchUpdatedOrderList();
+      } else if (confirmationMethod === "ID Number") {
+        if (order.client_id) {
+          if (order.client_id === confirmationValue) {
+            await confirmDelivery();
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "completed"
+            );
+            setConfirmationMessage(t("ID Number confirmed!"));
+            setStartTimer(true);
+            await fetchUpdatedOrderList();
+          } else {
+            setErrorMessage(
+              t(
+                "The ID Number does not match the client's ID. Please try again."
+              )
+            );
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "failed"
+            );
+          }
+        } else {
           try {
-            await checkClientOtp();
+            await postClientID();
           } catch (error) {
             addParcel(
               order.tracking_code,
@@ -141,66 +207,59 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             );
           }
           await fetchUpdatedOrderList();
-        } else if (confirmationMethod === "ID Number") {
-          if (order.client_id) {
-            if (order.client_id === confirmationValue) {
-              await confirmDelivery();
-              addParcel(
-                order.tracking_code,
-                confirmationValue,
-                order.client_name,
-                "completed"
-              );
-              setConfirmationMessage(t("ID Number confirmed!"));
-              setStartTimer(true);
-              await fetchUpdatedOrderList();
-            } else {
-              setErrorMessage(
-                t(
-                  "The ID Number does not match the client's ID. Please try again."
-                )
-              );
-              addParcel(
-                order.tracking_code,
-                confirmationValue,
-                order.client_name,
-                "failed"
-              );
-            }
-          } else {
-            try {
-              await postClientID();
-            } catch (error) {
-              addParcel(
-                order.tracking_code,
-                confirmationValue,
-                order.client_name,
-                "failed"
-              );
-            }
-            await fetchUpdatedOrderList();
-          }
         }
-      } catch (error) {
-        console.error("An error occurred:", error);
-        setErrorMessage(
-          t("An unexpected error occurred. Please try again later.")
-        );
-        addParcel(
-          order.tracking_code,
-          confirmationValue,
-          order.client_name,
-          "failed"
-        );
-      } finally {
-        setLoading(false);
+      } else if (confirmationMethod === "Other") {
+        if (otherPersonInfo) {
+          if (errors.connection !== "" || errors.additionalComment !== "") {
+            setErrorMessage("შეავსე კავშირის ტიპი");
+            return;
+          }
+          await confirmDelivery();
+          addParcel(
+            order.tracking_code,
+            confirmationValue,
+            order.client_name,
+            "completed"
+          );
+          setConfirmationMessage(t("Other person confirmed!"));
+          setStartTimer(true);
+          await fetchUpdatedOrderList();
+        } else {
+          await addOtherClient(otherClientName, otherClientSurname);
+          if (errors.connection !== "" || errors.additionalComment !== "") {
+            setErrorMessage("შეავსე კავშირის ტიპი");
+            return;
+          }
+          await confirmDelivery();
+          addParcel(
+            order.tracking_code,
+            confirmationValue,
+            order.client_name,
+            "completed"
+          );
+          setConfirmationMessage(t("Other person posted!"));
+          setStartTimer(true);
+          await fetchUpdatedOrderList();
+        }
       }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setErrorMessage(
+        t("An unexpected error occurred. Please try again later.")
+      );
+      addParcel(
+        order.tracking_code,
+        confirmationValue,
+        order.client_name,
+        "failed"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
-
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
         <h2 className="text-lg font-bold mb-4">
           {sendingOrder ? t("Confirm Handover") : t("Confirm Receiving")}
@@ -255,7 +314,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 <div className="mb-4">
                   {confirmationMethod === "OTP" && (
                     <Button
-                      onClick={sendOtp} 
+                      onClick={sendOtp}
                       className="mb-2 bg-blue-500 text-black text-xs"
                       disabled={otpCooldown > 0 || isOtpSending}
                     >
@@ -287,36 +346,33 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     }
                   />
                   {errorMessage && (
-                    <div className="text-red-500 text-xs">{errorMessage}</div>
+                    <div className="text-red-500 text-xs mt-1">
+                      {errorMessage}
+                    </div>
                   )}
-                  {confirmationMethod === "Other" &&(
+                  {confirmationMethod === "Other" && (
                     <Button
                       onClick={checkOtherClient}
                       className="mb-2 mt-2 text-xs text-black"
                     >
-                     შეამოწმე კლიენტი
-                    </Button>   
+                      შეამოწმე კლიენტი
+                    </Button>
                   )}
-                  {
-                    otherPersonInfo && (
-                      <ThirdPerson
-                      name={name}
-                      surname={surname}
-                      connection = {connection}
+                  {openThirdPersonModal && (
+                    <ThirdPerson
+                      otherClientName={otherClientName}
+                      otherClientSurname={otherClientSurname}
+                      setOtherClientName={setOtherClientName}
+                      setOtherClientSurname={setOtherClientSurname}
+                      connection={connection}
                       additionalComment={additionalComment}
-                      setName={setName}
-                      setSurname={setSurname}
-                      setConnection = {setConnection}
+                      setConnection={setConnection}
                       setAdditionalComment={setAdditionalComment}
                       errors={errors}
                       setErrors={setErrors}
-                      selectedOrders={selectedOrders} 
-                      totalSum={totalSum}
-                      sendingOrder={sendingOrder}
-                      receiptOrder={receiptOrder}
-                      />
-                    )
-                  }
+                      otherPersonInfo={otherPersonInfo}
+                    />
+                  )}
                 </div>
               </>
             )}

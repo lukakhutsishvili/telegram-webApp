@@ -3,9 +3,15 @@ import { Context } from "../../App";
 import { GET_RELATIONSHIPS } from "../../api/Constants";
 import { axiosInstance } from "../../api/apiClient";
 
+interface Relationship {
+  Code: string;
+  Description: string;
+  Commentary_Required: boolean;
+}
+
 const useRelationships = (autoFetch: boolean = true) => {
   const { userInfo } = useContext(Context);
-  const [relationshipData, setRelationshipData] = useState(null);
+  const [relationshipData, setRelationshipData] = useState<Relationship[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,8 +26,8 @@ const useRelationships = (autoFetch: boolean = true) => {
 
     try {
       const response = await axiosInstance.get(GET_RELATIONSHIPS);
-      setRelationshipData(response.data);
-      return response.data;
+      setRelationshipData(response.data.response);
+      return response.data.response;
     } catch (err) {
       setError("Failed to fetch relationships");
       console.error("Error fetching relationships:", err);

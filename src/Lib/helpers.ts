@@ -1,4 +1,7 @@
-import { faHome, faTruckFast, faBox, faBarcode } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faTruckFast, faBox, faBarcode,  } from "@fortawesome/free-solid-svg-icons";
+import  GE  from "../assets/georgia.svg"
+import  USA  from "../assets/usa.svg"
+import  RU  from "../assets/russia.svg"
 
 // sending and reciept tab buttons
 export const TAB_BUTTONS = [
@@ -16,8 +19,10 @@ export  const buttons = [
   { name: "scan the register", path: "/scanner", icon: faBarcode }
 ];
 
+
+
 export const langButtons = [
-  {name: "ქართული", lang: "ge"},
-  {name: "English", lang: "en"},
-  {name: "Русский", lang: "ru"},
+  {name: "ქართული", lang: "ge", flag: GE},
+  {name: "English", lang: "en", flag: USA},
+  {name: "Русский", lang: "ru", flag: RU},
 ]

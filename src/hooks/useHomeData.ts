@@ -60,6 +60,7 @@ const useHomeData = () => {
         },
       });
       setRecieptTasks(response.data.response);
+      console.log(response);
     } catch (error) {
       console.error("Error fetching receipt tasks:", error);
     }

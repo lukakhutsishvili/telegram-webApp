@@ -182,7 +182,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
     <div className="relative px-4">
       {/* Search bar with corrected z-index */}
       <div className="sticky top-0 z-30 flex items-center bg-white shadow-md py-2">
-        <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
+        <div className="flex items-center border border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon
             onClick={() => navigate("/scanner")}
             icon={faBarcode}
@@ -193,12 +193,11 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
             placeholder="ძიება"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full focus:outline-none"
+            className="w-full text-sm focus:outline-none"
           />
         </div>
-      </div>
 
-      {/* Sorting Control Buttons */}
+        {/* Sorting Control Buttons */}
       <div className="relative z-[0]">
         {startSorting ? (
           <button
@@ -208,18 +207,19 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
               setIsSorting(false);
               setStartSorting(false);
             }}
-            className="m-2 p-2 bg-blue-500 text-white rounded"
+             className="p-2 bg-blue-500 text-sm text-nowrap text-white rounded"
           >
-            Stop Sorting
+            {t("Stop Sorting")}
           </button>
         ) : (
           <button
             onClick={() => setStartSorting(true)}
-            className="m-2 p-2 bg-green-500 text-white rounded"
+            className="p-2 bg-green-500 text-sm text-nowrap text-white rounded"
           >
-            Start Sorting
+            {t('Start Sorting')}
           </button>
         )}
+      </div>
       </div>
 
       {status === "Waiting" && filteredTasks.length > 0 && (
@@ -231,11 +231,11 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
               onChange={(e) => handleCheckAllChange(e.target.checked)}
               className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
             />
-            <span>{t("select all")}</span>
+            <span className="text-xs text-nowrap">{t("select all")}</span>
           </div>
           <button
             onClick={() => handleAllStatusChange("Accepted")}
-            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md"
+            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-xs text-nowrap font-semibold rounded-md"
           >
             {t("accept all")}
           </button>
@@ -293,7 +293,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
             size="3x"
             className="text-blue-500"
           />
-          <p className="mt-4 text-blue-500">please wait for sorting</p>
+          <p className="mt-4 text-blue-500">{t("please wait for sorting")}</p>
         </div>
       )}
     </div>

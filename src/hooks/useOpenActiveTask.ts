@@ -38,6 +38,8 @@ const useOpenActiveTask = () => {
     // Ensure the selected order is first in the array
     const selectedOrdersList = [task, ...sameAddressOrders, ...differentAddressOrders];
 
+    
+
     navigate(`/order/${trackingCode}`, {
       state: {
         selectedOrdersList,

@@ -6,7 +6,6 @@ import { PICKUP_ORDERS, DELIVERY_ORDERS, SEND_CLIENT_OTP, VERIFY_CLIENT_OTP_URL,
 import { t } from "i18next";
 
 
-
 const useClientConfirmation = (
     selectedOrders: { [key: string]: boolean },
     totalSum: string,
@@ -14,27 +13,28 @@ const useClientConfirmation = (
     receiptOrder: any
 ) => {
 
-    const [paymentMethod, setPaymentMethod] = useState<string | null>("Cash");
-    const [confirmationMethod, setConfirmationMethod] = useState("OTP");
-    const [confirmationValue, setConfirmationValue] = useState("");
-    const [otpSent, setOtpSent] = useState(false);
-    const [isOtpSending, setIsOtpSending] = useState(false);
-    const [otpCooldown, setOtpCooldown] = useState(0); // Cooldown timer for OTP
-    const [confirmationMessage, setConfirmationMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [timer, setTimer] = useState(2);
-    const [startTimer, setStartTimer] = useState(false);
-    const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } = useContext(Context);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [otherPersonInfo, setOtherPersonInfo] = useState<boolean>(false);
-    const [otherClientName, setOtherClientName] = useState<string>("");
-    const [otherClientSurname, setOtherClientSurname] = useState<string>("");
+const [paymentMethod, setPaymentMethod] = useState<string | null>("Cash");
+const [confirmationMethod, setConfirmationMethod] = useState("OTP");
+const [confirmationValue, setConfirmationValue] = useState("");
+const [otpSent, setOtpSent] = useState(false);
+const [isOtpSending, setIsOtpSending] = useState(false);
+const [otpCooldown, setOtpCooldown] = useState(0); // Cooldown timer for OTP
+const [confirmationMessage, setConfirmationMessage] = useState("");
+const [errorMessage, setErrorMessage] = useState("");
+const [timer, setTimer] = useState(2);
+const [startTimer, setStartTimer] = useState(false);
+const { userInfo, setSendingTasks, setRecieptTasks, navbarButtons } = useContext(Context);
+const [loading, setLoading] = useState<boolean>(false);
+const [otherPersonInfo, setOtherPersonInfo] = useState<boolean>(false);
+const [otherClientName, setOtherClientName] = useState<string>("");
+const [otherClientSurname, setOtherClientSurname] = useState<string>("");
+const [connection, setConnection] = useState("");
+const [additionalComment, setAdditionalComment] = useState("");
+const [openThirdPersonModal, setOpenThirdPersonModal] = useState<boolean>(false);
 
-    const order = sendingOrder || receiptOrder;
-    
+const order = sendingOrder || receiptOrder;
 
-
-    const { addParcel } = useRequestLogs();
+  const { addParcel } = useRequestLogs();
 
 
     const handleConfirmationMethodChange = (method: string) => {
@@ -45,46 +45,38 @@ const useClientConfirmation = (
         setConfirmationMessage("");
         setErrorMessage("");
         if(method === "Other"){
-          setOtherPersonInfo(true)
+          setOpenThirdPersonModal(true)
         }else{
-          setOtherPersonInfo(false)
+          setOpenThirdPersonModal(false)
         }
     };
 
-    const getCheckedOrders = () => {
-      return Object.keys(selectedOrders)
-        .filter((tracking_code) => selectedOrders[tracking_code]) 
-        .map((tracking_code) => ({
-          tracking_code,
-          successfully: "True",
-          reason_id: "",
-          reason_commentary: "",
-        }));
-    };
     
     // **Check if another client exists**
     const checkOtherClient = async () => {
-      const checkedOrders = getCheckedOrders();
-      
-      if (checkedOrders.length === 0) {
-        console.warn("No orders selected for confirmation");
+    
+      if(!confirmationValue){
+        setErrorMessage('ჩაწერე ჩამბარებელი პირის პირადი ნომერი!');
+        setOtherClientName('');
+        setOtherClientSurname('');
         return;
       }
-    
+      
       const params = {
-        device_id: userInfo.device_id,
         client_id: confirmationValue,
       };
-    
       try {
         const response = await axiosInstance.get(CHECK_OTHER_PERSON, { params });
-    
-        if (response.data.status) {
+        if (response.data.Is_Registered) {
+          setErrorMessage('');
           setOtherPersonInfo(true);
-          setOtherClientName(response.data.client_name || "");
-          setOtherClientSurname(response.data.client_surname || "");
+          setOtherClientName(response.data.response[0].First_Name);
+          setOtherClientSurname(response.data.response[0].Last_Name);
         } else {
           setOtherPersonInfo(false);
+          setOtherClientName('');
+          setOtherClientSurname('');
+          setErrorMessage('ჩაწერე ჩამბარებელი პირის მონაცემები!');
         }
       } catch (error) {
         console.error("Error checking other client:", error);
@@ -93,18 +85,16 @@ const useClientConfirmation = (
     
     // **Add another client**
     const addOtherClient = async (clientName: string, clientSurname: string) => {
-      const checkedOrders = getCheckedOrders();
-      
-      if (checkedOrders.length === 0) {
-        console.warn("No orders selected for confirmation");
+    
+      if(!clientName || !clientSurname || !confirmationValue){
+        setErrorMessage('კლიენტი ვერ დარეგისტრირდა შეავსე მონაცემები');
         return;
       }
-    
+
       const params = {
-        device_id: userInfo.device_id,
         client_id: confirmationValue,
-        client_name: clientName,
-        client_surname: clientSurname,
+        client_first_name: otherClientName,
+        client_last_name:otherClientSurname,
       };
     
       try {
@@ -121,44 +111,47 @@ const useClientConfirmation = (
     };
     
     
-      const confirmDelivery = async () => {
-        const checkedOrders = Object.keys(selectedOrders)
-          .filter((tracking_code) => selectedOrders[tracking_code]) 
-          .map((tracking_code) => ({
-            tracking_code,
-            successfully: "True",
-            reason_id: "",
-            reason_commentary: "",
-          }));
-      
-        if (checkedOrders.length === 0) {
-          console.warn("No orders selected for confirmation");
-          return;
-        }
+const confirmDelivery = async () => {
+    const checkedOrders = Object.keys(selectedOrders)
+      .filter((tracking_code) => selectedOrders[tracking_code]) 
+      .map((tracking_code) => ({
+        tracking_code,
+        successfully: "True",
+        reason_id: "",
+        reason_commentary: "",
+    }));
+      console.log(checkedOrders)
+    if (checkedOrders.length === 0) {
+      console.warn("No orders selected for confirmation");
+      return;
+    }
 
-        checkOtherClient();
+    let confirmationType = 1; // Default OTP
+    if (confirmationMethod === "ID") {
+      confirmationType = 2;
+    } else if (confirmationMethod === "Other") {
+      confirmationType = 3;
+    }
       
         const params = {
           device_id: userInfo.device_id,
+          confirmation_type: confirmationType,
           payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
           orders: checkedOrders, 
-          other_recipient : confirmationValue,
-          relationship_code: "",
-          relationship_commentary : "",
+          other_recipient : confirmationMethod === "Other" ? confirmationValue : '',
+          relationship_code: connection,
+          relationship_commentary : additionalComment,
         };
 
-        console.log(checkedOrders)
-        console.log("Sending confirmation request:", params);
       
         try {
           const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
-          console.log("Sending request to:", url);
           await axiosInstance.post(url, params);
           console.log("Request sent successfully to:", url);
         } catch (error) {
           console.error("Error sending request:", error);
         }
-      };
+};
       
     
       const sendOtp = async () => {
@@ -343,7 +336,15 @@ const useClientConfirmation = (
           otherPersonInfo,
           addOtherClient,
           otherClientName,
-          otherClientSurname
+          otherClientSurname,
+          setOtherClientName,
+          setOtherClientSurname,
+          connection, 
+          setConnection,
+          additionalComment,
+          setAdditionalComment,
+          openThirdPersonModal,
+          setOpenThirdPersonModal
       };
   };
 

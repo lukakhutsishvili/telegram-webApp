@@ -3,7 +3,7 @@ import { t } from "i18next";
 
 
 
-const useValidation = (setErrors: React.Dispatch<React.SetStateAction<{ name: string; surname: string; connection: string }>>) => {
+const useValidation = (setErrors: React.Dispatch<React.SetStateAction<{ otherClientName: string; otherClientSurname: string; connection: string }>>) => {
 
     const validateField = (field: string, value: string) => {
         if (!value.trim()) {
@@ -13,9 +13,9 @@ const useValidation = (setErrors: React.Dispatch<React.SetStateAction<{ name: st
         }
     };
   
-    const validateAll = (fields: { name: string; surname: string; connection: string }) => {
+    const validateAll = (fields: { otherClientName: string; otherClientSurname: string; connection: string }) => {
       let isValid = true;
-      const newErrors: { name: string; surname: string; connection: string } = { name: "", surname: "", connection: "" };
+      const newErrors: { otherClientName: string; otherClientSurname: string; connection: string } = { otherClientName: "", otherClientSurname: "", connection: "" };
   
       Object.keys(fields).forEach((key) => {
         if (!fields[key as keyof typeof fields].trim()) {
