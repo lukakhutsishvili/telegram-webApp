@@ -6,12 +6,13 @@ const useOrder = (selectedOrdersList: { tracking_code: string; sum: number }[]) 
   // Initialize selectedOrders state with all tracking codes set to false
   useEffect(() => {
     const initialSelection: { [key: string]: boolean } = {};
-    selectedOrdersList.forEach(order => {
-      initialSelection[order.tracking_code] = false;
+    selectedOrdersList.forEach((order, index) => {
+      initialSelection[order.tracking_code] = index === 0; // First parcel is true
     });
     setSelectedOrders(initialSelection);
-  }, []);
+  }, [selectedOrdersList]);
 
+  console.log(selectedOrders)
   // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
     setSelectedOrders(prev => ({

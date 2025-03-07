@@ -17,7 +17,7 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
-  const params = { telegram_id: userInfo.telegram_id || "1800276631" };
+  const params = { telegram_id: userInfo.telegram_id || "6087086146" };
   const [signInloader, setSignInloader] = useState(true);
 
   const handleSignIn = async () => {
