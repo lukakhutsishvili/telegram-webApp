@@ -95,5 +95,10 @@
     "trackingNumber": "📦 Tracking Number",
     "idOtp": "🔑 ID/OTP",
     "noData": "🚫 No parcel data available."
-    }
+    },
+    "please wait for sorting": "Please wait for sorting",
+    "Start Sorting": "Start Sorting",
+    "Stop Sorting": "Stop Sorting",
+    "scan barcode": "Scan barcode"
+
 }

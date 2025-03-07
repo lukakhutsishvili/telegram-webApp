@@ -183,7 +183,7 @@ const Order = ({ status }: { status: string | null }) => {
     <div className="relative">
       {/* Search Bar */}
       <div className="sticky top-0 z-30 flex items-center bg-white shadow-md py-2 px-4">
-        <div className="flex items-center border-2 border-gray-300 w-full rounded-md px-4 py-2">
+        <div className="flex items-center border border-gray-300 w-full rounded-md px-4 py-2">
           <FontAwesomeIcon
             onClick={() => navigate("/scanner")}
             icon={faBarcode}
@@ -194,7 +194,7 @@ const Order = ({ status }: { status: string | null }) => {
             placeholder={t("Search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full focus:outline-none"
+            className="w-full text-sm focus:outline-none"
           />
         </div>
               {/* Sorting Control Buttons */}
@@ -207,16 +207,16 @@ const Order = ({ status }: { status: string | null }) => {
               setIsSorting(false);
               setStartSorting(false);
             }}
-            className="px-2 py-3 bg-blue-500 text-sm text-nowrap text-white rounded"
+             className="p-2 bg-blue-500 text-sm text-nowrap text-white rounded"
           >
-            Stop Sorting
+            {t("Stop Sorting")}
           </button>
         ) : (
           <button
             onClick={() => setStartSorting(true)}
-            className="px-2 py-3 bg-green-500 text-sm text-nowrap text-white rounded"
+            className="p-2 bg-green-500 text-sm text-nowrap text-white rounded"
           >
-            Start Sorting
+            {t('Start Sorting')}
           </button>
         )}
       </div>
@@ -233,11 +233,11 @@ const Order = ({ status }: { status: string | null }) => {
               onChange={(e) => handleCheckAllChange(e.target.checked)}
               className="h-5 w-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500"
             />
-            <span>{t("select all")}</span>
+            <span className="text-sm text-nowrap">{t("select all")}</span>
           </div>
           <button
             onClick={() => handleAllStatusChange("Accepted")}
-            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm font-semibold rounded-md"
+            className="ml-auto px-4 py-2 bg-yellow-400 text-black text-sm text-nowrap font-semibold rounded-md"
           >
             {t("accept all")}
           </button>
@@ -303,7 +303,7 @@ const Order = ({ status }: { status: string | null }) => {
             size="3x"
             className="text-blue-500"
           />
-          <p className="mt-4 text-blue-500">please wait for sorting</p>
+          <p className="mt-4 text-blue-500">{t("please wait for sorting")}</p>
         </div>
       )}
     </div>

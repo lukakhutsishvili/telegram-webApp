@@ -8,36 +8,23 @@ import ConfirmModal from "../components/ConfirmModal";
 import Button from "../components/Button";
 import ConfimParcelScanner from "../components/ConfirmScanner";
 import { useState } from "react";
+import { Modal } from "antd";
+
+// Assuming webApp is a global object, you can declare it like this:
+declare const webApp: {
+  openLink: (url: string) => void;
+};
+import OrderWithComponents from "../components/order page components/OrderWithComponents";
+import SameClientsOrders from "../components/order page components/SameClientsOrders";
 
 const OrderPage = () => {
+  
   const { id } = useParams<{ id: string }>();
-  const { selectedOrdersList = [], differentAddressOrders = false } =
-    useLocation().state || {};
+  const { selectedOrdersList = [], differentAddressOrders = false } =useLocation().state || {};
   const [isScanning, setIsScanning] = useState(false);
-
-  const {
-    setSelectedOrders,
-    selectedOrders,
-    totalSum,
-    totalQuantity,
-    handleCheckboxChange,
-  } = useOrder(selectedOrdersList);
-  const {
-    order,
-    sendingOrder,
-    receiptOrder,
-    loading,
-    handleStatusChangeAndFetch,
-    handleRecoveryClick,
-  } = useOrderStatus(id!);
-  const {
-    isModalOpen,
-    isConfirmModalOpen,
-    openCancellationModal,
-    closeCancellationModal,
-    openConfirmModal,
-    closeConfirmModal,
-  } = useModal();
+  const {setSelectedOrders,selectedOrders,totalSum,totalQuantity,handleCheckboxChange,} = useOrder(selectedOrdersList);
+  const {order,sendingOrder,receiptOrder,loading,handleStatusChangeAndFetch,handleRecoveryClick,} = useOrderStatus(id!);
+  const {isModalOpen,isConfirmModalOpen,openCancellationModal,closeCancellationModal,openConfirmModal,closeConfirmModal,} = useModal();
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -46,6 +33,19 @@ const OrderPage = () => {
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
   };
+
+
+  const handleCallPhone = (phone: string) => {
+    Modal.confirm({
+      title: "Call Client?",
+      content: `Do you want to call ${phone}?`,
+      onOk: () => window.open(`tel:${phone}`, "_self"),
+      okText: "Call",
+      cancelText: "Cancel",
+    });
+  };
+  
+
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -96,14 +96,14 @@ const OrderPage = () => {
             <div className="p-1 flex justify-between">
               <span className="font-base text-sm">{t("phone")} :</span>
 
-              <span
+              <a
                 onClick={() =>
-                  navigator.clipboard.writeText(order.client_phone)
+                  handleCallPhone(order.client_phone)
                 }
                 className="font-base text-blue-500 underline cursor-pointer"
               >
                 {order.client_phone}
-              </span>
+              </a>
             </div>
             {order.Status !== "Accepted" && (
               <div className="p-1 flex justify-between">
@@ -117,59 +117,16 @@ const OrderPage = () => {
             </div>
           </div>
 
-          <ul className="mt-6 flex flex-col gap-2 overflow-y-auto h-60">
-            {selectedOrdersList.map(
-              (order: {
-                tracking_code: string;
-                sum: number;
-                client_address: string;
-              }) => (
-                <li
-                  key={order.tracking_code}
-                  className={`border-2 ${
-                    differentAddressOrders.some(
-                      (diffOrder: any) =>
-                        diffOrder.tracking_code === order.tracking_code
-                    )
-                      ? "border-red-600"
-                      : "border-black"
-                  } text-gray-700 rounded-lg flex gap-3 px-3`}
-                >
-                  <input
-                    type="checkbox"
-                    disabled={!selectedOrders[order.tracking_code]} // Disabled if checked is false
-                    checked={!!selectedOrders[order.tracking_code]} // Checked state
-                    onChange={() => handleCheckboxChange(order.tracking_code)}
-                  />
-                  <div className="flex flex-col justify-between w-full">
-                    <div className="flex justify-between items-center">
-                      <span className="font-base text-xs">
-                        {t("barcode")} :
-                      </span>
-                      <span
-                        onClick={() =>
-                          navigator.clipboard.writeText(order.tracking_code)
-                        }
-                        className="text-sm text-blue-500 underline cursor-pointer"
-                      >
-                        {order.tracking_code}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-base text-sm">{t("address")}:</span>
-                      <span className="font-base text-sm text-right">
-                        {order.client_address}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-base text-sm">{t("sum")} :</span>
-                      <span className="font-base text-sm">{order.sum} ₾</span>
-                    </div>
-                  </div>
-                </li>
-              )
+            {order?.places ? (
+              <OrderWithComponents order={order} handleCheckboxChange={handleCheckboxChange}/> 
+            ) : (
+              <SameClientsOrders 
+                selectedOrdersList={selectedOrdersList} 
+                differentAddressOrders={differentAddressOrders} 
+                handleCheckboxChange={handleCheckboxChange}
+                selectedOrders={selectedOrders}
+              />
             )}
-          </ul>
 
           {/* Action Buttons */}
           <div className="flex justify-center p-5">
@@ -197,7 +154,7 @@ const OrderPage = () => {
                     {t("cancellation")}
                   </Button>
                 </div>
-                <Button onClick={handleScanerChange}>ჩაასკანერე ამანათი</Button>
+                <Button onClick={handleScanerChange}>{t("scan barcode")}</Button>
               </div>
             )}
 

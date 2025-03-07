@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import useRequestLogs from "../hooks/useRequestLogs";
 import useHomeData from "../hooks/useHomeData";
+import { langButtons } from "../Lib/helpers";
+import { useLanguage } from "../hooks/useLanguage";
 
 function Home() {
   const { setTabButtons, setActiveButton, userInfo } = useContext(Context);
@@ -16,6 +18,7 @@ function Home() {
   const { clearLogs } = useRequestLogs();
   
   const { loading, amount, taskAmounts } = useHomeData();
+  const { changeLanguage } = useLanguage();
 
   interface HandleNavigateToPagesParams {
     buttonName: string;
@@ -186,6 +189,17 @@ function Home() {
           <Button onClick={() => navigate('/requestlog')}>{t("Open Logs")}</Button>
           <Button onClick={clearLogs}>{t("Delete Logs")}</Button>
         </section>
+
+         <div className="flex justify-center flex-wrap gap-4 mt-6">
+                {langButtons.map((button) => (
+                  <img
+                    src={button.flag}
+                    className="w-12 h-12 cursor-pointer"
+                    key={button.lang}
+                    onClick={() => changeLanguage(button.lang)}
+                  />
+                ))}
+              </div>
       </div>
     </div>
   );

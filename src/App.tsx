@@ -48,6 +48,7 @@ const App = () => {
       webApp.ready();
       webApp.expand();
       webApp.disableVerticalSwipes();
+      webApp.openLink();
 
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
       const userId = webApp.initDataUnsafe?.user?.id;
