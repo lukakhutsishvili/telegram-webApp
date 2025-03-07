@@ -17,29 +17,16 @@ interface ThirdPersonProps {
 }
 
 
-const ThirdPerson: React.FC<ThirdPersonProps> = ({
-  otherClientName,
-  otherClientSurname,
-  setOtherClientName,
-  setOtherClientSurname,
-  connection,
-  additionalComment,
-  setConnection,
-  setAdditionalComment,
-  errors,
-  setErrors,
-  otherPersonInfo
-}) => {
+const ThirdPerson: React.FC<ThirdPersonProps> = ({otherClientName,otherClientSurname,setOtherClientName,setOtherClientSurname,connection,
+  additionalComment,setConnection,setAdditionalComment, errors,setErrors,otherPersonInfo}) => {
 
   const { relationshipData } = useRelationships();
-
-  console.log(relationshipData)
 
   return (
     <div className="flex flex-col gap-3">
      <div className="relative w-full">
       <input
-        placeholder="Name"
+        placeholder={t("Name")}
         value={otherClientName}
         onChange={(e) => {
           setOtherClientName(e.target.value);
@@ -58,7 +45,7 @@ const ThirdPerson: React.FC<ThirdPersonProps> = ({
     </div>
     <div className="relative w-full">
       <input
-        placeholder="Surname"
+        placeholder={t("Surname")}
         value={otherClientSurname}
         onChange={(e) => {
           setOtherClientSurname(e.target.value);
@@ -116,7 +103,7 @@ const ThirdPerson: React.FC<ThirdPersonProps> = ({
               setErrors((prev) => ({ ...prev, additionalComment: "" }));
             }
           }}
-          placeholder={t("დამატებითი კომენტარი")}
+          placeholder={t("Additional Comment")}
           className={`w-full text-xs p-2 border rounded placeholder:text-xs ${
             errors.additionalComment ? "border-red-500 text-red-600" : "border-gray-300"
           }`}

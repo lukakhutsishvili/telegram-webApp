@@ -99,6 +99,22 @@
     "please wait for sorting": "Please wait for sorting",
     "Start Sorting": "Start Sorting",
     "Stop Sorting": "Stop Sorting",
-    "scan barcode": "Scan barcode"
-
+    "scan barcode": "Scan barcode",
+    "Check Client": "Check Client",
+    "Other person posted!": "Client ID posted!",
+    "Input relationship type": "Input relationship type",
+    "Other person confirmed!": "Client confirmed!",
+    "loading": "Loading...",
+    "input Client Information!": "Input Client Information!",
+    "Client failed to register!": "Client failed to register!",
+    "No orders selected for confirmation": "No orders selected for confirmation!",
+    "otherClientName_required": "Name is required.",
+    "otherClientSurname_required": "Surname is required.",
+    "connection_required": "Connection is required.",
+    "Name": "Name",
+    "Surname": "Surname",
+    "Choose Connection": "Choose Connection",
+    "Additional Comment": "Additional Comment",
+    "Components": "Components",
+    "Total Parcels in Register": "Total Parcels in Register"
 }

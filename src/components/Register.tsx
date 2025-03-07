@@ -7,7 +7,7 @@ import { useLanguage } from "../hooks/useLanguage";
 function Register() {
   const { loading, errorKey, showOtpField } = useAuth();
   const { t } = useTranslation();
-  const { selectedLanguage, changeLanguage } = useLanguage();
+  const { changeLanguage } = useLanguage();
 
   return (
     <div className="max-w-md w-full bg-white rounded-lg shadow-lg border border-yellow-500 p-8 space-y-6">
@@ -32,18 +32,13 @@ function Register() {
       {/* Language Selection */}
       <div className="flex justify-center flex-wrap gap-4 mt-6">
         {langButtons.map((button) => (
-          <button
-            key={button.lang}
-            onClick={() => changeLanguage(button.lang)}
-            className={`px-4 py-2 rounded-full font-semibold border-2 ${
-              selectedLanguage === button.lang
-                ? "bg-yellow-500 text-black border-yellow-600 shadow-md"
-                : "bg-white text-black border-gray-300 hover:bg-yellow-100 hover:border-yellow-500"
-            } transition duration-300 ease-in-out transform hover:scale-105`}
-          >
-            {button.name}
-          </button>
-        ))}
+            <img
+              src={button.flag}
+              className="w-12 h-12 cursor-pointer"
+              key={button.lang}
+              onClick={() => changeLanguage(button.lang)}
+              />
+          ))}
       </div>
     </div>
   );

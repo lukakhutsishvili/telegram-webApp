@@ -8,7 +8,6 @@ interface OrderWithComponentsProps {
   
 function OrderWithComponents({ order, handleCheckboxChange }: OrderWithComponentsProps) {
   
-    console.log(order)
   
     return (
     <div className="mt-6 flex flex-col gap-2 overflow-y-auto h-auto max-h-60">

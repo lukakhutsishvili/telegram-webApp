@@ -98,7 +98,7 @@ const SortableItem = ({
         </div>
         { task.places?.length > 0 && (
           <div className="flex justify-between">
-            <h2 className="text-xs">კომპონენტები:</h2>
+            <h2 className="text-xs">{("Components")}</h2>
             <p className="text-xs">{task.places.length}</p>
           </div>
         )}

@@ -4,20 +4,8 @@ import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarcode, faSpinner } from "@fortawesome/free-solid-svg-icons"; // Added faSpinner
 import { t } from "i18next";
-import {
-  closestCenter,
-  DndContext,
-  MouseSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-  TouchSensor,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-} from "@dnd-kit/sortable";
+import {closestCenter,DndContext,MouseSensor,KeyboardSensor,useSensor,useSensors,TouchSensor,} from "@dnd-kit/core";
+import {SortableContext,verticalListSortingStrategy,arrayMove,} from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { axiosInstance } from "../api/apiClient";
 import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
@@ -27,9 +15,7 @@ import SortableItem from "./SortableItem";
 const RecieptOrder = ({ status }: { status: string | null }) => {
   const { recieptTasks, userInfo, setRecieptTasks } = useContext(Context);
   const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [selectedOrders, setSelectedOrders] = useState<{[key: string]: boolean;}>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [reorderedTasks, setReorderedTasks] = useState<any>([]);
@@ -37,13 +23,9 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
   const [isSorting, setIsSorting] = useState(false); // Added spinner state
 
   // Configure Sensors
-  const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: { distance: 10 },
-  });
+  const mouseSensor = useSensor(MouseSensor, {activationConstraint: { distance: 10 },});
   const keyboardSensor = useSensor(KeyboardSensor);
-  const touchSensor = useSensor(TouchSensor, {
-    activationConstraint: { delay: 250, tolerance: 5 },
-  });
+  const touchSensor = useSensor(TouchSensor, {activationConstraint: { delay: 250, tolerance: 5 },});
   const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
   const filteredTasks = useMemo(() => {
@@ -190,7 +172,7 @@ const RecieptOrder = ({ status }: { status: string | null }) => {
           />
           <input
             type="text"
-            placeholder="ძიება"
+            placeholder={t("Search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full text-sm focus:outline-none"

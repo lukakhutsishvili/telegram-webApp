@@ -31,57 +31,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const { addParcel } = useRequestLogs();
 
-  const {
-    paymentMethod,
-    setPaymentMethod,
-    confirmationMethod,
-    confirmationValue,
-    setConfirmationValue,
-    otpSent,
-    isOtpSending,
-    otpCooldown,
-    setOtpCooldown,
-    confirmationMessage,
-    errorMessage,
-    timer,
-    setTimer,
-    startTimer,
-    loading,
-    handleConfirmationMethodChange,
-    sendOtp,
-    confirmDelivery,
-    setLoading,
-    postClientID,
-    setConfirmationMessage,
-    setStartTimer,
-    fetchUpdatedOrderList,
-    checkClientOtp,
-    setErrorMessage,
-    checkOtherClient,
-    addOtherClient,
-    otherPersonInfo,
-    otherClientName,
-    otherClientSurname,
-    setOtherClientName,
-    setOtherClientSurname,
-    connection,
-    setConnection,
-    additionalComment,
-    setAdditionalComment,
-    openThirdPersonModal,
-  } = useClientConfirmation(
-    selectedOrders,
-    totalSum,
-    sendingOrder,
-    receiptOrder
-  );
+  const {paymentMethod,setPaymentMethod,confirmationMethod,confirmationValue,setConfirmationValue,otpSent,isOtpSending,otpCooldown,
+    setOtpCooldown,confirmationMessage,errorMessage,timer,setTimer,startTimer,loading,handleConfirmationMethodChange,
+    sendOtp,confirmDelivery,setLoading,postClientID,setConfirmationMessage,setStartTimer,fetchUpdatedOrderList,
+    checkClientOtp,setErrorMessage,checkOtherClient,addOtherClient,otherPersonInfo,otherClientName,otherClientSurname,setOtherClientName,
+    setOtherClientSurname,connection,setConnection,additionalComment,setAdditionalComment,openThirdPersonModal,
+  } = useClientConfirmation(selectedOrders,totalSum,sendingOrder,receiptOrder);
 
-  const initialState = {
-    otherClientName: "",
-    otherClientSurname: "",
-    connection: "",
-    additionalComment,
-  };
+  const initialState = {otherClientName: "",otherClientSurname: "",connection: "",additionalComment,};
   const [errors, setErrors] = useState(initialState);
   const { userInfo } = useContext(Context);
 
@@ -211,7 +168,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       } else if (confirmationMethod === "Other") {
         if (otherPersonInfo) {
           if (errors.connection !== "" || errors.additionalComment !== "") {
-            setErrorMessage("შეავსე კავშირის ტიპი");
+            setErrorMessage(t("Input relationship type"));
             return;
           }
           await confirmDelivery();
@@ -227,7 +184,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         } else {
           await addOtherClient(otherClientName, otherClientSurname);
           if (errors.connection !== "" || errors.additionalComment !== "") {
-            setErrorMessage("შეავსე კავშირის ტიპი");
+            setErrorMessage(t("Input relationship type"));
             return;
           }
           await confirmDelivery();
@@ -355,7 +312,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                       onClick={checkOtherClient}
                       className="mb-2 mt-2 text-xs text-black"
                     >
-                      შეამოწმე კლიენტი
+                      {t("Check Client")}
                     </Button>
                   )}
                   {openThirdPersonModal && (

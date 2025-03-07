@@ -12,7 +12,6 @@ const useOrder = (selectedOrdersList: { tracking_code: string; sum: number }[]) 
     setSelectedOrders(initialSelection);
   }, []);
 
-  console.log(selectedOrders)
   // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
     setSelectedOrders(prev => ({
