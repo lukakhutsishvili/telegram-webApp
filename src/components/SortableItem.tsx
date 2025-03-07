@@ -3,6 +3,7 @@ import { faBarcode, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSS } from "@dnd-kit/utilities";
 import useOpenActiveTask from "../hooks/useOpenActiveTask";
+import { t } from "i18next";
 
 const SortableItem = ({
   id,
@@ -98,7 +99,7 @@ const SortableItem = ({
         </div>
         { task.places?.length > 0 && (
           <div className="flex justify-between">
-            <h2 className="text-xs">{("Components")}</h2>
+            <h2 className="text-xs">{t("Components")}</h2>
             <p className="text-xs">{task.places.length}</p>
           </div>
         )}

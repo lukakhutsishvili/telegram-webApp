@@ -28,7 +28,7 @@ function SameClientsOrders({selectedOrdersList,selectedOrders,differentAddressOr
                 )
                   ? "border-red-600"
                   : "border-black"
-              } text-gray-700 rounded-lg flex gap-3 px-3`}
+              } text-gray-700 rounded-lg flex gap-3 items-center px-3`}
             >
               <input
                 type="checkbox"
