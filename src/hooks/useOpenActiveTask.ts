@@ -9,7 +9,8 @@ const useOpenActiveTask = () => {
   const activeStatus = "Accepted";
 
   const handleConfirmAllTasks = (trackingCode: string) => {
-    const task = sendingTasks.find((task) => task.tracking_code === trackingCode) ||
+    const task =
+      sendingTasks.find((task) => task.tracking_code === trackingCode) ||
       recieptTasks.find((task) => task.tracking_code === trackingCode);
 
     if (!task) {
@@ -29,17 +30,20 @@ const useOpenActiveTask = () => {
 
     // Separate same-address and different-address orders
     const sameAddressOrders = samePhoneTasks.filter(
-      (order) => order.client_address === mainAddress && order.tracking_code !== trackingCode
+      (order) =>
+        order.client_address === mainAddress &&
+        order.tracking_code !== trackingCode
     );
     const differentAddressOrders = samePhoneTasks.filter(
       (order) => order.client_address !== mainAddress
     );
 
     // Ensure the selected order is first in the array
-    const selectedOrdersList = [task, ...sameAddressOrders, ...differentAddressOrders];
-
-    
-
+    const selectedOrdersList = [
+      task,
+      ...sameAddressOrders,
+      ...differentAddressOrders,
+    ];
     navigate(`/order/${trackingCode}`, {
       state: {
         selectedOrdersList,

@@ -12,13 +12,33 @@ import OrderWithComponents from "../components/order page components/OrderWithCo
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
 
 const OrderPage = () => {
-  
   const { id } = useParams<{ id: string }>();
-  const { selectedOrdersList = [], differentAddressOrders = false } =useLocation().state || {};
+  const { selectedOrdersList = [], differentAddressOrders = false } =
+    useLocation().state || {};
   const [isScanning, setIsScanning] = useState(false);
-  const {setSelectedOrders,selectedOrders,totalSum,totalQuantity,handleCheckboxChange,} = useOrder(selectedOrdersList);
-  const {order,sendingOrder,receiptOrder,loading,handleStatusChangeAndFetch,handleRecoveryClick,} = useOrderStatus(id!);
-  const {isModalOpen,isConfirmModalOpen,openCancellationModal,closeCancellationModal,openConfirmModal,closeConfirmModal,} = useModal();
+  const {
+    setSelectedOrders,
+    selectedOrders,
+    totalSum,
+    totalQuantity,
+    handleCheckboxChange,
+  } = useOrder(selectedOrdersList);
+  const {
+    order,
+    sendingOrder,
+    receiptOrder,
+    loading,
+    handleStatusChangeAndFetch,
+    handleRecoveryClick,
+  } = useOrderStatus(id!);
+  const {
+    isModalOpen,
+    isConfirmModalOpen,
+    openCancellationModal,
+    closeCancellationModal,
+    openConfirmModal,
+    closeConfirmModal,
+  } = useModal();
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -99,16 +119,19 @@ const OrderPage = () => {
             </div>
           </div>
 
-            {order?.places? (
-              <OrderWithComponents order={order} handleCheckboxChange={handleCheckboxChange}/> 
-            ) : (
-              <SameClientsOrders 
-                selectedOrdersList={selectedOrdersList} 
-                differentAddressOrders={differentAddressOrders} 
-                handleCheckboxChange={handleCheckboxChange}
-                selectedOrders={selectedOrders}
-              />
-            )}
+          {order?.places ? (
+            <OrderWithComponents
+              order={order}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          ) : (
+            <SameClientsOrders
+              selectedOrdersList={selectedOrdersList}
+              differentAddressOrders={differentAddressOrders}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedOrders={selectedOrders}
+            />
+          )}
 
           {/* Action Buttons */}
           <div className="flex justify-center p-5">
@@ -136,7 +159,9 @@ const OrderPage = () => {
                     {t("cancellation")}
                   </Button>
                 </div>
-                <Button onClick={handleScanerChange}>{t("scan barcode")}</Button>
+                <Button onClick={handleScanerChange}>
+                  {t("scan barcode")}
+                </Button>
               </div>
             )}
 
