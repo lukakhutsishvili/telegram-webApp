@@ -16,27 +16,35 @@ const useOrder = (
 
   // Initialize selectedOrders state with all tracking codes set to false
   useEffect(() => {
-    let initialSelection: { [key: string]: boolean } = {};
+    const initialSelection: { [key: string]: boolean } = {};
+    const path = location.pathname;
+    const orderId = path.split("/").pop();
 
-    selectedOrdersList.forEach((order, index) => {
-      if (order.places && order.places.length > 0) {
-        const path = location.pathname;
-        const orderId = path.split("/").pop();
-        const order = selectedOrdersList.find(
-          (order) => orderId == order.tracking_code
-        );
-        order?.places?.forEach((place) => {
-          initialSelection[place.tracking_code] = false;
-        });
-        return;
-      } else {
-        // If no "places", select the first one by default
-        initialSelection[order.tracking_code] = index === 0;
+    const matchedOrder = selectedOrdersList.find(
+      (order) =>
+        order.tracking_code === orderId &&
+        order.places &&
+        order.places.length > 0
+    );
+
+    if (matchedOrder && matchedOrder.places) {
+      matchedOrder.places.forEach((place) => {
+        initialSelection[place.tracking_code] = false;
+      });
+    } else {
+      // Fallback: select the first order without places by default
+      const firstOrderWithoutPlaces = selectedOrdersList.find(
+        (order) => !order.places || order.places.length === 0
+      );
+
+      if (firstOrderWithoutPlaces) {
+        initialSelection[firstOrderWithoutPlaces.tracking_code] = true;
       }
-    });
+    }
 
     setSelectedOrders(initialSelection);
   }, []);
+
   console.log(selectedOrders);
   // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
