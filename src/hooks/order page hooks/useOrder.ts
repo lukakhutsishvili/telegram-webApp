@@ -33,8 +33,10 @@ const useOrder = (
         initialSelection[order.tracking_code] = index === 0;
       }
     });
-  }, []);
 
+    setSelectedOrders(initialSelection);
+  }, []);
+  console.log(selectedOrders);
   // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
     setSelectedOrders((prev) => ({

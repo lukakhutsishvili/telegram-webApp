@@ -44,7 +44,6 @@ const useOpenActiveTask = () => {
       ...sameAddressOrders,
       ...differentAddressOrders,
     ];
-    
     navigate(`/order/${trackingCode}`, {
       state: {
         selectedOrdersList,
