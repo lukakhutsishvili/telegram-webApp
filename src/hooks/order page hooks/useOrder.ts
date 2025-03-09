@@ -26,7 +26,6 @@ const useOrder = (
         order.places &&
         order.places.length > 0
     );
-    console.log(matchedOrder);
 
     if (matchedOrder && matchedOrder.places) {
       matchedOrder.places.forEach((place) => {
@@ -46,7 +45,6 @@ const useOrder = (
     setSelectedOrders(initialSelection);
   }, []);
 
-  console.log(selectedOrders);
   // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
     setSelectedOrders((prev) => ({
