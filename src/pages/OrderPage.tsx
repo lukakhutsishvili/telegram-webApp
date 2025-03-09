@@ -47,6 +47,7 @@ const OrderPage = () => {
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
   };
+
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -61,7 +62,10 @@ const OrderPage = () => {
           {/* Header */}
           <header className="flex items-center mb-6">
             <button
-              onClick={() => window.history.back()}
+              onClick={() => {
+                window.history.back();
+                setSelectedOrders({});
+              }}
               className="text-gray-500 text-4xl"
             >
               <span>&larr;</span>
