@@ -28,6 +28,7 @@ const useOrder = (
         order?.places?.forEach((place) => {
           initialSelection[place.tracking_code] = false;
         });
+        return;
       } else {
         // If no "places", select the first one by default
         initialSelection[order.tracking_code] = index === 0;
