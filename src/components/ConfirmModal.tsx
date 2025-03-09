@@ -15,6 +15,11 @@ interface ConfirmModalProps {
   sendingOrder: any;
   selectedOrders: { [key: string]: boolean };
   totalSum: string;
+  selectedOrdersList: {
+    tracking_code: string;
+    sum: number;
+    places?: { tracking_code: string }[];
+  }[];
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -23,6 +28,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   selectedOrders,
   sendingOrder,
   totalSum,
+  selectedOrdersList,
 }) => {
   const navigate = useNavigate();
   const PARCELS_KEY = "parcels";
@@ -31,14 +37,58 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const { addParcel } = useRequestLogs();
 
-  const {paymentMethod,setPaymentMethod,confirmationMethod,confirmationValue,setConfirmationValue,otpSent,isOtpSending,otpCooldown,
-    setOtpCooldown,confirmationMessage,errorMessage,timer,setTimer,startTimer,loading,handleConfirmationMethodChange,
-    sendOtp,confirmDelivery,setLoading,postClientID,setConfirmationMessage,setStartTimer,fetchUpdatedOrderList,
-    checkClientOtp,setErrorMessage,checkOtherClient,addOtherClient,otherPersonInfo,otherClientName,otherClientSurname,setOtherClientName,
-    setOtherClientSurname,connection,setConnection,additionalComment,setAdditionalComment,openThirdPersonModal,
-  } = useClientConfirmation(selectedOrders,totalSum,sendingOrder,receiptOrder);
+  const {
+    paymentMethod,
+    setPaymentMethod,
+    confirmationMethod,
+    confirmationValue,
+    setConfirmationValue,
+    otpSent,
+    isOtpSending,
+    otpCooldown,
+    setOtpCooldown,
+    confirmationMessage,
+    errorMessage,
+    timer,
+    setTimer,
+    startTimer,
+    loading,
+    handleConfirmationMethodChange,
+    sendOtp,
+    confirmDelivery,
+    setLoading,
+    postClientID,
+    setConfirmationMessage,
+    setStartTimer,
+    fetchUpdatedOrderList,
+    checkClientOtp,
+    setErrorMessage,
+    checkOtherClient,
+    addOtherClient,
+    otherPersonInfo,
+    otherClientName,
+    otherClientSurname,
+    setOtherClientName,
+    setOtherClientSurname,
+    connection,
+    setConnection,
+    additionalComment,
+    setAdditionalComment,
+    openThirdPersonModal,
+  } = useClientConfirmation(
+    selectedOrders,
+    totalSum,
+    sendingOrder,
+    receiptOrder,
+    selectedOrdersList
+  );
 
-  const initialState = {otherClientName: "",otherClientSurname: "",connection: "",additionalComment,};
+  const initialState = {
+    otherClientName: "",
+    otherClientSurname: "",
+    connection: "",
+    additionalComment,
+  };
   const [errors, setErrors] = useState(initialState);
   const { userInfo } = useContext(Context);
 

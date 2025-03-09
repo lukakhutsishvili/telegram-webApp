@@ -26,6 +26,7 @@ const useOrder = (
         order.places &&
         order.places.length > 0
     );
+    console.log(matchedOrder);
 
     if (matchedOrder && matchedOrder.places) {
       matchedOrder.places.forEach((place) => {

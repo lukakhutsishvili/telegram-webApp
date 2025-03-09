@@ -226,6 +226,7 @@ const OrderPage = () => {
               receiptOrder={receiptOrder}
               selectedOrders={selectedOrders}
               totalSum={totalSum}
+              selectedOrdersList={selectedOrdersList}
             />
           )}
         </>
