@@ -44,7 +44,6 @@ const useClientConfirmation = (
   const [additionalComment, setAdditionalComment] = useState("");
   const [openThirdPersonModal, setOpenThirdPersonModal] =
     useState<boolean>(false);
-
   const order = sendingOrder || receiptOrder;
 
   const { addParcel } = useRequestLogs();
@@ -139,7 +138,7 @@ const useClientConfirmation = (
         reason_id: "",
         reason_commentary: "",
       }));
-    console.log(checkedOrders);
+
     if (checkedOrders.length === 0) {
       setErrorMessage(t("No orders selected for confirmation"));
       console.warn("No orders selected for confirmation");

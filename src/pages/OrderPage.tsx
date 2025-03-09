@@ -10,6 +10,7 @@ import ConfimParcelScanner from "../components/ConfirmScanner";
 import { useState } from "react";
 import OrderWithComponents from "../components/order page components/OrderWithComponents";
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
+import ComponentParcelError from "../components/ComponentParcelError";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,11 +39,25 @@ const OrderPage = () => {
     closeCancellationModal,
     openConfirmModal,
     closeConfirmModal,
+    openComponentParcelErrorModal,
+    closeComponentParcelErrorModal,
+    componentParcelErrorModal,
   } = useModal();
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
   }
+
+  const path = location.pathname;
+  const orderId = path.split("/").pop();
+
+  const matchedOrder = selectedOrdersList.find(
+    (order: any) =>
+      order.tracking_code === orderId && order.places && order.places.length > 0
+  );
+  const allTrue = Object.values(selectedOrders).every(
+    (value) => value === true
+  );
 
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
@@ -148,7 +163,13 @@ const OrderPage = () => {
                 </div>
                 <div className="flex space-x-4">
                   <Button
-                    onClick={openConfirmModal}
+                    onClick={() => {
+                      if ((matchedOrder && allTrue) || !matchedOrder) {
+                        openConfirmModal();
+                      } else {
+                        openComponentParcelErrorModal();
+                      }
+                    }}
                     className="bg-yellow-400 text-black"
                   >
                     {t("hand over")}
@@ -227,6 +248,11 @@ const OrderPage = () => {
               selectedOrders={selectedOrders}
               totalSum={totalSum}
               selectedOrdersList={selectedOrdersList}
+            />
+          )}
+          {componentParcelErrorModal && (
+            <ComponentParcelError
+              closeComponentParcelErrorModal={closeComponentParcelErrorModal}
             />
           )}
         </>
