@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 
 export const useLanguage = () => {
   const { i18n } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    return localStorage.getItem("selectedLanguage") || "en";
+  });
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -12,9 +14,10 @@ export const useLanguage = () => {
   };
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-    changeLanguage(savedLanguage);
-  }, []);
+    if (i18n.language !== selectedLanguage) {
+      i18n.changeLanguage(selectedLanguage);
+    }
+  }, [selectedLanguage, i18n]);
 
   return { selectedLanguage, changeLanguage };
 };

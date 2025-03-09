@@ -1,5 +1,4 @@
 import { useParams, useLocation } from "react-router-dom";
-import { t } from "i18next";
 import useOrder from "../hooks/order page hooks/useOrder";
 import useOrderStatus from "../hooks/order page hooks/useOrderStatus";
 import useModal from "../hooks/order page hooks/useModal";
@@ -11,38 +10,18 @@ import { useState } from "react";
 import OrderWithComponents from "../components/order page components/OrderWithComponents";
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
 import ComponentParcelError from "../components/ComponentParcelError";
+import { useTranslation } from "react-i18next";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
   const { selectedOrdersList = [], differentAddressOrders = false } =
     useLocation().state || {};
   const [isScanning, setIsScanning] = useState(false);
-  const {
-    setSelectedOrders,
-    selectedOrders,
-    totalSum,
-    totalQuantity,
-    handleCheckboxChange,
-  } = useOrder(selectedOrdersList);
-  const {
-    order,
-    sendingOrder,
-    receiptOrder,
-    loading,
-    handleStatusChangeAndFetch,
-    handleRecoveryClick,
-  } = useOrderStatus(id!);
-  const {
-    isModalOpen,
-    isConfirmModalOpen,
-    openCancellationModal,
-    closeCancellationModal,
-    openConfirmModal,
-    closeConfirmModal,
-    openComponentParcelErrorModal,
-    closeComponentParcelErrorModal,
-    componentParcelErrorModal,
-  } = useModal();
+  const {setSelectedOrders,selectedOrders,totalSum,totalQuantity,handleCheckboxChange,} = useOrder(selectedOrdersList);
+  const {order,sendingOrder,receiptOrder,loading,handleStatusChangeAndFetch,handleRecoveryClick,} = useOrderStatus(id!);
+  const {isModalOpen,isConfirmModalOpen,openCancellationModal,closeCancellationModal,openConfirmModal,closeConfirmModal,openComponentParcelErrorModal,closeComponentParcelErrorModal,componentParcelErrorModal,} = useModal();
+
+  const { t } = useTranslation();
 
   if (!order) {
     return <div className="p-4">{t("Order not found")}</div>;
@@ -238,6 +217,7 @@ const OrderPage = () => {
               closeCancellationModal={closeCancellationModal}
               sendingOrder={sendingOrder}
               selectedOrders={selectedOrders}
+              selectedOrdersList={selectedOrdersList}
             />
           )}
           {isConfirmModalOpen && (

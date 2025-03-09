@@ -4,22 +4,21 @@ import { faMoneyCheckDollar, faBox, faSpinner } from "@fortawesome/free-solid-sv
 import logo from "../assets/delivo-logo.webp";
 import { useContext } from "react";
 import { Context } from "../App";
-import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import useRequestLogs from "../hooks/useRequestLogs";
 import useHomeData from "../hooks/useHomeData";
 import { langButtons } from "../Lib/helpers";
-import { useLanguage } from "../hooks/useLanguage";
+import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 function Home() {
   const { setTabButtons, setActiveButton, userInfo } = useContext(Context);
   const navigate = useNavigate();
   const { clearLogs } = useRequestLogs();
+  const { t } = useTranslation();
   
   const { loading, amount, taskAmounts } = useHomeData();
-  const { changeLanguage } = useLanguage();
-
   interface HandleNavigateToPagesParams {
     buttonName: string;
     path: string;
@@ -64,7 +63,8 @@ function Home() {
         </div>
         {/* Info Section */}
         <section className="bg-white shadow-lg rounded-lg p-6 mb-10">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
             <FontAwesomeIcon
               icon={faUser}
               className="text-yellow-500 text-xl"
@@ -72,6 +72,8 @@ function Home() {
             <h2 className="text-lg font-semibold text-gray-700">
               {userInfo.name}
             </h2>
+            </div>
+            <LanguageSelector langButtons={langButtons} />
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between p-4 bg-yellow-100 rounded-lg">
@@ -190,16 +192,6 @@ function Home() {
           <Button onClick={clearLogs}>{t("Delete Logs")}</Button>
         </section>
 
-         <div className="flex justify-center flex-wrap gap-4 mt-6">
-                {langButtons.map((button) => (
-                  <img
-                    src={button.flag}
-                    className="w-12 h-12 cursor-pointer"
-                    key={button.lang}
-                    onClick={() => changeLanguage(button.lang)}
-                  />
-                ))}
-              </div>
       </div>
     </div>
   );

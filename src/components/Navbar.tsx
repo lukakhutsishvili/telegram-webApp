@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { buttons } from "../Lib/helpers";
 import { useContext } from "react";
 import { Context } from "../App";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 function Navbar() {
   const { setNavbarButtons } = useContext(Context);
+  const { t } = useTranslation();
 
   return (
     <div className="fixed bottom-0 w-full bg-gray-800 text-white shadow-md">

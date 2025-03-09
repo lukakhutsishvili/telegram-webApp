@@ -8,10 +8,11 @@ interface CancelModalProps {
   closeCancellationModal: () => void;
   order: any;
   sendingOrder: any;
-  selectedOrders: { [key: string]: boolean }
+  selectedOrders: { [key: string]: boolean },
+  selectedOrdersList: any;
 }
 
-function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,}: CancelModalProps) {
+function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,selectedOrdersList}: CancelModalProps) {
   const { reasons, userInfo, navbarButtons, setSendingTasks, setRecieptTasks } = useContext(Context);
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedReasonText, setSelectedReasonText] = useState<string>("");
@@ -49,6 +50,18 @@ function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,}: Canc
       return;
     }
 
+    const path = location.pathname;
+    const orderId = path.split("/").pop();
+
+    console.log(selectedOrders, orderId)
+
+    const matchedOrder = selectedOrdersList.find(
+      (order: any) =>
+        order.tracking_code === orderId &&
+        order.places &&
+        order.places.length > 0
+    );
+
     const checkedOrders = Object.keys(selectedOrders)
       .filter((tracking_code) => selectedOrders[tracking_code]) 
       .map((tracking_code) => ({
@@ -58,7 +71,7 @@ function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,}: Canc
         reason_commentary: selectedReasonText,
     }));
       
-    if (checkedOrders.length === 0) {
+    if (checkedOrders.length === 0 && !matchedOrder) {
       setError("No orders selected for cancelation");
       return;
     }
@@ -66,10 +79,19 @@ function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,}: Canc
     setError("");
     setLoading(true);
 
+    const componentParcel = [
+      {
+        tracking_code: orderId,
+        successfully: "False",
+        reason_id: "",
+        reason_commentary: "",
+      },
+    ];
+
     const params = {
       device_id: userInfo.device_id,
       payment_type: "cash",
-      orders: checkedOrders,
+      orders: matchedOrder ? componentParcel : checkedOrders,
       other_recipient :  '',
       relationship_code: '',
       relationship_commentary : '',
