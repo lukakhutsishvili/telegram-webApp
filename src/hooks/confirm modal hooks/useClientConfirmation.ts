@@ -157,11 +157,21 @@ const useClientConfirmation = (
       device_id: userInfo.device_id,
       confirmation_type: confirmationType,
       payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
-      orders: matchedOrder ? [orderId] : checkedOrders,
+      orders: matchedOrder
+        ? [
+            {
+              orderId,
+              successfully: "True",
+              reason_id: "",
+              reason_commentary: "",
+            },
+          ]
+        : checkedOrders,
       other_recipient: confirmationMethod === "Other" ? confirmationValue : "",
       relationship_code: connection,
       relationship_commentary: additionalComment,
     };
+    console.log(params);
 
     try {
       const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
