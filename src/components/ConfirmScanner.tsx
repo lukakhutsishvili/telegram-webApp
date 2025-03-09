@@ -3,7 +3,11 @@ import { BrowserMultiFormatReader } from "@zxing/library";
 import { t } from "i18next";
 
 interface ConfimParcelScannerProps {
-  selectedOrdersList: { tracking_code: string; sum: number }[];
+  selectedOrdersList: {
+    tracking_code: string;
+    sum: number;
+    places?: { tracking_code: string }[];
+  }[];
   selectedOrders: { [key: string]: boolean };
   setSelectedOrders: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
@@ -11,7 +15,12 @@ interface ConfimParcelScannerProps {
   setIsScanning: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({selectedOrdersList,setSelectedOrders,setIsScanning,}) => {
+const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
+  selectedOrdersList,
+  setSelectedOrders,
+  setIsScanning,
+  selectedOrders,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reader = useRef(new BrowserMultiFormatReader());
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,22 +81,29 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({selectedOrders
       const scannedBarcode = manualCode.trim();
       setManualCode("");
 
-      // Find the manually entered parcel in the list
-      const foundOrder = selectedOrdersList.find(
-        (order) => order.tracking_code === scannedBarcode
-      );
-
-      if (foundOrder) {
-        // Mark the manually entered order as selected
+      if (scannedBarcode in selectedOrders) {
         setSelectedOrders((prev) => ({
           ...prev,
           [scannedBarcode]: true,
         }));
         setSuccessMessage(t("Success! Parcel processed."));
       } else {
-        // Show modal with error message if parcel not found
-        setSuccessMessage(t("No parcel found"));
+        const foundOrder = selectedOrdersList.find(
+          (order) =>
+            order.tracking_code === scannedBarcode &&
+            (!order.places || order.places.length === 0)
+        );
+        if (foundOrder) {
+          setSelectedOrders((prev) => ({
+            ...prev,
+            [scannedBarcode]: true,
+          }));
+          setSuccessMessage(t("Success! Parcel processed."));
+        } else {
+          setSuccessMessage(t("No parcel found"));
+        }
       }
+
       setIsModalOpen(true);
       setRestart(!restart);
     }
