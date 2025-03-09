@@ -153,20 +153,19 @@ const useClientConfirmation = (
       confirmationType = 3;
     }
 
+    const componentParcel = [
+      {
+        tracking_code: orderId,
+        successfully: "True",
+        reason_id: "",
+        reason_commentary: "",
+      },
+    ];
     const params = {
       device_id: userInfo.device_id,
       confirmation_type: confirmationType,
       payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
-      orders: matchedOrder
-        ? [
-            {
-              tracking_code: orderId,
-              successfully: "True",
-              reason_id: "",
-              reason_commentary: "",
-            },
-          ]
-        : checkedOrders,
+      orders: matchedOrder ? componentParcel : checkedOrders,
       other_recipient: confirmationMethod === "Other" ? confirmationValue : "",
       relationship_code: connection,
       relationship_commentary: additionalComment,
