@@ -123,6 +123,7 @@ const OrderPage = () => {
             <OrderWithComponents
               order={order}
               handleCheckboxChange={handleCheckboxChange}
+              selectedOrders={selectedOrders}
             />
           ) : (
             <SameClientsOrders
