@@ -139,27 +139,35 @@ const BarcodeScanner = () => {
 
   useEffect(() => {
     if (!videoRef.current) return;
-    reader.current.decodeFromConstraints(
-      {
-        audio: false,
-        video: {
-          facingMode: "environment",
-        },
-      },
-      videoRef.current,
-      (result) => {
-        if (result) {
-          const scannedBarcode = result.getText();
-          reader.current.reset();
-          sendGetRequest(scannedBarcode);
-          setIsModalOpen(true);
-        }
-      }
-    );
 
-    return () => {
-      reader.current.reset();
-    };
+    reader.current
+      .decodeFromConstraints(
+        {
+          audio: false,
+          video: { facingMode: "environment" },
+        },
+        videoRef.current,
+        (result, err) => {
+          if (result) {
+            const scannedBarcode = result.getText();
+            reader.current.reset();
+            sendGetRequest(scannedBarcode);
+            setIsModalOpen(true);
+          }
+
+          if (err) {
+            console.error("ZXing error:", err);
+            reader.current.reset();
+            setRestart((prev) => !prev); // Restart on non-recoverable error
+          }
+        }
+      )
+      .catch((error) => {
+        console.error("ZXing initialization failed:", error);
+        setRestart((prev) => !prev); // Retry initialization
+      });
+
+    return () => reader.current.reset();
   }, [restart]);
 
   const handleManualSubmit = (e: React.FormEvent) => {
