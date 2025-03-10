@@ -5,34 +5,32 @@ const useOrder = (
   selectedOrdersList: {
     tracking_code: string;
     sum: number;
-    places?: { tracking_code: string }[];
+    places?: { tracking_code: string; sum: number }[];
   }[]
 ) => {
-  const [selectedOrders, setSelectedOrders] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
 
   const location = useLocation();
+  const path = location.pathname;
+  const orderId = path.split("/").pop();
 
-  // Initialize selectedOrders state with all tracking codes set to false
+  
+  const matchedOrder = selectedOrdersList.find(
+    (order) =>
+      order.tracking_code === orderId &&
+      order.places &&
+      order.places.length > 0
+  );
+
   useEffect(() => {
     const initialSelection: { [key: string]: boolean } = {};
-    const path = location.pathname;
-    const orderId = path.split("/").pop();
 
-    const matchedOrder = selectedOrdersList.find(
-      (order) =>
-        order.tracking_code === orderId &&
-        order.places &&
-        order.places.length > 0
-    );
 
     if (matchedOrder && matchedOrder.places) {
       matchedOrder.places.forEach((place) => {
         initialSelection[place.tracking_code] = false;
       });
     } else {
-      // Fallback: select the first order without places by default
       const firstOrderWithoutPlaces = selectedOrdersList.find(
         (order) => !order.places || order.places.length === 0
       );
@@ -43,9 +41,8 @@ const useOrder = (
     }
 
     setSelectedOrders(initialSelection);
-  }, []);
+  }, [matchedOrder]);
 
-  // Handle checkbox selection
   const handleCheckboxChange = (tracking_code: string) => {
     setSelectedOrders((prev) => ({
       ...prev,
@@ -53,13 +50,16 @@ const useOrder = (
     }));
   };
 
-  // Calculate total sum of checked orders
-  const totalSum = selectedOrdersList
+  const allOrders = selectedOrdersList.flatMap((order) =>
+    order.places && order.places.length > 0 ? order.places : [order]
+  );
+
+  const totalSum = matchedOrder ? matchedOrder.sum :  allOrders
     .filter((order) => selectedOrders[order.tracking_code])
     .reduce((sum, order) => sum + order.sum, 0)
-    .toFixed(2);
+    .toFixed(2) ;
 
-  const totalQuantity = selectedOrdersList.filter(
+  const totalQuantity = allOrders.filter(
     (order) => selectedOrders[order.tracking_code]
   ).length;
 
