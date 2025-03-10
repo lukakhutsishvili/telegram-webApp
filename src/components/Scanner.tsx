@@ -95,6 +95,7 @@ const BarcodeScanner = () => {
       const status = firstResponseData.status;
 
       if (response.data.response.type == "parcel") {
+        console.log("შემოვიდა");
         handleConfirmAllTasks(firstResponseData.tracking_code);
         return;
       }
