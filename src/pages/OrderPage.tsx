@@ -17,9 +17,32 @@ const OrderPage = () => {
   const { selectedOrdersList = [], differentAddressOrders = false } =
     useLocation().state || {};
   const [isScanning, setIsScanning] = useState(false);
-  const {setSelectedOrders,selectedOrders,totalSum,totalQuantity,handleCheckboxChange,} = useOrder(selectedOrdersList);
-  const {order,sendingOrder,receiptOrder,loading,handleStatusChangeAndFetch,handleRecoveryClick,} = useOrderStatus(id!);
-  const {isModalOpen,isConfirmModalOpen,openCancellationModal,closeCancellationModal,openConfirmModal,closeConfirmModal,openComponentParcelErrorModal,closeComponentParcelErrorModal,componentParcelErrorModal,} = useModal();
+  const {
+    setSelectedOrders,
+    selectedOrders,
+    totalSum,
+    totalQuantity,
+    handleCheckboxChange,
+  } = useOrder(selectedOrdersList);
+  const {
+    order,
+    sendingOrder,
+    receiptOrder,
+    loading,
+    handleStatusChangeAndFetch,
+    handleRecoveryClick,
+  } = useOrderStatus(id!);
+  const {
+    isModalOpen,
+    isConfirmModalOpen,
+    openCancellationModal,
+    closeCancellationModal,
+    openConfirmModal,
+    closeConfirmModal,
+    openComponentParcelErrorModal,
+    closeComponentParcelErrorModal,
+    componentParcelErrorModal,
+  } = useModal();
 
   const { t } = useTranslation();
 
@@ -226,7 +249,7 @@ const OrderPage = () => {
               sendingOrder={sendingOrder}
               receiptOrder={receiptOrder}
               selectedOrders={selectedOrders}
-              totalSum={totalSum}
+              totalSum={String(totalSum)}
               selectedOrdersList={selectedOrdersList}
             />
           )}
