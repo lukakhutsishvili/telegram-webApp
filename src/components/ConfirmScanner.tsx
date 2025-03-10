@@ -47,21 +47,27 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
           reader.current.reset();
           console.log(scannedBarcode);
 
-          // Find the scanned parcel in the list
-          const foundOrder = selectedOrdersList.find(
-            (order) => order.tracking_code === scannedBarcode
-          );
-
-          if (foundOrder) {
-            // Mark the scanned order as selected
+          if (scannedBarcode in selectedOrders) {
             setSelectedOrders((prev) => ({
               ...prev,
               [scannedBarcode]: true,
             }));
             setSuccessMessage(t("Success! Parcel processed."));
           } else {
-            // Show modal with error message if parcel not found
-            setSuccessMessage(t("No parcel found"));
+            const foundOrder = selectedOrdersList.find(
+              (order) =>
+                order.tracking_code === scannedBarcode &&
+                (!order.places || order.places.length === 0)
+            );
+            if (foundOrder) {
+              setSelectedOrders((prev) => ({
+                ...prev,
+                [scannedBarcode]: true,
+              }));
+              setSuccessMessage(t("Success! Parcel processed."));
+            } else {
+              setSuccessMessage(t("No parcel found"));
+            }
           }
           // Open the modal and restart scanner in both cases
           setIsModalOpen(true);
