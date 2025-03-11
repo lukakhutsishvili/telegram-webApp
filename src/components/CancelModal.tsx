@@ -83,8 +83,8 @@ function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,selecte
       {
         tracking_code: orderId,
         successfully: "False",
-        reason_id: "",
-        reason_commentary: "",
+        reason_id: selectedReason,
+        reason_commentary: selectedReasonText,
       },
     ];
 
