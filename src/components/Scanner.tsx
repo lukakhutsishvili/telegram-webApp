@@ -105,6 +105,7 @@ const BarcodeScanner = () => {
         );
 
         setOrderTrackingCodes(trackingCodes);
+        console.log(trackingCode);
 
         const orderParams = {
           device_id: userInfo.device_id,
