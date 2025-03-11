@@ -17,13 +17,13 @@ export const useAuth = () => {
   const [errorKey, setErrorKey] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
-  const params = { telegram_id: userInfo.telegram_id || "1800276631" };
+  // const params = { telegram_id: userInfo.telegram_id || "" };
   const [signInloader, setSignInloader] = useState(true);
 
   const handleSignIn = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(BOT_AUTH, { params });
+      const response = await axiosInstance.get(BOT_AUTH, { params:{telegram_id: userInfo.telegram_id} });
 
       if (response.status === 200) {
         setUserInfo((prev: any) => ({

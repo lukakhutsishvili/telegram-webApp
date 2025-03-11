@@ -50,7 +50,7 @@ const App = () => {
       webApp.disableVerticalSwipes();
 
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
-      const userId = webApp.initDataUnsafe?.user?.id;
+      const userId = webApp.initDataUnsafe?.user?.id || "1800276631";
 
       if (userId) {
         setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
@@ -60,9 +60,23 @@ const App = () => {
 
   return (
     <Context.Provider
-      value={{userInfo, setUserInfo, reasons, setReasons, recieptTasks, setRecieptTasks, sendingTasks,
-        setSendingTasks,tabButtons,setTabButtons,navbarButtons,setNavbarButtons,amount,setAmount,
-        activeButton,setActiveButton,
+      value={{
+        userInfo,
+        setUserInfo,
+        reasons,
+        setReasons,
+        recieptTasks,
+        setRecieptTasks,
+        sendingTasks,
+        setSendingTasks,
+        tabButtons,
+        setTabButtons,
+        navbarButtons,
+        setNavbarButtons,
+        amount,
+        setAmount,
+        activeButton,
+        setActiveButton,
       }}
     >
       <Routes>

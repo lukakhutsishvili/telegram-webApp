@@ -72,7 +72,6 @@ const BarcodeScanner = () => {
     });
   };
 
-
   const sendGetRequest = async (trackingCode: string) => {
     console.log(trackingCode);
     try {
@@ -112,7 +111,6 @@ const BarcodeScanner = () => {
           status: "accepted",
           orders: trackingCodes,
         };
-
         // Second API call
         const secResponse = await axiosInstance.post(
           changeStatusesOfOrder,
@@ -243,21 +241,20 @@ const BarcodeScanner = () => {
                 <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : secRes && secRes.status ? (
-              <h2 className="text-xl font-bold mb-4 text-green-600">
-                {t("Scan Successfully")}
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold mb-4 text-green-600">
+                  {t("Scan Successfully")}
+                </h2>
+                <p className="text-gray-700">
+                  {t("Total Parcels in Register")}: {orderTrackingCodes.length}
+                </p>
+              </div>
             ) : orderTrackingCodes && orderTrackingCodes.error ? (
               <h2 className="text-xl font-bold mb-4 text-red-600">
                 {orderTrackingCodes.error}
               </h2>
             ) : (
               <p className="mb-6 text-gray-700">{t("No details available")}</p>
-            )}
-
-            {secRes && secRes.status && orderTrackingCodes?.length > 0 && (
-              <p className="text-gray-700">
-                {t("Total Parcels in Register")}: {orderTrackingCodes.length}
-              </p>
             )}
 
             <button
