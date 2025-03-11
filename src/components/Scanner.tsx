@@ -72,6 +72,7 @@ const BarcodeScanner = () => {
     });
   };
 
+
   const sendGetRequest = async (trackingCode: string) => {
     console.log(trackingCode);
     try {
@@ -138,33 +139,23 @@ const BarcodeScanner = () => {
 
   useEffect(() => {
     if (!videoRef.current) return;
-
-    const initScanner = async () => {
-      if (!videoRef.current) return; // Ensure videoRef.current is not null before using it
-
-      try {
-        await reader.current.decodeFromConstraints(
-          {
-            video: {
-              facingMode: "environment",
-            },
-          },
-          videoRef.current as HTMLVideoElement, // Explicitly cast to HTMLVideoElement
-          (result) => {
-            if (result) {
-              const scannedBarcode = result.getText();
-              reader.current.reset();
-              sendGetRequest(scannedBarcode);
-              setIsModalOpen(true);
-            }
-          }
-        );
-      } catch (error) {
-        console.error("Scanner initialization error:", error);
+    reader.current.decodeFromConstraints(
+      {
+        audio: false,
+        video: {
+          facingMode: "environment",
+        },
+      },
+      videoRef.current,
+      (result) => {
+        if (result) {
+          const scannedBarcode = result.getText();
+          reader.current.reset();
+          sendGetRequest(scannedBarcode);
+          setIsModalOpen(true);
+        }
       }
-    };
-
-    initScanner();
+    );
 
     return () => {
       reader.current.reset();
