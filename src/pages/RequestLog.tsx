@@ -7,7 +7,7 @@ function RequestLog() {
 
   return (
     <div className="bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300 
-      w-full min-h-screen px-6 pt-12 pb-6">
+      w-full min-h-screen px-6 pt-24 pb-6">
       {/* Header Section */}
       <div className="flex items-center mb-6">
         <button
