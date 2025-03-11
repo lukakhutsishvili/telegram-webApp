@@ -24,6 +24,7 @@ const BarcodeScanner = () => {
   const [isFetchingTasks, setIsFetchingTasks] = useState(false);
   const navigate = useNavigate();
   const { sendingTasks, recieptTasks } = useContext(Context);
+  const [scanerError, setScannerError] = useState("");
 
   const activeStatus = "Accepted";
 
@@ -73,7 +74,6 @@ const BarcodeScanner = () => {
   };
 
   const sendGetRequest = async (trackingCode: string) => {
-    console.log(trackingCode);
     try {
       setIsLoading(true);
       const requestData = {
@@ -111,6 +111,7 @@ const BarcodeScanner = () => {
           status: "accepted",
           orders: trackingCodes,
         };
+
         // Second API call
         const secResponse = await axiosInstance.post(
           changeStatusesOfOrder,
@@ -118,20 +119,18 @@ const BarcodeScanner = () => {
         );
 
         setSecRes(secResponse);
+        setScannerError("");
       } else if (status === "Accepted") {
-        setOrderTrackingCodes({
-          error: "This reestr is already in tasks",
-        });
+        setScannerError("This reestr is already in tasks");
       } else {
-        setOrderTrackingCodes({
-          error: "Unexpected status: " + status,
-        });
+        setScannerError("Unexpected status: " + status);
       }
     } catch (error) {
       console.error("Error fetching barcode details:", error);
-      setOrderTrackingCodes({ error: "Failed to fetch details" });
+      setScannerError("Failed to fetch details");
     } finally {
       setIsLoading(false);
+      console.log(orderTrackingCodes);
     }
   };
 
@@ -249,9 +248,9 @@ const BarcodeScanner = () => {
                   {t("Total Parcels in Register")}: {orderTrackingCodes.length}
                 </p>
               </div>
-            ) : orderTrackingCodes && orderTrackingCodes.error ? (
+            ) : scanerError ? (
               <h2 className="text-xl font-bold mb-4 text-red-600">
-                {orderTrackingCodes.error}
+                {scanerError}
               </h2>
             ) : (
               <p className="mb-6 text-gray-700">{t("No details available")}</p>
