@@ -117,5 +117,6 @@
     "Additional Comment": "დამატებითი კომენტარი",
     "Components": "კომპონენტები",
     "Total Parcels in Register": "რეესტრში ამანათების რაოდენობა",
-    "please scan all order": "გთხოვთ ჩაასკანეროთ ყველა კომპონენტი"
+    "please scan all order": "გთხოვთ ჩაასკანეროთ ყველა კომპონენტი",
+    "Error": "შეცდომა " 
 }
