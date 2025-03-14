@@ -117,7 +117,7 @@ const OrderPage = () => {
 
               <span
                 onClick={() =>
-                  window.Telegram.WebApp.openLink(`tel:${order.client_phone}`)
+                  window.open(`tel:${order.client_phone}`, "_blank")
                 }
                 className="font-base text-blue-500 underline cursor-pointer"
               >
