@@ -118,7 +118,7 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
   return (
     <div className="relative flex flex-col items-center justify-start h-screen bg-gray-100 pt-24 h-sm:pt-16">
       <button
-        className="px-3 absolute top-0 right-0 py-1 bg-yellow-500 text-gray-600 hover:bg-gray-200 rounded-full shadow-sm transition duration-200 ease-in-out"
+        className="px-3 absolute top-6 right-6 py-[6px] bg-yellow-500 text-gray-600 hover:bg-gray-200 rounded-full shadow-sm transition duration-200 ease-in-out"
         onClick={() => {
           setIsScanning(false);
         }}
