@@ -117,7 +117,7 @@ const OrderPage = () => {
 
               <span
                 onClick={() =>
-                  navigator.clipboard.writeText(order.client_phone)
+                  window.Telegram.WebApp.openLink(`tel:${order.client_phone}`)
                 }
                 className="font-base text-blue-500 underline cursor-pointer"
               >
