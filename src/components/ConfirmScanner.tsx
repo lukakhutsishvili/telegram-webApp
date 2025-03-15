@@ -136,7 +136,7 @@ const ConfimParcelScanner: React.FC<ConfimParcelScannerProps> = ({
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder={t("Enter register code manually")}
+              placeholder={t("Enter order code manually")}
               className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
