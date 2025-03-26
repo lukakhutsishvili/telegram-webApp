@@ -18,7 +18,7 @@ function Home() {
   const { clearLogs } = useRequestLogs();
   const { t } = useTranslation();
   
-  const { loading, amount, taskAmounts } = useHomeData();
+  const { loading, amount, taskAmounts, fetchAllData } = useHomeData();
   interface HandleNavigateToPagesParams {
     buttonName: string;
     path: string;
@@ -101,6 +101,9 @@ function Home() {
               <p className="text-gray-800 font-semibold">{amount?.[0]?.sum}</p>
             </div>
           </div>
+        </section>
+        <section className="mb-6">
+          <Button onClick={() => fetchAllData()} className="bg-green-700">გაანახლე სია</Button>
         </section>
 
         {/* Parcel Statistics */}

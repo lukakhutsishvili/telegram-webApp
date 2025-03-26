@@ -76,20 +76,21 @@ const useHomeData = () => {
     }
   };
 
+  const fetchAllData = async () => {
+    setLoading(true);
+    try {
+      await fetchRecieptTasks();
+      await fetchSendingTasks();
+      await fetchAmount();
+      await fetchReasons();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAllData = async () => {
-      setLoading(true);
-      try {
-        await fetchRecieptTasks();
-        await fetchSendingTasks();
-        await fetchAmount();
-        await fetchReasons();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchAllData();
   }, []);
@@ -124,7 +125,7 @@ const useHomeData = () => {
     return newTaskAmounts;
   }, [recieptTasks, sendingTasks]);
 
-  return { loading, amount, taskAmounts };
+  return { loading, amount, taskAmounts , fetchAllData};
 };
 
 export default useHomeData;
