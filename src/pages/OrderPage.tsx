@@ -64,6 +64,8 @@ const OrderPage = () => {
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
   };
+
+  console.log(order)
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -136,7 +138,7 @@ const OrderPage = () => {
             </div>
           </div>
 
-          {order?.places ? (
+          {order?.with_places? (
             <OrderWithComponents
               order={order}
               handleCheckboxChange={handleCheckboxChange}
