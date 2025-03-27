@@ -1,6 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faMoneyBill1 } from "@fortawesome/free-regular-svg-icons";
-import { faMoneyCheckDollar, faBox, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMoneyCheckDollar,
+  faBox,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/delivo-logo.webp";
 import { useContext } from "react";
 import { Context } from "../App";
@@ -17,7 +21,7 @@ function Home() {
   const navigate = useNavigate();
   const { clearLogs } = useRequestLogs();
   const { t } = useTranslation();
-  
+
   const { loading, amount, taskAmounts, fetchAllData } = useHomeData();
   interface HandleNavigateToPagesParams {
     buttonName: string;
@@ -25,12 +29,15 @@ function Home() {
     num: number;
   }
 
-  const handleNavigeteToPages = ({ buttonName, path, num }: HandleNavigateToPagesParams): void => {
+  const handleNavigeteToPages = ({
+    buttonName,
+    path,
+    num,
+  }: HandleNavigateToPagesParams): void => {
     setTabButtons(buttonName);
     setActiveButton(num);
     navigate(path);
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300">
@@ -48,7 +55,7 @@ function Home() {
         </div>
 
         {/* Spinner animation */}
-        <div className="h-8  flex items-center justify-center">
+        {/* <div className="h-8  flex items-center justify-center">
           {loading && (
             <div className="flex items-center justify-center mb-6">
               <FontAwesomeIcon
@@ -60,18 +67,18 @@ function Home() {
               </p>
             </div>
           )}
-        </div>
+        </div> */}
         {/* Info Section */}
         <section className="bg-white shadow-lg rounded-lg p-6 mb-10">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-            <FontAwesomeIcon
-              icon={faUser}
-              className="text-yellow-500 text-xl"
-            />
-            <h2 className="text-lg font-semibold text-gray-700">
-              {userInfo.name}
-            </h2>
+              <FontAwesomeIcon
+                icon={faUser}
+                className="text-yellow-500 text-xl"
+              />
+              <h2 className="text-lg font-semibold text-gray-700">
+                {userInfo.name}
+              </h2>
             </div>
             <LanguageSelector langButtons={langButtons} />
           </div>
@@ -103,7 +110,9 @@ function Home() {
           </div>
         </section>
         <section className="mb-6">
-          <Button onClick={() => fetchAllData()} className="bg-green-700">გაანახლე სია</Button>
+          <Button onClick={() => fetchAllData()} className="bg-green-700">
+            გაანახლე სია
+          </Button>
         </section>
 
         {/* Parcel Statistics */}
@@ -122,27 +131,63 @@ function Home() {
               </div>
               <ul className="space-y-4">
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Completed', path: '/Reciept' , num: 1 })}
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Completed",
+                        path: "/Reciept",
+                        num: 1,
+                      })
+                    }
                     className="text-black font-bold underline cursor-pointer"
-                    >{t("Completed Visits")}:</span>
+                  >
+                    {t("Completed Visits")}:
+                  </span>
                   <span>{taskAmounts.receiptCompleted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Canceled', path: '/Reciept', num: 2 })}
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Canceled",
+                        path: "/Reciept",
+                        num: 2,
+                      })
+                    }
                     className="text-black font-bold underline cursor-pointer"
-                    >{t("Canceled Visits")}:</span>
+                  >
+                    {t("Canceled Visits")}:
+                  </span>
                   <span>{taskAmounts.receiptCanceled}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Accepted', path: '/Reciept' , num: 0 })}
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Accepted",
+                        path: "/Reciept",
+                        num: 0,
+                      })
+                    }
                     className="text-black font-bold underline cursor-pointer"
-                    >{t("Active Visits")}:</span>
+                  >
+                    {t("Active Visits")}:
+                  </span>
                   <span>{taskAmounts.receiptAccepted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Waiting', path: '/Reciept' , num: 3})}
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Waiting",
+                        path: "/Reciept",
+                        num: 3,
+                      })
+                    }
                     className="text-black font-bold underline cursor-pointer"
-                    >{t("Waiting")}:</span>
+                  >
+                    {t("Waiting")}:
+                  </span>
                   <span>{taskAmounts.receiptWaiting}</span>
                 </li>
               </ul>
@@ -161,28 +206,63 @@ function Home() {
               </div>
               <ul className="space-y-4">
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Completed', path: '/Sending', num: 1 })}
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Completed",
+                        path: "/Sending",
+                        num: 1,
+                      })
+                    }
                     className="text-black font-bold underline cursor-pointer"
-                    >{t("Completed Visits")}:</span>
+                  >
+                    {t("Completed Visits")}:
+                  </span>
                   <span>{taskAmounts.sendingCompleted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Canceled', path: '/Sending', num: 2 })}
-                    className="text-black font-bold underline cursor-pointer">
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Canceled",
+                        path: "/Sending",
+                        num: 2,
+                      })
+                    }
+                    className="text-black font-bold underline cursor-pointer"
+                  >
                     {t("Canceled Visits")}:
-                    </span>
+                  </span>
                   <span>{taskAmounts.sendingCanceled}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Accepted', path: '/Sending', num: 0 })}
-                   className="text-black font-bold underline cursor-pointer" >
-                    {t("Active Visits")}:</span>
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Accepted",
+                        path: "/Sending",
+                        num: 0,
+                      })
+                    }
+                    className="text-black font-bold underline cursor-pointer"
+                  >
+                    {t("Active Visits")}:
+                  </span>
                   <span>{taskAmounts.sendingAccepted}</span>
                 </li>
                 <li className="flex justify-between text-gray-600">
-                  <span onClick={() => handleNavigeteToPages({ buttonName: 'Waiting', path: '/Sending', num: 3 })}
-                    className="text-black font-bold underline cursor-pointer">
-                      {t("Waiting")}:</span>
+                  <span
+                    onClick={() =>
+                      handleNavigeteToPages({
+                        buttonName: "Waiting",
+                        path: "/Sending",
+                        num: 3,
+                      })
+                    }
+                    className="text-black font-bold underline cursor-pointer"
+                  >
+                    {t("Waiting")}:
+                  </span>
                   <span>{taskAmounts.sendingWaiting}</span>
                 </li>
               </ul>
@@ -191,10 +271,24 @@ function Home() {
         </section>
 
         <section className="mt-6 flex gap-4">
-          <Button onClick={() => navigate('/requestlog')}>{t("Open Logs")}</Button>
+          <Button onClick={() => navigate("/requestlog")}>
+            {t("Open Logs")}
+          </Button>
           <Button onClick={clearLogs}>{t("Delete Logs")}</Button>
         </section>
-
+        {loading && (
+          <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center z-50 bg-opacity-50 bg-white">
+            <FontAwesomeIcon
+              icon={faSpinner}
+              spin
+              size="3x"
+              className="text-blue-500"
+            />
+            <p className="mt-4 text-blue-500">
+              {t("please wait until information is loaded")}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

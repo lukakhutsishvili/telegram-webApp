@@ -26,6 +26,8 @@ const defaultContextValue: ContextType = {
   setAmount: () => {},
   activeButton: 0,
   setActiveButton: () => {},
+  isFetched: false,
+  setIsfetched: () => {}, // Corrected type
 };
 
 export const Context = createContext(defaultContextValue);
@@ -40,6 +42,7 @@ const App = () => {
   const [tabButtons, setTabButtons] = useState<string>("Accepted");
   const [amount, setAmount] = useState([{ cash: 0, bank: 0, sum: 0 }]);
   const [activeButton, setActiveButton] = useState<number>(0);
+  const [isFetched, setIsfetched] = useState(false);
 
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
@@ -52,8 +55,7 @@ const App = () => {
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
       const userId = webApp.initDataUnsafe?.user?.id || "1800276631";
 
-        setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
-
+      setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
     }
   }, []);
 
@@ -76,6 +78,8 @@ const App = () => {
         setAmount,
         activeButton,
         setActiveButton,
+        isFetched,
+        setIsfetched,
       }}
     >
       <Routes>

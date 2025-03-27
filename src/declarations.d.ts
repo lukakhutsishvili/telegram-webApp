@@ -40,4 +40,6 @@ interface ContextType {
   setAmount: any;
   activeButton: number;
   setActiveButton: any;
+  isFetched: boolean,
+  setIsfetched: React.Dispatch<React.SetStateAction<any>>,
 }

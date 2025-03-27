@@ -65,7 +65,6 @@ const OrderPage = () => {
     setIsScanning(!isScanning);
   };
 
-  console.log(order)
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
