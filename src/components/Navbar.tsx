@@ -21,7 +21,9 @@ function Navbar() {
                 isActive && "bg-yellow-500 text-black"
               }`
             }
-            onClick={() => setNavbarButtons(item.name)}
+            onClick={() => {
+              setNavbarButtons(item.name);
+            }}
           >
             <div className="flex flex-col items-center gap-1">
               <FontAwesomeIcon icon={item.icon} size="lg" />

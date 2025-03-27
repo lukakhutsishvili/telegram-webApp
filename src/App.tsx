@@ -52,9 +52,8 @@ const App = () => {
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
       const userId = webApp.initDataUnsafe?.user?.id || "6087086146";
 
-      if (userId) {
         setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
-      }
+
     }
   }, []);
 

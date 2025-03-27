@@ -31,6 +31,7 @@ export const useAuth = () => {
           name: response.data.response.courier_name,
           device_id: response.data.response.device_id,
         }));
+        console.log(response)
         navigate("/home");
       } else {
         setShowRegister(true);
