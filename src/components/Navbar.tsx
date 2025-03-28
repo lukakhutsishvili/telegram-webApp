@@ -6,9 +6,10 @@ import { Context } from "../App";
 import { useTranslation } from "react-i18next";
 
 function Navbar() {
-  const { setNavbarButtons } = useContext(Context);
+  const { setNavbarButtons, navbarButtons } = useContext(Context);
   const { t } = useTranslation();
 
+  console.log(navbarButtons)
   return (
     <div className="fixed bottom-0 w-full bg-gray-800 text-white shadow-md">
       <div className="flex justify-around py-2">

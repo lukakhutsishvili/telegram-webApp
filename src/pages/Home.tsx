@@ -17,7 +17,8 @@ import LanguageSelector from "../components/LanguageSelector";
 import { useTranslation } from "react-i18next";
 
 function Home() {
-  const { setTabButtons, setActiveButton, userInfo } = useContext(Context);
+  const { setTabButtons, setActiveButton, userInfo, setNavbarButtons } =
+    useContext(Context);
   const navigate = useNavigate();
   const { clearLogs } = useRequestLogs();
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ function Home() {
     setTabButtons(buttonName);
     setActiveButton(num);
     navigate(path);
+    setNavbarButtons(path.split("/")[1].toLowerCase());
   };
 
   return (
