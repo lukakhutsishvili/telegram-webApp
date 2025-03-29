@@ -169,12 +169,9 @@ const useClientConfirmation = (
       relationship_code: connection,
       relationship_commentary: additionalComment,
     };
-    console.log(params);
-
     try {
       const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
       await axiosInstance.post(url, params);
-      console.log("Request sent successfully to:", url);
     } catch (error) {
       console.error("Error sending request:", error);
     }
@@ -183,7 +180,6 @@ const useClientConfirmation = (
   const sendOtp = async () => {
     if (!order.client_phone) {
       setErrorMessage(t("Phone number is not available."));
-      console.log(t("Phone number is not available."));
       return;
     }
 
@@ -198,11 +194,9 @@ const useClientConfirmation = (
         setOtpCooldown(30);
       } else {
         setErrorMessage(t("Failed to send OTP."));
-        console.log(response.data.message || t("Failed to send OTP."));
       }
     } catch (error) {
       setErrorMessage(t("Error sending OTP."));
-      console.log(t("Error sending OTP."));
     } finally {
       setIsOtpSending(false);
     }
@@ -225,7 +219,6 @@ const useClientConfirmation = (
       } else {
         setRecieptTasks(response.data.response);
       }
-      console.log("Order list updated successfully:", response);
     } catch (error) {
       console.error("Failed to fetch order list:", error);
     }
