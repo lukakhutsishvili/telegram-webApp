@@ -1,12 +1,21 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo,  useState } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
 import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 
 const useHomeData = () => {
-
-  const { userInfo, setReasons, setRecieptTasks, setSendingTasks, recieptTasks, sendingTasks, amount, setAmount,} = useContext(Context);
+  const {
+    userInfo,
+    setReasons,
+    setRecieptTasks,
+    setSendingTasks,
+    recieptTasks,
+    sendingTasks,
+    amount,
+    setAmount,
+  } = useContext(Context);
   const [loading, setLoading] = useState(false);
+  const {isFetched, setIsfetched} = useContext(Context)
 
   // Fetch reasons
   const fetchReasons = async () => {
@@ -71,28 +80,32 @@ const useHomeData = () => {
         },
       });
       setSendingTasks(response.data.response);
+      console.log(response.data.response);
     } catch (error) {
       console.error("Error fetching sending tasks:", error);
     }
   };
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      setLoading(true);
-      try {
-        await fetchRecieptTasks();
-        await fetchSendingTasks();
-        await fetchAmount();
-        await fetchReasons();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchAllData = async () => {
+    setLoading(true);
+    try {
+      await fetchRecieptTasks();
+      await fetchSendingTasks();
+      await fetchAmount();
+      await fetchReasons();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchAllData();
-  }, []);
+  useEffect(() => {
+    if (!isFetched) {
+      fetchAllData();
+      setIsfetched(true)
+    }
+  }, []); // Run only on the initial render
 
   // Calculate task amounts using useMemo
   const taskAmounts = useMemo(() => {
@@ -124,7 +137,7 @@ const useHomeData = () => {
     return newTaskAmounts;
   }, [recieptTasks, sendingTasks]);
 
-  return { loading, amount, taskAmounts };
+  return { loading, amount, taskAmounts, fetchAllData };
 };
 
 export default useHomeData;

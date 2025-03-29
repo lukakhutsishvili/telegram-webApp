@@ -48,6 +48,7 @@ const useClientConfirmation = (
 
   const { addParcel } = useRequestLogs();
 
+
   const handleConfirmationMethodChange = (method: string) => {
     setConfirmationMethod(method);
     setConfirmationValue("");
@@ -209,11 +210,14 @@ const useClientConfirmation = (
         pickup_task: navbarButtons !== "sending", // ეს ვკითხო ლუკას
         status: ["Waiting", "Accepted", "Completed", "Canceled"],
       };
+      console.log(navbarButtons);
       const response = await axiosInstance.get(ORDER_LIST, {
         params: {
           tasklist_data: btoa(JSON.stringify(tasklistData)),
         },
-      });
+      });     
+       console.log(navbarButtons);
+
       if (navbarButtons == "sending") {
         setSendingTasks(response.data.response);
       } else {
