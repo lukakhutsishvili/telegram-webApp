@@ -57,7 +57,7 @@ const App = () => {
 
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
 
-      if (webApp.initDataUnsafe?.user?.id == "1800276631") {
+      if (webApp.initDataUnsafe?.user?.id == "6087086146") {
         setShowPopup(true);
       } else {
         setUserInfo((prev) => ({
