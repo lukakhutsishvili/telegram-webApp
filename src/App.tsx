@@ -27,7 +27,7 @@ const defaultContextValue: ContextType = {
   activeButton: 0,
   setActiveButton: () => {},
   isFetched: false,
-  setIsfetched: () => {}, // Corrected type
+  setIsfetched: () => {},
 };
 
 export const Context = createContext(defaultContextValue);
@@ -44,6 +44,9 @@ const App = () => {
   const [activeButton, setActiveButton] = useState<number>(0);
   const [isFetched, setIsfetched] = useState(false);
 
+  const [showPopup, setShowPopup] = useState(false);
+  const [customUserId, setCustomUserId] = useState("");
+
   useEffect(() => {
     const webApp = (window as any)?.Telegram?.WebApp;
 
@@ -53,9 +56,15 @@ const App = () => {
       webApp.disableVerticalSwipes();
 
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
-      const userId = webApp.initDataUnsafe?.user?.id || "6087086146";
 
-      setUserInfo((prev) => ({ ...prev, telegram_id: userId }));
+      if (webApp.initDataUnsafe?.user?.id == "1800276631" ||  "6087086146") {
+        setShowPopup(true);
+      } else {
+        setUserInfo((prev) => ({
+          ...prev,
+          telegram_id: webApp.initDataUnsafe?.user?.id ,
+        }));
+      }
     }
   }, []);
 
@@ -83,7 +92,7 @@ const App = () => {
       }}
     >
       <Routes>
-        <Route element={<SignIn />} path="/" />
+        <Route element={<SignIn showPopup={showPopup} setShowPopup={setShowPopup} setCustomUserId={setCustomUserId} customUserId={customUserId} />} path="/" />
         <Route element={<Home />} path="/home" />
         <Route element={<Reciept />} path="/reciept" />
         <Route element={<Sending />} path="/sending" />
@@ -91,14 +100,13 @@ const App = () => {
         <Route path="/order/:id" element={<OrderPage />} />
         <Route element={<RequestLog />} path="/requestlog" />
       </Routes>
-      {location.pathname.toLowerCase() === "/home" ||
-      location.pathname.toLowerCase() === "/sending" ||
-      location.pathname.toLowerCase() === "/reciept" ||
-      location.pathname.toLowerCase() === "/scanner" ? (
-        <Navbar />
-      ) : (
-        <div></div>
-      )}
+      
+      {(location.pathname.toLowerCase() === "/home" ||
+        location.pathname.toLowerCase() === "/sending" ||
+        location.pathname.toLowerCase() === "/reciept" ||
+        location.pathname.toLowerCase() === "/scanner") && <Navbar />}
+
+
     </Context.Provider>
   );
 };
