@@ -146,11 +146,16 @@ const useClientConfirmation = (
       return;
     }
 
-    let confirmationType = 1; // Default OTP
-    if (confirmationMethod === "ID") {
-      confirmationType = 2;
-    } else if (confirmationMethod === "Other") {
-      confirmationType = 3;
+    let confirmationType = 1; 
+    switch (confirmationMethod) {
+      case "ID Number":
+        confirmationType = 2;
+        break;
+      case "Other":
+        confirmationType = 3;
+        break;
+      default:
+        confirmationType = 1; // OTP
     }
 
     const componentParcel = [
