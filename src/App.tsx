@@ -62,7 +62,7 @@ const App = () => {
       } else {
         setUserInfo((prev) => ({
           ...prev,
-          telegram_id: webApp.initDataUnsafe?.user?.id ,
+          telegram_id: webApp.initDataUnsafe?.user?.id || "6087086146" ,
         }));
       }
     }
