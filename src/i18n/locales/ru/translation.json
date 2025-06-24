@@ -61,7 +61,7 @@
   "Please enter the ID number.": "Пожалуйста, введите номер удостоверения личности.",
   "ID Number confirmed!": "Номер удостоверения личности подтвержден!",
   "Failed to save ID Number. Please try again.": "Не удалось сохранить номер удостоверения личности. Пожалуйста, попробуйте снова.",
-  "An error occurred while saving the ID Number. Please try again.": "Произошла ошибка при сохранении номера удостоверения личности. Пожалуйста, попробуйте снова.",
+  "An error occurred while saving the ID Number. Please try again.": "Этот идентификационный номер уже существует в базе данных. Попробуйте стороннюю проверку.",
   "The ID Number does not match the client's ID. Please try again.": "Номер удостоверения личности не совпадает с номером клиента. Пожалуйста, попробуйте снова.",
   "Payment Method": "Метод оплаты",
   "Confirmation Method": "Метод подтверждения",
@@ -118,5 +118,8 @@
   "Total Parcels in Register": "Общее количество посылок в реестре",
   "please scan all order": "Пожалуйста, отсканируйте все заказы",
   "Error": "Ошибка",
-  "Enter order code manually": "Введите код посылки вручную"
+  "Enter order code manually": "Введите код посылки вручную",
+  "Success! Parcel processed.": "Успешно! Посылка обработана.",
+  "This Registry is already in tasks": "Этот реестр уже в задачах",
+  "Failed to fetch details": "Не удалось получить детали. Пожалуйста, попробуйте снова."
 }
