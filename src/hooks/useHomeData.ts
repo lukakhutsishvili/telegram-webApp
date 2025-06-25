@@ -4,8 +4,16 @@ import { axiosInstance } from "../api/apiClient";
 import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
 
 const useHomeData = () => {
-
-  const { userInfo, setReasons, setRecieptTasks, setSendingTasks, recieptTasks, sendingTasks, amount, setAmount,} = useContext(Context);
+  const {
+    userInfo,
+    setReasons,
+    setRecieptTasks,
+    setSendingTasks,
+    recieptTasks,
+    sendingTasks,
+    amount,
+    setAmount,
+  } = useContext(Context);
   const [loading, setLoading] = useState(false);
 
   // Fetch reasons
@@ -70,7 +78,6 @@ const useHomeData = () => {
           ),
         },
       });
-      console.log(response.data);
       setSendingTasks(response.data.response);
     } catch (error) {
       console.error("Error fetching sending tasks:", error);

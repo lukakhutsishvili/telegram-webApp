@@ -8,6 +8,7 @@ import useClientConfirmation from "../hooks/confirm modal hooks/useClientConfirm
 import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
 import { Context } from "../App";
+import CustomDropdown from "./CustomDropDown";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -34,6 +35,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const PARCELS_KEY = "parcels";
   const storedParcels = JSON.parse(localStorage.getItem(PARCELS_KEY) || "[]");
   const order = sendingOrder || receiptOrder;
+
+  const PARCEL_WITH_RETURN = order.parcel_with_return;
 
   const { addParcel } = useRequestLogs();
 
@@ -91,6 +94,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
   const [errors, setErrors] = useState(initialState);
   const { userInfo } = useContext(Context);
+  const [parcelWithReturn, setParcelWithReturn] = useState<
+    string | undefined
+  >();
 
   const navigationfunction = () => {
     if (confirmationMessage) {
@@ -380,6 +386,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                       otherPersonInfo={otherPersonInfo}
                     />
                   )}
+
+                  {!PARCEL_WITH_RETURN && <CustomDropdown />}
                 </div>
               </>
             )}
