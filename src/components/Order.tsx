@@ -163,7 +163,7 @@ const Order = ({ status }: { status: string | null }) => {
 
   const handleSorting = async () => {
     const payLoad = {
-      device_id: userInfo.device_id,
+      device_id: userInfo.device_id || "6087086146",
       response: reorderedTasks,
       pickup_task: false,
     };

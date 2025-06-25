@@ -145,11 +145,16 @@ const useClientConfirmation = (
       return;
     }
 
-    let confirmationType = 1; // Default OTP
-    if (confirmationMethod === "ID") {
-      confirmationType = 2;
-    } else if (confirmationMethod === "Other") {
-      confirmationType = 3;
+    let confirmationType = 1; 
+    switch (confirmationMethod) {
+      case "ID Number":
+        confirmationType = 2;
+        break;
+      case "Other":
+        confirmationType = 3;
+        break;
+      default:
+        confirmationType = 1;
     }
 
     const componentParcel = [
@@ -209,14 +214,11 @@ const useClientConfirmation = (
         pickup_task: navbarButtons !== "sending",
         status: ["Waiting", "Accepted", "Completed", "Canceled"],
       };
-      console.log(navbarButtons);
       const response = await axiosInstance.get(ORDER_LIST, {
         params: {
           tasklist_data: btoa(JSON.stringify(tasklistData)),
         },
       });
-      console.log(navbarButtons);
-
       if (navbarButtons == "sending") {
         setSendingTasks(response.data.response);
       } else {

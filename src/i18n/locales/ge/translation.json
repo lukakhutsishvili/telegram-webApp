@@ -61,7 +61,7 @@
   "Please enter the ID number.": "გთხოვთ, შეიყვანეთ ID ნომერი.",
   "ID Number confirmed!": "ID ნომერი დადასტურდა!",
   "Failed to save ID Number. Please try again.": "ID ნომრის შენახვა ვერ მოხერხდა. გთხოვთ სცადოთ კიდევ.",
-  "An error occurred while saving the ID Number. Please try again.": "ID ნომრის შენახვისას შეცდომა მოხდა. გთხოვთ სცადოთ კიდევ.",
+  "An error occurred while saving the ID Number. Please try again.": "ეს ID ნომერი უკვე არსებობს ბაზაში. გთხოვთ სცადოთ მესამე პირით დადასტურება.",
   "The ID Number does not match the client's ID. Please try again.": "ID ნომერი არ ემთხვევა მომხმარებლის ID-ს. გთხოვთ სცადოთ კიდევ.",
   "Payment Method": "გადახდის მეთოდი",
   "Confirmation Method": "დადასტურების მეთოდი",
@@ -118,5 +118,9 @@
   "Total Parcels in Register": "რეესტრში ამანათების რაოდენობა",
   "please scan all order": "გთხოვთ ჩაასკანეროთ ყველა კომპონენტი",
   "Error": "შეცდომა ",
-  "Enter order code manually": "შეიყვანეთ ამანათის კოდი"
+  "Enter order code manually": "შეიყვანეთ ამანათის კოდი",
+  "Success! Parcel processed.": "ამანათი წარმატებით დამუშავდა.",
+  "This Registry is already in tasks": "ეს რეესტრი უკვე არის დავალებებში",
+  "Failed to fetch details": "დეტალების დამუშავება ვერ მოხერხდა, სცადეთ ხელახლა."
+
 }

@@ -31,7 +31,6 @@ export const useAuth = () => {
           name: response.data.response.courier_name,
           device_id: response.data.response.device_id,
         }));
-        console.log(response)
         navigate("/home");
       } else {
         setShowRegister(true);
@@ -83,7 +82,7 @@ export const useAuth = () => {
         params: {
           phone_number: phoneNumber,
           otp,
-          telegram_id: userInfo.telegram_id?.toString() || "6087086146",
+          telegram_id: userInfo.telegram_id?.toString() ,
         },
       });
 

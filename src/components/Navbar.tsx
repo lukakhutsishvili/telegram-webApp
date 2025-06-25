@@ -6,10 +6,9 @@ import { Context } from "../App";
 import { useTranslation } from "react-i18next";
 
 function Navbar() {
-  const { setNavbarButtons, navbarButtons } = useContext(Context);
+  const { setNavbarButtons } = useContext(Context);
   const { t } = useTranslation();
 
-  console.log(navbarButtons)
   return (
     <div className="fixed bottom-0 w-full bg-gray-800 text-white shadow-md">
       <div className="flex justify-around py-2">
@@ -22,9 +21,7 @@ function Navbar() {
                 isActive && "bg-yellow-500 text-black"
               }`
             }
-            onClick={() => {
-              setNavbarButtons(item.name);
-            }}
+            onClick={() => setNavbarButtons(item.name)}
           >
             <div className="flex flex-col items-center gap-1">
               <FontAwesomeIcon icon={item.icon} size="lg" />

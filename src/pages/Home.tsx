@@ -23,13 +23,12 @@ function Home() {
   const { clearLogs } = useRequestLogs();
   const { t } = useTranslation();
 
-  const { loading, amount, taskAmounts, fetchAllData } = useHomeData();
+  const { loading, amount, taskAmounts } = useHomeData();
   interface HandleNavigateToPagesParams {
     buttonName: string;
     path: string;
     num: number;
   }
-
   const handleNavigeteToPages = ({
     buttonName,
     path,
@@ -57,7 +56,7 @@ function Home() {
         </div>
 
         {/* Spinner animation */}
-        {/* <div className="h-8  flex items-center justify-center">
+        <div className="h-8  flex items-center justify-center">
           {loading && (
             <div className="flex items-center justify-center mb-6">
               <FontAwesomeIcon
@@ -69,7 +68,7 @@ function Home() {
               </p>
             </div>
           )}
-        </div> */}
+        </div>
         {/* Info Section */}
         <section className="bg-white shadow-lg rounded-lg p-6 mb-10">
           <div className="flex items-center justify-between mb-4">
@@ -110,11 +109,6 @@ function Home() {
               <p className="text-gray-800 font-semibold">{amount?.[0]?.sum}</p>
             </div>
           </div>
-        </section>
-        <section className="mb-6">
-          <Button onClick={() => fetchAllData()} className="bg-green-700">
-            გაანახლე სია
-          </Button>
         </section>
 
         {/* Parcel Statistics */}
@@ -278,19 +272,6 @@ function Home() {
           </Button>
           <Button onClick={clearLogs}>{t("Delete Logs")}</Button>
         </section>
-        {loading && (
-          <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center z-50 bg-opacity-50 bg-white">
-            <FontAwesomeIcon
-              icon={faSpinner}
-              spin
-              size="3x"
-              className="text-blue-500"
-            />
-            <p className="mt-4 text-blue-500">
-              {t("please wait until information is loaded")}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
