@@ -94,9 +94,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
   const [errors, setErrors] = useState(initialState);
   const { userInfo } = useContext(Context);
-  const [parcelWithReturn, setParcelWithReturn] = useState<
-    string | undefined
-  >();
 
   const navigationfunction = () => {
     if (confirmationMessage) {
