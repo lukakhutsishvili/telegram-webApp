@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo,  useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Context } from "../App";
 import { axiosInstance } from "../api/apiClient";
 import { AMOUNT, GET_REASONS, ORDER_LIST } from "../api/Constants";
@@ -15,7 +15,7 @@ const useHomeData = () => {
     setAmount,
   } = useContext(Context);
   const [loading, setLoading] = useState(false);
-  const {isFetched, setIsfetched} = useContext(Context)
+  const { isFetched, setIsfetched } = useContext(Context);
 
   // Fetch reasons
   const fetchReasons = async () => {
@@ -79,6 +79,7 @@ const useHomeData = () => {
           ),
         },
       });
+      console.log(response.data);
       setSendingTasks(response.data.response);
       console.log(response.data.response);
     } catch (error) {
@@ -103,7 +104,7 @@ const useHomeData = () => {
   useEffect(() => {
     if (!isFetched) {
       fetchAllData();
-      setIsfetched(true)
+      setIsfetched(true);
     }
   }, []); // Run only on the initial render
 

@@ -4,8 +4,20 @@ import { Context } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarcode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { t } from "i18next";
-import {closestCenter,DndContext,MouseSensor,KeyboardSensor,useSensor,useSensors,TouchSensor,} from "@dnd-kit/core";
-import {SortableContext,verticalListSortingStrategy,arrayMove,} from "@dnd-kit/sortable";
+import {
+  closestCenter,
+  DndContext,
+  MouseSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  TouchSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { axiosInstance } from "../api/apiClient";
 import { MODIFY_SORT_NUMBER, ORDER_LIST } from "../api/Constants";
@@ -24,7 +36,9 @@ interface Order {
 const Order = ({ status }: { status: string | null }) => {
   const { sendingTasks, userInfo, setSendingTasks } = useContext(Context);
   const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<{[key: string]: boolean;}>({});
+  const [selectedOrders, setSelectedOrders] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [checkAll, setCheckAll] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [reorderedTasks, setReorderedTasks] = useState<any>([]);
@@ -32,9 +46,13 @@ const Order = ({ status }: { status: string | null }) => {
   const [isSorting, setIsSorting] = useState(false);
 
   // Configure sensors for DnD
-  const mouseSensor = useSensor(MouseSensor, {activationConstraint: { distance: 10 },});
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: { distance: 10 },
+  });
   const keyboardSensor = useSensor(KeyboardSensor);
-  const touchSensor = useSensor(TouchSensor, {activationConstraint: { delay: 250, tolerance: 5 },});
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: { delay: 250, tolerance: 5 },
+  });
   const sensors = useSensors(mouseSensor, keyboardSensor, touchSensor);
 
   // Filter tasks based on status and search term
@@ -145,7 +163,7 @@ const Order = ({ status }: { status: string | null }) => {
 
   const handleSorting = async () => {
     const payLoad = {
-      device_id: userInfo.device_id ,
+      device_id: userInfo.device_id,
       response: reorderedTasks,
       pickup_task: false,
     };
@@ -179,31 +197,30 @@ const Order = ({ status }: { status: string | null }) => {
             className="w-full text-sm focus:outline-none"
           />
         </div>
-              {/* Sorting Control Buttons */}
-      <div className="relative z-20">
-        {startSorting ? (
-          <button
-            onClick={async () => {
-              setIsSorting(true);
-              await handleSorting();
-              setIsSorting(false);
-              setStartSorting(false);
-            }}
-             className="p-2 bg-blue-500 text-sm text-nowrap text-white rounded"
-          >
-            {t("Stop Sorting")}
-          </button>
-        ) : (
-          <button
-            onClick={() => setStartSorting(true)}
-            className="p-2 bg-green-500 text-sm text-nowrap text-white rounded"
-          >
-            {t('Start Sorting')}
-          </button>
-        )}
+        {/* Sorting Control Buttons */}
+        <div className="relative z-20">
+          {startSorting ? (
+            <button
+              onClick={async () => {
+                setIsSorting(true);
+                await handleSorting();
+                setIsSorting(false);
+                setStartSorting(false);
+              }}
+              className="p-2 bg-blue-500 text-sm text-nowrap text-white rounded"
+            >
+              {t("Stop Sorting")}
+            </button>
+          ) : (
+            <button
+              onClick={() => setStartSorting(true)}
+              className="p-2 bg-green-500 text-sm text-nowrap text-white rounded"
+            >
+              {t("Start Sorting")}
+            </button>
+          )}
+        </div>
       </div>
-      </div>
-
 
       {/* Check-all and status change UI (for "Waiting" status) */}
       {status === "Waiting" && filteredTasks.length > 0 && (

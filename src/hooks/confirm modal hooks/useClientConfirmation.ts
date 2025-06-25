@@ -48,7 +48,6 @@ const useClientConfirmation = (
 
   const { addParcel } = useRequestLogs();
 
-
   const handleConfirmationMethodChange = (method: string) => {
     setConfirmationMethod(method);
     setConfirmationValue("");
@@ -207,7 +206,7 @@ const useClientConfirmation = (
     try {
       const tasklistData = {
         device_id: userInfo.device_id,
-        pickup_task: navbarButtons !== "sending", // ეს ვკითხო ლუკას
+        pickup_task: navbarButtons !== "sending",
         status: ["Waiting", "Accepted", "Completed", "Canceled"],
       };
       console.log(navbarButtons);
@@ -215,8 +214,8 @@ const useClientConfirmation = (
         params: {
           tasklist_data: btoa(JSON.stringify(tasklistData)),
         },
-      });     
-       console.log(navbarButtons);
+      });
+      console.log(navbarButtons);
 
       if (navbarButtons == "sending") {
         setSendingTasks(response.data.response);
