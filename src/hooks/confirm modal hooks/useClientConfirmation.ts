@@ -22,7 +22,7 @@ const useClientConfirmation = (
     tracking_code: string;
     sum: number;
     places?: { tracking_code: string }[];
-    parcel_with_return?: string;
+    parcel_with_return?: boolean;
   }[],
   returnOrder?: string
 ) => {
@@ -47,6 +47,13 @@ const useClientConfirmation = (
   const [openThirdPersonModal, setOpenThirdPersonModal] =
     useState<boolean>(false);
   const order = sendingOrder || receiptOrder;
+
+      const path = location.pathname;
+    const orderId = path.split("/").pop();
+
+    
+    const returnedParcel = selectedOrdersList
+      .find((order) => order.tracking_code === orderId)?.parcel_with_return
 
   const { addParcel } = useRequestLogs();
 
@@ -133,12 +140,6 @@ const useClientConfirmation = (
     );
 
 
-    const returnedParcel = selectedOrdersList
-      .find((order) => order.tracking_code === orderId)?.parcel_with_return
-
-
-      console.log(returnedParcel, "returnedParcelBarcode");
-
     const checkedOrders = Object.keys(selectedOrders)
       .filter((tracking_code) => selectedOrders[tracking_code])
       .map((tracking_code) => ({
@@ -146,7 +147,6 @@ const useClientConfirmation = (
         successfully: "True",
         reason_id: "",
         reason_commentary: "",
-        isReturned: returnOrder === "yes" ? true : false,
       }));
 
       console.log(checkedOrders, "checkedOrders");
@@ -184,13 +184,20 @@ const useClientConfirmation = (
       other_recipient: confirmationMethod === "Other" ? confirmationValue : "",
       relationship_code: connection,
       relationship_commentary: additionalComment,
+      IsReturn: returnOrder === "yes" ? true : false,
     };
-    try {
+   
+      try {
+         console.log(params, "params");
       const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
+       if(returnedParcel == true && returnOrder !== ""){
       await axiosInstance.post(url, params);
+      
+      }
     } catch (error) {
       console.error("Error sending request:", error);
     }
+   
   };
 
   const sendOtp = async () => {
@@ -382,7 +389,7 @@ const useClientConfirmation = (
     setAdditionalComment,
     openThirdPersonModal,
     setOpenThirdPersonModal,
-
+returnedParcel
   };
 };
 

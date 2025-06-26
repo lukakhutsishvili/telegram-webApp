@@ -126,5 +126,6 @@
   "Returnable": "Возврату подлежит",
   "Returnable barcode": "Штрихкод возврата",
   "yes": "Да",
-  "no": "Нет"
+  "no": "Нет",
+  "Please select if the parcel is returnable or not.": "Пожалуйста, выберите, подлежит ли посылка возврату или нет."
 }

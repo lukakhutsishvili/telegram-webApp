@@ -126,6 +126,6 @@
   "Returnable": "დასაბრუნებელი",
   "Returnable barcode": "დაბრუნების კოდი",
   "yes": "დიახ",
-  "no": "არა"
-
+  "no": "არა",
+  "Please select if the parcel is returnable or not.": "გთხოვთ, აირჩიოთ, არის თუ არა ამანათი დასაბრუნებელი."
 }

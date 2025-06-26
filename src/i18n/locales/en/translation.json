@@ -126,5 +126,7 @@
   "Returnable": "Returnable",
   "Returnable barcode": "Returnable barcode",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "Please select if the parcel is returnable or not.": "Please select if the parcel is returnable or not."
+  
 }

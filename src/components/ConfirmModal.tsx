@@ -79,6 +79,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     additionalComment,
     setAdditionalComment,
     openThirdPersonModal,
+    returnedParcel,
   } = useClientConfirmation(
     selectedOrders,
     totalSum,
@@ -96,6 +97,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
   const [errors, setErrors] = useState(initialState);
   const { userInfo } = useContext(Context);
+  const [returnedParcelError, setReturnedParcelError] = useState("");
 
   const navigationfunction = () => {
     if (confirmationMessage) {
@@ -156,6 +158,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const onConfirm = async () => {
     setLoading(true);
+    setReturnedParcelError("");
     try {
       if (receiptOrder) {
         await confirmDelivery();
@@ -168,6 +171,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         setConfirmationMessage(t("Receipt order confirmed!"));
         setStartTimer(true);
         await fetchUpdatedOrderList();
+      } else if (returnedParcel == true && returnOrder == "") {
+        setReturnedParcelError(
+          t("Please select if the parcel is returnable or not.")
+        );
+        return;
       } else if (confirmationMethod === "OTP") {
         try {
           await checkClientOtp();
@@ -390,6 +398,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <CustomDropdown
                       returnOrder={returnOrder}
                       setReturnOrder={setReturnOrder}
+                      returnedParcelError={returnedParcelError}
                     />
                   )}
                 </div>

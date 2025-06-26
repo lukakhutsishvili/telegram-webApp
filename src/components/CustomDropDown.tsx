@@ -4,11 +4,13 @@ import { useState } from "react";
 interface CustomDropdownProps {
   returnOrder: string;
   setReturnOrder: React.Dispatch<React.SetStateAction<string>>;
+  returnedParcelError?: string;
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
   returnOrder,
   setReturnOrder,
+  returnedParcelError,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -46,6 +48,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             {t("no")}
           </div>
         </div>
+      )}
+      {returnedParcelError !== "" && (
+        <p className="text-red-500 text-xs mt-1">{returnedParcelError}</p>
       )}
     </div>
   );
