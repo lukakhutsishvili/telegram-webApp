@@ -121,5 +121,9 @@
   "Enter order code manually": "Введите код посылки вручную",
   "Success! Parcel processed.": "Успешно! Посылка обработана.",
   "This Registry is already in tasks": "Этот реестр уже в задачах",
-  "Failed to fetch details": "Не удалось получить детали. Пожалуйста, попробуйте снова."
+  "Failed to fetch details": "Не удалось получить детали. Пожалуйста, попробуйте снова.",
+  "Returnable": "Возврату подлежит",
+  "Returnable barcode": "Штрихкод возврата",
+  "yes": "Да",
+  "no": "Нет"
 }

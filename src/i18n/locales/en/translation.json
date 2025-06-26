@@ -121,5 +121,9 @@
   "Enter order code manually": "Enter order code manually",
   "Success! Parcel processed.": "Success! Parcel processed.",
   "This Registry is already in tasks": "This Registry is already in tasks",
-  "Failed to fetch details": "Failed to fetch details. Please try again."
+  "Failed to fetch details": "Failed to fetch details. Please try again.",
+  "Returnable": "Returnable",
+  "Returnable barcode": "Returnable barcode",
+  "yes": "Yes",
+  "no": "No"
 }
