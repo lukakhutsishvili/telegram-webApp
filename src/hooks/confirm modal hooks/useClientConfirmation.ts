@@ -22,7 +22,9 @@ const useClientConfirmation = (
     tracking_code: string;
     sum: number;
     places?: { tracking_code: string }[];
-  }[]
+    parcel_with_return?: string;
+  }[],
+  returnOrder?: string
 ) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>("Cash");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
@@ -130,6 +132,13 @@ const useClientConfirmation = (
         order.places.length > 0
     );
 
+
+    const returnedParcel = selectedOrdersList
+      .find((order) => order.tracking_code === orderId)?.parcel_with_return
+
+
+      console.log(returnedParcel, "returnedParcelBarcode");
+
     const checkedOrders = Object.keys(selectedOrders)
       .filter((tracking_code) => selectedOrders[tracking_code])
       .map((tracking_code) => ({
@@ -137,9 +146,11 @@ const useClientConfirmation = (
         successfully: "True",
         reason_id: "",
         reason_commentary: "",
+        isReturned: returnOrder === "yes" ? true : false,
       }));
 
-    if (checkedOrders.length === 0) {
+      console.log(checkedOrders, "checkedOrders");
+      if (checkedOrders.length === 0) {
       setErrorMessage(t("No orders selected for confirmation"));
       console.warn("No orders selected for confirmation");
       return;
@@ -174,12 +185,9 @@ const useClientConfirmation = (
       relationship_code: connection,
       relationship_commentary: additionalComment,
     };
-    console.log(params);
-
     try {
       const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
       await axiosInstance.post(url, params);
-      console.log("Request sent successfully to:", url);
     } catch (error) {
       console.error("Error sending request:", error);
     }
@@ -188,7 +196,6 @@ const useClientConfirmation = (
   const sendOtp = async () => {
     if (!order.client_phone) {
       setErrorMessage(t("Phone number is not available."));
-      console.log(t("Phone number is not available."));
       return;
     }
 
@@ -203,11 +210,9 @@ const useClientConfirmation = (
         setOtpCooldown(30);
       } else {
         setErrorMessage(t("Failed to send OTP."));
-        console.log(response.data.message || t("Failed to send OTP."));
       }
     } catch (error) {
       setErrorMessage(t("Error sending OTP."));
-      console.log(t("Error sending OTP."));
     } finally {
       setIsOtpSending(false);
     }
@@ -217,7 +222,7 @@ const useClientConfirmation = (
     try {
       const tasklistData = {
         device_id: userInfo.device_id,
-        pickup_task: navbarButtons !== "sending", // ეს ვკითხო ლუკას
+        pickup_task: navbarButtons !== "sending",
         status: ["Waiting", "Accepted", "Completed", "Canceled"],
       };
       const response = await axiosInstance.get(ORDER_LIST, {
@@ -230,7 +235,6 @@ const useClientConfirmation = (
       } else {
         setRecieptTasks(response.data.response);
       }
-      console.log("Order list updated successfully:", response);
     } catch (error) {
       console.error("Failed to fetch order list:", error);
     }
@@ -378,6 +382,7 @@ const useClientConfirmation = (
     setAdditionalComment,
     openThirdPersonModal,
     setOpenThirdPersonModal,
+
   };
 };
 
