@@ -26,8 +26,6 @@ const defaultContextValue: ContextType = {
   setAmount: () => {},
   activeButton: 0,
   setActiveButton: () => {},
-  isFetched: false,
-  setIsfetched: () => {},
 };
 
 export const Context = createContext(defaultContextValue);
@@ -42,7 +40,6 @@ const App = () => {
   const [tabButtons, setTabButtons] = useState<string>("Accepted");
   const [amount, setAmount] = useState([{ cash: 0, bank: 0, sum: 0 }]);
   const [activeButton, setActiveButton] = useState<number>(0);
-  const [isFetched, setIsfetched] = useState(false);
 
   const [showPopup, setShowPopup] = useState(false);
   const [customUserId, setCustomUserId] = useState("");
@@ -57,12 +54,16 @@ const App = () => {
 
       console.log("Telegram WebApp Initialized:", webApp.initDataUnsafe);
 
-      if (webApp.initDataUnsafe?.user?.id == "1800276631") {
+      if (
+        webApp.initDataUnsafe?.user?.id == "1800276631" ||
+        webApp.initDataUnsafe?.user?.id == "6087086146" ||
+        !webApp.initDataUnsafe?.user?.id // Example of a custom user ID
+      ) {
         setShowPopup(true);
       } else {
         setUserInfo((prev) => ({
           ...prev,
-          telegram_id: webApp.initDataUnsafe?.user?.id || "6087086146" ,
+          telegram_id: webApp.initDataUnsafe?.user?.id,
         }));
       }
     }
@@ -87,12 +88,20 @@ const App = () => {
         setAmount,
         activeButton,
         setActiveButton,
-        isFetched,
-        setIsfetched,
       }}
     >
       <Routes>
-        <Route element={<SignIn showPopup={showPopup} setShowPopup={setShowPopup} setCustomUserId={setCustomUserId} customUserId={customUserId} />} path="/" />
+        <Route
+          element={
+            <SignIn
+              showPopup={showPopup}
+              setShowPopup={setShowPopup}
+              setCustomUserId={setCustomUserId}
+              customUserId={customUserId}
+            />
+          }
+          path="/"
+        />
         <Route element={<Home />} path="/home" />
         <Route element={<Reciept />} path="/reciept" />
         <Route element={<Sending />} path="/sending" />
@@ -100,13 +109,14 @@ const App = () => {
         <Route path="/order/:id" element={<OrderPage />} />
         <Route element={<RequestLog />} path="/requestlog" />
       </Routes>
-      
-      {(location.pathname.toLowerCase() === "/home" ||
-        location.pathname.toLowerCase() === "/sending" ||
-        location.pathname.toLowerCase() === "/reciept" ||
-        location.pathname.toLowerCase() === "/scanner") && <Navbar />}
-
-
+      {location.pathname.toLowerCase() === "/home" ||
+      location.pathname.toLowerCase() === "/sending" ||
+      location.pathname.toLowerCase() === "/reciept" ||
+      location.pathname.toLowerCase() === "/scanner" ? (
+        <Navbar />
+      ) : (
+        <div></div>
+      )}
     </Context.Provider>
   );
 };

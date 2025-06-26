@@ -61,7 +61,7 @@
   "Please enter the ID number.": "Please enter the ID number.",
   "ID Number confirmed!": "ID Number confirmed!",
   "Failed to save ID Number. Please try again.": "Failed to save ID Number. Please try again.",
-  "An error occurred while saving the ID Number. Please try again.": "An error occurred while saving the ID Number. Please try again.",
+  "An error occurred while saving the ID Number. Please try again.": " ID Number is already registered. please try other person",
   "The ID Number does not match the client's ID. Please try again.": "The ID Number does not match the client's ID. Please try again.",
   "Payment Method": "Payment Method",
   "Confirmation Method": "Confirmation Method",
@@ -118,5 +118,8 @@
   "Total Parcels in Register": "Total Parcels in Register",
   "please scan all order": "please scan all order",
   "Error": "Error",
-  "Enter order code manually": "Enter order code manually"
+  "Enter order code manually": "Enter order code manually",
+  "Success! Parcel processed.": "Success! Parcel processed.",
+  "This Registry is already in tasks": "This Registry is already in tasks",
+  "Failed to fetch details": "Failed to fetch details. Please try again."
 }
