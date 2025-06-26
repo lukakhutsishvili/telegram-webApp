@@ -64,6 +64,7 @@ const OrderPage = () => {
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
   };
+
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -134,6 +135,22 @@ const OrderPage = () => {
               <span className="font-base text-sm">{t("status")} :</span>
               <span className="font-base">{order.Status}</span>
             </div>
+            <div className="p-1 flex justify-between">
+              <span className="font-bold text-sm  text-red-600">{t("Returnable")} :</span>
+              <span className="font-bold text-red-600">{order.parcel_with_return ? t("yes") : t("no")}</span>
+            </div>
+            {/* Parcel With Return barcode*/}
+            {order?.parcel_with_return && (
+              <div className="p-1 flex justify-between">
+                <span className="font-bold text-sm text-red-600">{t("Returnable barcode")} :</span>
+                 <span 
+                    onClick={() =>
+                      navigator.clipboard.writeText(order.tracking_code)
+                    }
+                    className="font-semibold text-red-600 underline cursor-pointer">{order.parcel_with_return_barcode}
+                  </span>
+              </div>
+            )}
           </div>
 
           {order?.with_places ? (

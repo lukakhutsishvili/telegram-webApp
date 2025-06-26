@@ -123,6 +123,8 @@
   "This Registry is already in tasks": "This Registry is already in tasks",
   "Failed to fetch details": "Failed to fetch details. Please try again.",
   "choose": "Choose",
-  "yes": "Yes",   
+  "Returnable": "Returnable",
+  "Returnable barcode": "Returnable barcode",
+  "yes": "Yes",
   "no": "No"
 }

@@ -123,6 +123,8 @@
   "This Registry is already in tasks": "Этот реестр уже в задачах",
   "Failed to fetch details": "Не удалось получить детали. Пожалуйста, попробуйте снова.",
   "choose": "Выберите",
-  "yes": "Да",  
+  "Returnable": "Возврату подлежит",
+  "Returnable barcode": "Штрихкод возврата",
+  "yes": "Да",
   "no": "Нет"
 }
