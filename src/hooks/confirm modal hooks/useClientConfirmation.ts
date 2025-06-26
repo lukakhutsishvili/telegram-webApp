@@ -22,7 +22,9 @@ const useClientConfirmation = (
     tracking_code: string;
     sum: number;
     places?: { tracking_code: string }[];
-  }[]
+    parcel_with_return?: string;
+  }[],
+  returnOrder?: string
 ) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>("Cash");
   const [confirmationMethod, setConfirmationMethod] = useState("OTP");
@@ -130,6 +132,13 @@ const useClientConfirmation = (
         order.places.length > 0
     );
 
+
+    const returnedParcel = selectedOrdersList
+      .find((order) => order.tracking_code === orderId)?.parcel_with_return
+
+
+      console.log(returnedParcel, "returnedParcelBarcode");
+
     const checkedOrders = Object.keys(selectedOrders)
       .filter((tracking_code) => selectedOrders[tracking_code])
       .map((tracking_code) => ({
@@ -137,9 +146,11 @@ const useClientConfirmation = (
         successfully: "True",
         reason_id: "",
         reason_commentary: "",
+        isReturned: returnOrder === "true" ? true : false,
       }));
 
-    if (checkedOrders.length === 0) {
+      console.log(checkedOrders, "checkedOrders");
+      if (checkedOrders.length === 0) {
       setErrorMessage(t("No orders selected for confirmation"));
       console.warn("No orders selected for confirmation");
       return;
@@ -371,6 +382,7 @@ const useClientConfirmation = (
     setAdditionalComment,
     openThirdPersonModal,
     setOpenThirdPersonModal,
+
   };
 };
 
