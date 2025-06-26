@@ -121,6 +121,8 @@
   "Enter order code manually": "შეიყვანეთ ამანათის კოდი",
   "Success! Parcel processed.": "ამანათი წარმატებით დამუშავდა.",
   "This Registry is already in tasks": "ეს რეესტრი უკვე არის დავალებებში",
-  "Failed to fetch details": "დეტალების დამუშავება ვერ მოხერხდა, სცადეთ ხელახლა."
-
+  "Failed to fetch details": "დეტალების დამუშავება ვერ მოხერხდა, სცადეთ ხელახლა.",
+  "choose": "აირჩიეთ",
+  "yes": "კი",    
+  "no": "არა"
 }

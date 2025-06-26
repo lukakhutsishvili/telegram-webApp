@@ -35,6 +35,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const PARCELS_KEY = "parcels";
   const storedParcels = JSON.parse(localStorage.getItem(PARCELS_KEY) || "[]");
   const order = sendingOrder || receiptOrder;
+  const [returnOrder, setReturnOrder] = useState<string>("");
 
   const PARCEL_WITH_RETURN = order.parcel_with_return;
 
@@ -83,7 +84,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     totalSum,
     sendingOrder,
     receiptOrder,
-    selectedOrdersList
+    selectedOrdersList,
+    returnOrder
   );
 
   const initialState = {
@@ -384,7 +386,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     />
                   )}
 
-                  {!PARCEL_WITH_RETURN && <CustomDropdown />}
+                  {PARCEL_WITH_RETURN && (
+                    <CustomDropdown
+                      returnOrder={returnOrder}
+                      setReturnOrder={setReturnOrder}
+                    />
+                  )}
                 </div>
               </>
             )}
