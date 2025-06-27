@@ -13,19 +13,27 @@ interface SameClientsOrdersProps {
   handleCheckboxChange: (tracking_code: string) => void;
 }
 
-function SameClientsOrders({selectedOrdersList,selectedOrders,differentAddressOrders,handleCheckboxChange,}: SameClientsOrdersProps) {
-  
-// Filter out orders with places
-const filteredOrders = selectedOrdersList.filter(
-  (order) => !order.places || order.places.length === 0
-);
+function SameClientsOrders({
+  selectedOrdersList,
+  selectedOrders,
+  differentAddressOrders,
+  handleCheckboxChange,
+}: SameClientsOrdersProps) {
+  // Filter out orders with places
+  const filteredOrders = selectedOrdersList.filter(
+    (order) => !order.places || order.places.length === 0
+  );
 
-// Determine if we should show return parcels only or normal ones
+  // Determine if we should show return parcels only or normal ones
 const showReturnParcels = filteredOrders.length > 0 && filteredOrders[0].parcel_with_return;
 
-const visibleOrders = filteredOrders.filter(
+let visibleOrders = filteredOrders.filter(
   (order) => !!order.parcel_with_return === showReturnParcels
 );
+
+if (showReturnParcels) {
+  visibleOrders = visibleOrders.slice(0, 1); // Only show the first return parcel
+}
 
   return (
     <div>

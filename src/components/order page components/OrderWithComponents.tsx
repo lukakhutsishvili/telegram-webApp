@@ -20,7 +20,7 @@ function OrderWithComponents({
         >
           <input
             type="checkbox"
-            disabled={!selectedOrders[place.tracking_code]}
+            // disabled={!selectedOrders[place.tracking_code]}
             checked={!!selectedOrders[place.tracking_code]}
             onChange={() => handleCheckboxChange(place.tracking_code)}
           />
