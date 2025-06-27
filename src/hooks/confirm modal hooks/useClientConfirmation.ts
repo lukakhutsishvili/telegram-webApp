@@ -47,10 +47,14 @@ const useClientConfirmation = (
   const [openThirdPersonModal, setOpenThirdPersonModal] =
     useState<boolean>(false);
   const order = sendingOrder || receiptOrder;
+  const [selectedReturnReason, setSelectedReturnReason] = useState<string>("");
+  const [selectedReturnReasonText, setSelectedReturnReasonText] =
+    useState<string>("");
 
       const path = location.pathname;
     const orderId = path.split("/").pop();
 
+    
     
     const returnedParcel = selectedOrdersList
       .find((order) => order.tracking_code === orderId)?.parcel_with_return
@@ -145,8 +149,8 @@ const useClientConfirmation = (
       .map((tracking_code) => ({
         tracking_code,
         successfully: "True",
-        reason_id: "",
-        reason_commentary: "",
+        reason_id: selectedReturnReason ? selectedReturnReason :  "",
+        reason_commentary: selectedReturnReasonText ? selectedReturnReasonText : "",
       }));
 
       console.log(checkedOrders, "checkedOrders");
@@ -389,7 +393,11 @@ const useClientConfirmation = (
     setAdditionalComment,
     openThirdPersonModal,
     setOpenThirdPersonModal,
-returnedParcel
+    returnedParcel,
+    selectedReturnReason,
+    setSelectedReturnReason,
+    selectedReturnReasonText,
+    setSelectedReturnReasonText,
   };
 };
 

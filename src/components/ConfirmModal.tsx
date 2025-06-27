@@ -9,6 +9,7 @@ import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
 import { Context } from "../App";
 import CustomDropdown from "./CustomDropDown";
+import ReturnDeclineModal from "./returnDeclineModal";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -36,6 +37,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const storedParcels = JSON.parse(localStorage.getItem(PARCELS_KEY) || "[]");
   const order = sendingOrder || receiptOrder;
   const [returnOrder, setReturnOrder] = useState<string>("");
+
+  const { userInfo } = useContext(Context);
+  const [returnedParcelError, setReturnedParcelError] = useState("");
+  
+  const [returnDeclineModalOpen, setReturnDeclineModalOpen] = useState(false);
 
   const PARCEL_WITH_RETURN = order.parcel_with_return;
 
@@ -80,15 +86,18 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     setAdditionalComment,
     openThirdPersonModal,
     returnedParcel,
+    setSelectedReturnReason,
+    setSelectedReturnReasonText,
+    selectedReturnReason,
+    selectedReturnReasonText,
   } = useClientConfirmation(
     selectedOrders,
     totalSum,
     sendingOrder,
     receiptOrder,
     selectedOrdersList,
-    returnOrder
+    returnOrder,
   );
-
   const initialState = {
     otherClientName: "",
     otherClientSurname: "",
@@ -96,9 +105,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     additionalComment,
   };
   const [errors, setErrors] = useState(initialState);
-  const { userInfo } = useContext(Context);
-  const [returnedParcelError, setReturnedParcelError] = useState("");
-
   const navigationfunction = () => {
     if (confirmationMessage) {
       if (sendingOrder) {
@@ -345,7 +351,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                         : t("Send OTP")}
                     </Button>
                   )}
-
                   {otpSent && (
                     <div className="text-green-500">{t("OTP Sent!")}</div>
                   )}
@@ -394,13 +399,30 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     />
                   )}
 
-                  {PARCEL_WITH_RETURN && (
-                    <CustomDropdown
-                      returnOrder={returnOrder}
-                      setReturnOrder={setReturnOrder}
-                      returnedParcelError={returnedParcelError}
-                    />
-                  )}
+                  <div>
+                    {PARCEL_WITH_RETURN && (
+                      <CustomDropdown
+                        returnOrder={returnOrder}
+                        setReturnOrder={setReturnOrder}
+                        returnedParcelError={returnedParcelError}
+                        setReturnDeclineModalOpen={setReturnDeclineModalOpen}
+                        setSelectedReturnReason={setSelectedReturnReason}
+                        setSelectedReturnReasonText={setSelectedReturnReasonText}
+                      />
+                    )}
+                    {returnDeclineModalOpen && (
+                      <ReturnDeclineModal
+                        setReturnDeclineModalOpen={setReturnDeclineModalOpen}
+                        selectedReturnReason={selectedReturnReason}
+                        setSelectedReturnReason={setSelectedReturnReason}
+                        selectedReturnReasonText={selectedReturnReasonText}
+                        setSelectedReturnReasonText={
+                          setSelectedReturnReasonText
+                        }
+                        setReturnOrder={setReturnOrder}
+                      />
+                    )}
+                  </div>
                 </div>
               </>
             )}

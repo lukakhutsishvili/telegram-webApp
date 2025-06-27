@@ -5,18 +5,29 @@ interface CustomDropdownProps {
   returnOrder: string;
   setReturnOrder: React.Dispatch<React.SetStateAction<string>>;
   returnedParcelError?: string;
+  setReturnDeclineModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedReturnReason?: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedReturnReasonText?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
   returnOrder,
   setReturnOrder,
   returnedParcelError,
+  setReturnDeclineModalOpen,
+  setSelectedReturnReason,
+  setSelectedReturnReasonText
 }) => {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (val: any) => {
     setReturnOrder(val);
     setOpen(false);
+    if (val === "no") {
+      setSelectedReturnReason && setSelectedReturnReason("");
+      setSelectedReturnReasonText && setSelectedReturnReasonText("");
+      setReturnDeclineModalOpen && setReturnDeclineModalOpen(true);
+    }
   };
 
   return (
@@ -42,7 +53,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             {t("yes")}
           </div>
           <div
-            onClick={() => handleSelect("no")}
+            onClick={() => {
+              handleSelect("no");
+              
+            }}
             className="p-2 hover:bg-gray-100 cursor-pointer"
           >
             {t("no")}
