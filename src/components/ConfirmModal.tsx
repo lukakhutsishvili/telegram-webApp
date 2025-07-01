@@ -44,6 +44,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const [returnDeclineModalOpen, setReturnDeclineModalOpen] = useState(false);
 
   const PARCEL_WITH_RETURN = order.parcel_with_return;
+  const PARCEL_WITHOUT_RETURN_BARCODE = order.parcel_with_return_barcode == "";
+
+  useEffect(() => {
+  if (PARCEL_WITHOUT_RETURN_BARCODE) {
+    setReturnOrder("no");
+  }
+}, [PARCEL_WITHOUT_RETURN_BARCODE]);
 
   const { addParcel } = useRequestLogs();
 
@@ -400,7 +407,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   )}
 
                   <div>
-                    {PARCEL_WITH_RETURN && (
+                    {(PARCEL_WITH_RETURN && !PARCEL_WITHOUT_RETURN_BARCODE) && (
                       <CustomDropdown
                         returnOrder={returnOrder}
                         setReturnOrder={setReturnOrder}
