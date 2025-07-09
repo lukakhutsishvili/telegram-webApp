@@ -85,7 +85,16 @@ const SortableItem = ({
       >
         <div className="flex justify-between">
           <h2 className="text-xs">{task.client_name}</h2>
-          <p className="text-xs">{task.sum} ₾</p>
+          {
+            task.sumcash === task.sum ? (
+              <p className="text-xs text-blue-700 font-bold">{task.sum} ₾</p>
+            ) : (
+              <div className="flex gap-2">
+                <p className="text-xs text-red-500 font-bold">{task.sumcash} ₾</p>
+                <p className="text-xs text-blue-700 font-bold">{task.sum} ₾</p>
+              </div>
+            )
+          }
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
