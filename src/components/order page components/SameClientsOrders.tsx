@@ -4,6 +4,7 @@ interface SameClientsOrdersProps {
   selectedOrdersList: {
     tracking_code: string;
     sum: number;
+    sumcash: number;
     client_address: string;
     places?: any[];
     parcel_with_return?: boolean;
@@ -75,7 +76,22 @@ if (showReturnParcels) {
               </div>
               <div className="flex justify-between items-center">
                 <span className="font-base text-sm">{t("sum")} :</span>
-                <span className="font-base text-sm">{order.sum} ₾</span>
+                { order.sumcash == order.sum ? (
+                  <span className="font-bold text-sm text-blue-700">{order.sum} ₾</span>
+                ) : (
+                <div>
+                  <div className="flex gap-2">
+                    <span className="font-bold text-sm text-blue-700">{t("Cash2")}</span>
+                    <span className="font-bold text-sm text-blue-700">{order.sumcash} ₾</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="font-bold text-sm text-blue-700">{t("Bank")}</span>
+                    <span className="font-bold text-sm text-blue-700">{order.sum} ₾</span>
+                  </div>
+                </div>
+                )
+
+                }
               </div>
             </div>
           </li>
