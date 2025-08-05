@@ -126,42 +126,55 @@ const OrderPage = () => {
                 {order.client_phone}
               </span>
               {/* WhatsApp Icon Link */}
-              <a
-                href={`https://wa.me/${order.client_phone}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Open in WhatsApp"
-              >
-              </a>
-
+              <span>
+                <a
+                  href={`https://wa.me/${order.client_phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Open in WhatsApp"
+                >
+                  {" "}
+                  {order.client_phone}
+                </a>
+              </span>
               {/* Viber Icon Link */}
-              <a
-                href={`viber://call?number=${order.client_phone}`}
-                title="Call on Viber"
-              >
-               
-              </a>
+              <span>
+                <a
+                  href={`viber://call?number=${order.client_phone}`}
+                  title="Call on Viber"
+                >
+                  {" "}
+                  {order.client_phone}
+                </a>
+              </span>
             </div>
             {(order.Status !== "Accepted" || order?.places) && (
               <div className="p-1 flex justify-between items-center">
                 <span className="font-base text-sm">{t("sum")} :</span>
-                { order.sumcash == order.sum ? (
-                  <span className="font-bold text-sm text-blue-700">{order.sum} ₾</span>
+                {order.sumcash == order.sum ? (
+                  <span className="font-bold text-sm text-blue-700">
+                    {order.sum} ₾
+                  </span>
                 ) : (
-                <div>
-                  <div className="flex gap-2">
-                    <span className="font-bold text-sm text-blue-700">{t("Cash2")}</span>
-                    <span className="font-bold text-sm text-blue-700">{order.sumcash} ₾</span>
+                  <div>
+                    <div className="flex gap-2">
+                      <span className="font-bold text-sm text-blue-700">
+                        {t("Cash2")}
+                      </span>
+                      <span className="font-bold text-sm text-blue-700">
+                        {order.sumcash} ₾
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="font-bold text-sm text-blue-700">
+                        {t("Bank")}
+                      </span>
+                      <span className="font-bold text-sm text-blue-700">
+                        {order.sum} ₾
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <span className="font-bold text-sm text-blue-700">{t("Bank")}</span>
-                    <span className="font-bold text-sm text-blue-700">{order.sum} ₾</span>
-                  </div>
-                </div>
-                )
-
-                }
-                
+                )}
               </div>
             )}
             <div className="p-1 flex justify-between">
@@ -219,16 +232,20 @@ const OrderPage = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span>{t("Total amount")} :</span>
-                  {
-                    totalSumCash === totalSum ? (
-                      <span className="font-medium text-s text-blue-700">{totalSum} ₾</span>
-                    ) : (
+                  {totalSumCash === totalSum ? (
+                    <span className="font-medium text-s text-blue-700">
+                      {totalSum} ₾
+                    </span>
+                  ) : (
                     <div className="flex flex-col">
-                      <span className="font-medium text-xs text-blue-700">{t("Cash2")} {totalSumCash} ₾</span>
-                      <span className="font-medium text-xs text-blue-700">{t("Bank")} {totalSum} ₾</span>
+                      <span className="font-medium text-xs text-blue-700">
+                        {t("Cash2")} {totalSumCash} ₾
+                      </span>
+                      <span className="font-medium text-xs text-blue-700">
+                        {t("Bank")} {totalSum} ₾
+                      </span>
                     </div>
-                    )
-                  }
+                  )}
                 </div>
                 <div className="flex space-x-4">
                   <Button
