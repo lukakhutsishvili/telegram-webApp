@@ -11,6 +11,7 @@ import OrderWithComponents from "../components/order page components/OrderWithCo
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
 import ComponentParcelError from "../components/ComponentParcelError";
 import { useTranslation } from "react-i18next";
+import { FaPhoneAlt, FaWhatsapp, FaViber } from "react-icons/fa";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -114,54 +115,65 @@ const OrderPage = () => {
                 {order.client_address}
               </span>
             </div>
-            <div className="p-1 flex justify-between">
-              <span className="font-base text-sm">{t("phone")} :</span>
+            <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 shadow-sm">
+              {/* ტელეფონის ნომერი */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">
+                  {t("phone")}:
+                </span>
+                <span className="text-sm font-semibold text-gray-800">
+                  {order.client_phone}
+                </span>
+              </div>
 
-              <span
-                onClick={() =>
-                  window.open(`tel:${order.client_phone}`, "_blank")
-                }
-                className="font-base text-blue-500 underline cursor-pointer"
-              >
-                {order.client_phone}
-              </span>
-              {/* WhatsApp Icon Link */}
-              <span
-                onClick={() =>
-                  window.open(`https://wa.me/${order.client_phone}`, "_blank")
-                }
-                className="font-base text-blue-500 underline cursor-pointer"
-              >
-                {order.client_phone}
-              </span>
-              {/* Viber Icon Link */}
-              <span
-                onClick={() => {
-                  // 1. Get the raw phone number.
-                  const phoneNumber = order.client_phone;
-
-                  // 2. Remove all non-digit characters.
-                  let cleanedNumber = phoneNumber.replace(/\D/g, "");
-
-                  // 3. IMPORTANT: Check if it's a local Georgian number and add the country code.
-                  //    If the number has 9 digits (e.g., 5xx-xxx-xxx), prepend '995'.
-                  if (
-                    cleanedNumber.length === 9 &&
-                    cleanedNumber.startsWith("5")
-                  ) {
-                    cleanedNumber = "995" + cleanedNumber;
+              {/* ღილაკები */}
+              <div className="flex items-center gap-4">
+                {/* Phone */}
+                <button
+                  onClick={() =>
+                    window.open(`tel:${order.client_phone}`, "_blank")
                   }
+                  className="flex flex-col items-center text-gray-600 hover:text-blue-500 transition"
+                >
+                  <FaPhoneAlt className="h-6 w-6" />
+                  <span className="text-xs font-medium mt-1">Phone</span>
+                </button>
 
-                  // 4. Create the final link with the properly encoded '+' sign (%2B).
-                  const viberLink = `viber://chat?number=%2B${cleanedNumber}`;
+                {/* WhatsApp */}
+                <button
+                  onClick={() =>
+                    window.open(
+                      `https://wa.me/${order.client_phone.replace(/\D/g, "")}`,
+                      "_blank"
+                    )
+                  }
+                  className="flex flex-col items-center text-gray-600 hover:text-green-500 transition"
+                >
+                  <FaWhatsapp className="h-6 w-6" />
+                  <span className="text-xs font-medium mt-1">WhatsApp</span>
+                </button>
 
-                  // 5. Open the link.
-                  window.open(viberLink, "_blank");
-                }}
-                className="font-base text-blue-500 underline cursor-pointer"
-              >
-                {order.client_phone}
-              </span>
+                {/* Viber */}
+                <button
+                  onClick={() => {
+                    let cleanedNumber = order.client_phone.replace(/\D/g, "");
+                    if (
+                      cleanedNumber.length === 9 &&
+                      cleanedNumber.startsWith("5")
+                    ) {
+                      cleanedNumber = "995" + cleanedNumber;
+                    }
+                    window.open(
+                      `viber://chat?number=%2B${cleanedNumber}`,
+                      "_blank"
+                    );
+                  }}
+                  className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition"
+                >
+                  <FaViber className="h-6 w-6" />
+                  <span className="text-xs font-medium mt-1">Viber</span>
+                </button>
+              </div>
             </div>
             {(order.Status !== "Accepted" || order?.places) && (
               <div className="p-1 flex justify-between items-center">
