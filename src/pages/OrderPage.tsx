@@ -66,6 +66,8 @@ const OrderPage = () => {
     setIsScanning(!isScanning);
   };
 
+  let cleaned = order.client_phone.replace(/\D/g, "");
+
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -126,26 +128,22 @@ const OrderPage = () => {
                 {order.client_phone}
               </span>
               {/* WhatsApp Icon Link */}
-              <span>
-                <a
-                  href={`https://wa.me/${order.client_phone}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Open in WhatsApp"
-                >
-                  {" "}
-                  {order.client_phone}
-                </a>
+              <span
+                onClick={() =>
+                  window.open(`https://wa.me/${order.client_phone}`, "_blank")
+                }
+                className="font-base text-blue-500 underline cursor-pointer"
+              >
+                {order.client_phone}
               </span>
               {/* Viber Icon Link */}
-              <span>
-                <a
-                  href={`viber://call?number=${order.client_phone}`}
-                  title="Call on Viber"
-                >
-                  {" "}
-                  {order.client_phone}
-                </a>
+              <span
+                onClick={() =>
+                  window.open(`https://vb.me/${cleaned}`, "_blank")
+                }
+                className="font-base text-blue-500 underline cursor-pointer"
+              >
+                {order.client_phone}
               </span>
             </div>
             {(order.Status !== "Accepted" || order?.places) && (
