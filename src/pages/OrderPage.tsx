@@ -137,16 +137,26 @@ const OrderPage = () => {
               {/* Viber Icon Link */}
               <span
                 onClick={() => {
-                  // Viber needs the number with country code, without the '+' sign in the viber:// scheme.
-                  const cleanedPhoneNumber = order.client_phone.replace(
-                    /\D/g,
-                    ""
-                  );
-                  // The format viber://chat?number=%2B... is for URLs with a plus, but simply the number works for direct app opening.
-                  window.open(
-                    `viber://chat?number=${cleanedPhoneNumber}`,
-                    "_blank"
-                  );
+                  // 1. Get the raw phone number.
+                  const phoneNumber = order.client_phone;
+
+                  // 2. Remove all non-digit characters.
+                  let cleanedNumber = phoneNumber.replace(/\D/g, "");
+
+                  // 3. IMPORTANT: Check if it's a local Georgian number and add the country code.
+                  //    If the number has 9 digits (e.g., 5xx-xxx-xxx), prepend '995'.
+                  if (
+                    cleanedNumber.length === 9 &&
+                    cleanedNumber.startsWith("5")
+                  ) {
+                    cleanedNumber = "995" + cleanedNumber;
+                  }
+
+                  // 4. Create the final link with the properly encoded '+' sign (%2B).
+                  const viberLink = `viber://chat?number=%2B${cleanedNumber}`;
+
+                  // 5. Open the link.
+                  window.open(viberLink, "_blank");
                 }}
                 className="font-base text-blue-500 underline cursor-pointer"
               >
