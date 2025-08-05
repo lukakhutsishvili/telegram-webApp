@@ -95,6 +95,7 @@ function CancelModal({closeCancellationModal,selectedOrders,sendingOrder,selecte
       other_recipient :  '',
       relationship_code: '',
       relationship_commentary : '',
+      IsReturn: false,
     };
 
     try {

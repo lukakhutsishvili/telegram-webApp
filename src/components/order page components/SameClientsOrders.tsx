@@ -4,6 +4,7 @@ interface SameClientsOrdersProps {
   selectedOrdersList: {
     tracking_code: string;
     sum: number;
+    sumcash: number;
     client_address: string;
     places?: any[];
     parcel_with_return?: boolean;
@@ -13,19 +14,27 @@ interface SameClientsOrdersProps {
   handleCheckboxChange: (tracking_code: string) => void;
 }
 
-function SameClientsOrders({selectedOrdersList,selectedOrders,differentAddressOrders,handleCheckboxChange,}: SameClientsOrdersProps) {
-  
-// Filter out orders with places
-const filteredOrders = selectedOrdersList.filter(
-  (order) => !order.places || order.places.length === 0
-);
+function SameClientsOrders({
+  selectedOrdersList,
+  selectedOrders,
+  differentAddressOrders,
+  handleCheckboxChange,
+}: SameClientsOrdersProps) {
+  // Filter out orders with places
+  const filteredOrders = selectedOrdersList.filter(
+    (order) => !order.places || order.places.length === 0
+  );
 
-// Determine if we should show return parcels only or normal ones
+  // Determine if we should show return parcels only or normal ones
 const showReturnParcels = filteredOrders.length > 0 && filteredOrders[0].parcel_with_return;
 
-const visibleOrders = filteredOrders.filter(
+let visibleOrders = filteredOrders.filter(
   (order) => !!order.parcel_with_return === showReturnParcels
 );
+
+if (showReturnParcels) {
+  visibleOrders = visibleOrders.slice(0, 1); // Only show the first return parcel
+}
 
   return (
     <div>
@@ -67,7 +76,22 @@ const visibleOrders = filteredOrders.filter(
               </div>
               <div className="flex justify-between items-center">
                 <span className="font-base text-sm">{t("sum")} :</span>
-                <span className="font-base text-sm">{order.sum} ₾</span>
+                { order.sumcash == order.sum ? (
+                  <span className="font-bold text-sm text-blue-700">{order.sum} ₾</span>
+                ) : (
+                <div>
+                  <div className="flex gap-2">
+                    <span className="font-bold text-sm text-blue-700">{t("Cash2")}</span>
+                    <span className="font-bold text-sm text-blue-700">{order.sumcash} ₾</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="font-bold text-sm text-blue-700">{t("Bank")}</span>
+                    <span className="font-bold text-sm text-blue-700">{order.sum} ₾</span>
+                  </div>
+                </div>
+                )
+
+                }
               </div>
             </div>
           </li>

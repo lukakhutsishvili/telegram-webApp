@@ -194,10 +194,7 @@ const useClientConfirmation = (
       try {
          console.log(params, "params");
       const url = order === receiptOrder ? PICKUP_ORDERS : DELIVERY_ORDERS;
-       if(returnedParcel == true && returnOrder !== ""){
       await axiosInstance.post(url, params);
-      
-      }
     } catch (error) {
       console.error("Error sending request:", error);
     }
