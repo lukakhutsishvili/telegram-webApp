@@ -66,8 +66,6 @@ const OrderPage = () => {
     setIsScanning(!isScanning);
   };
 
-  let cleaned = order.client_phone.replace(/\D/g, "");
-
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
       {isScanning ? (
@@ -138,9 +136,18 @@ const OrderPage = () => {
               </span>
               {/* Viber Icon Link */}
               <span
-                onClick={() =>
-                  window.open(`https://vb.me/${cleaned}`, "_blank")
-                }
+                onClick={() => {
+                  // Viber needs the number with country code, without the '+' sign in the viber:// scheme.
+                  const cleanedPhoneNumber = order.client_phone.replace(
+                    /\D/g,
+                    ""
+                  );
+                  // The format viber://chat?number=%2B... is for URLs with a plus, but simply the number works for direct app opening.
+                  window.open(
+                    `viber://chat?number=${cleanedPhoneNumber}`,
+                    "_blank"
+                  );
+                }}
                 className="font-base text-blue-500 underline cursor-pointer"
               >
                 {order.client_phone}
