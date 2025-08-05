@@ -124,6 +124,22 @@ const OrderPage = () => {
               >
                 {order.client_phone}
               </span>
+              {/* WhatsApp Icon Link */}
+              <a
+                href={`https://wa.me/${order.client_phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open in WhatsApp"
+              >
+              </a>
+
+              {/* Viber Icon Link */}
+              <a
+                href={`viber://call?number=${order.client_phone}`}
+                title="Call on Viber"
+              >
+               
+              </a>
             </div>
             {(order.Status !== "Accepted" || order?.places) && (
               <div className="p-1 flex justify-between">
@@ -136,19 +152,27 @@ const OrderPage = () => {
               <span className="font-base">{order.Status}</span>
             </div>
             <div className="p-1 flex justify-between">
-              <span className="font-bold text-sm  text-red-600">{t("Returnable")} :</span>
-              <span className="font-bold text-red-600">{order.parcel_with_return ? t("yes") : t("no")}</span>
+              <span className="font-bold text-sm  text-red-600">
+                {t("Returnable")} :
+              </span>
+              <span className="font-bold text-red-600">
+                {order.parcel_with_return ? t("yes") : t("no")}
+              </span>
             </div>
             {/* Parcel With Return barcode*/}
             {order?.parcel_with_return && (
               <div className="p-1 flex justify-between">
-                <span className="font-bold text-sm text-red-600">{t("Returnable barcode")} :</span>
-                 <span 
-                    onClick={() =>
-                      navigator.clipboard.writeText(order.tracking_code)
-                    }
-                    className="font-semibold text-red-600 underline cursor-pointer">{order.parcel_with_return_barcode}
-                  </span>
+                <span className="font-bold text-sm text-red-600">
+                  {t("Returnable barcode")} :
+                </span>
+                <span
+                  onClick={() =>
+                    navigator.clipboard.writeText(order.tracking_code)
+                  }
+                  className="font-semibold text-red-600 underline cursor-pointer"
+                >
+                  {order.parcel_with_return_barcode}
+                </span>
               </div>
             )}
           </div>
