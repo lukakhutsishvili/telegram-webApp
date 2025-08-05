@@ -117,7 +117,7 @@ const OrderPage = () => {
             </div>
             <div className="flex items-center justify-between rounded-lg bg-slate-50 pl-0 p-3 shadow-sm">
               {/* ტელეფონის ნომერი */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col items-center gap-2">
                 <span className="text-sm font-medium text-gray-600">
                   {t("phone")}:
                 </span>
