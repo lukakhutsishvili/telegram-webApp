@@ -115,7 +115,7 @@ const OrderPage = () => {
                 {order.client_address}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 shadow-sm">
+            <div className="flex items-center justify-between rounded-lg bg-slate-50 pl-0 p-3 shadow-sm">
               {/* ტელეფონის ნომერი */}
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-600">
@@ -128,17 +128,6 @@ const OrderPage = () => {
 
               {/* ღილაკები */}
               <div className="flex items-center gap-4">
-                {/* Phone */}
-                <button
-                  onClick={() =>
-                    window.open(`tel:${order.client_phone}`, "_blank")
-                  }
-                  className="flex flex-col items-center text-gray-600 hover:text-blue-500 transition"
-                >
-                  <FaPhoneAlt className="h-6 w-6" />
-                  <span className="text-xs font-medium mt-1">Phone</span>
-                </button>
-
                 {/* WhatsApp */}
                 <button
                   onClick={() =>
@@ -172,6 +161,17 @@ const OrderPage = () => {
                 >
                   <FaViber className="h-6 w-6" />
                   <span className="text-xs font-medium mt-1">Viber</span>
+                </button>
+
+                {/* Phone */}
+                <button
+                  onClick={() =>
+                    window.open(`tel:${order.client_phone}`, "_blank")
+                  }
+                  className="flex flex-col items-center text-gray-600 hover:text-blue-500 transition"
+                >
+                  <FaPhoneAlt className="h-6 w-6" />
+                  <span className="text-xs font-medium mt-1">Phone</span>
                 </button>
               </div>
             </div>
