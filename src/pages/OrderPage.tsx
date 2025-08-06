@@ -120,7 +120,7 @@ const OrderPage = () => {
                 {order.client_address}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-slate-50 pl-0 p-3 shadow-sm">
+            <div className="flex items-center  justify-between rounded-lg bg-slate-50 pl-0 p-3 shadow-sm">
               {/* ტელეფონის ნომერი */}
               <div className="flex flex-col items-left gap-2">
                 <span className="text-sm font-medium text-gray-600">
@@ -132,7 +132,7 @@ const OrderPage = () => {
               </div>
 
               {/* ღილაკები */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center flex-wrap-reverse gap-4">
                 {/* WhatsApp */}
                 <button
                   onClick={() =>
