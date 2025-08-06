@@ -11,7 +11,7 @@ import OrderWithComponents from "../components/order page components/OrderWithCo
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
 import ComponentParcelError from "../components/ComponentParcelError";
 import { useTranslation } from "react-i18next";
-import { FaPhoneAlt, FaWhatsapp, FaViber } from "react-icons/fa";
+import { FaPhoneAlt, FaWhatsapp, FaViber, FaTelegramPlane } from "react-icons/fa";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -161,6 +161,19 @@ const OrderPage = () => {
                 >
                   <FaViber className="h-6 w-6" />
                   <span className="text-xs font-medium mt-1">Viber</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    // Cleans the phone number to be digits only
+                    const phoneNumber = order.client_phone.replace(/\D/g, "");
+                    // The t.me link requires a '+' for phone numbers
+                    window.open(`https://t.me/+${phoneNumber}`, "_blank");
+                  }}
+                  className="flex flex-col items-center text-gray-600 hover:text-blue-500 transition"
+                >
+                  <FaTelegramPlane className="h-6 w-6" />
+                  <span className="text-xs font-medium mt-1">Telegram</span>
                 </button>
 
                 {/* Phone */}
