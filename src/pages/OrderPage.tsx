@@ -11,7 +11,12 @@ import OrderWithComponents from "../components/order page components/OrderWithCo
 import SameClientsOrders from "../components/order page components/SameClientsOrders";
 import ComponentParcelError from "../components/ComponentParcelError";
 import { useTranslation } from "react-i18next";
-import { FaPhoneAlt, FaWhatsapp, FaViber, FaTelegramPlane } from "react-icons/fa";
+import {
+  FaPhoneAlt,
+  FaWhatsapp,
+  FaViber,
+  FaTelegramPlane,
+} from "react-icons/fa";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -132,7 +137,10 @@ const OrderPage = () => {
                 <button
                   onClick={() =>
                     window.open(
-                      `https://wa.me/${order.client_phone.replace(/\D/g, "")}`,
+                      `whatsapp://send?phone=${order.client_phone.replace(
+                        /\D/g,
+                        ""
+                      )}`,
                       "_blank"
                     )
                   }
