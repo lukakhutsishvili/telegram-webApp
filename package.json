@@ -33,6 +33,7 @@
     "react-icons": "^5.5.0",
     "react-media-devices": "^1.1.5",
     "react-router-dom": "^7.0.2",
+    "react-signature-canvas": "^1.1.0-alpha.2",
     "react-zxing": "^2.0.2",
     "swiper": "^11.2.4"
   },

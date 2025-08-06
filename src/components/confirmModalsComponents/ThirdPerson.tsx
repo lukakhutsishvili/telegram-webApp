@@ -1,6 +1,6 @@
 
 import { t } from "i18next";
-import useRelationships from "../hooks/confirm modal hooks/useRelationship";
+import useRelationships from "../../hooks/confirm modal hooks/useRelationship";
 
 interface ThirdPersonProps {
   otherClientName: string;
@@ -23,7 +23,7 @@ const ThirdPerson: React.FC<ThirdPersonProps> = ({otherClientName,otherClientSur
   const { relationshipData } = useRelationships();
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 mb-3">
      <div className="relative w-full">
       <input
         placeholder={t("Name")}

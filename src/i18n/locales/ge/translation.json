@@ -128,5 +128,14 @@
   "Returnable barcode": "დაბრუნების კოდი",
   "yes": "დიახ",
   "no": "არა",
-  "Please select if the parcel is returnable or not.": "გთხოვთ, აირჩიოთ, არის თუ არა ამანათი დასაბრუნებელი."
+  "Please select if the parcel is returnable or not.": "გთხოვთ, აირჩიოთ, არის თუ არა ამანათი დასაბრუნებელი.",
+  "Other Person": "მესამე პირი",
+  "Signature": "ხელმოწერა",
+  "Sign_it": "მოაწერეთ ხელი",
+  "Clear": "გასუფთავება",
+  "Save": "შენახვა",
+  "Please provide a signature": "გთხოვთ, მოაწეროთ ხელი.",
+  "Please provide a signature before saving": "შენახვამდე გთხოვთ, მოაწეროთ ხელი",
+  "Signature saved successfully": "ხელმოწერა წარმატებით შენახულია",
+  "An error occurred while verifying the signature": "შეცდომა მოხდა ხელმოწერის გადამოწმებისას"
 }
