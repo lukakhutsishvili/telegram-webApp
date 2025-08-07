@@ -95,13 +95,13 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       <div className="flex flex-wrap gap-4 justify-between mb-4">
         <button
           onClick={clearSignature}
-          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+          className="bg-red-500 text-xs text-white py-2 px-4 rounded-lg hover:bg-red-600"
         >
           {t("Clear")}
         </button>
         <button
           onClick={saveSignature}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+          className="bg-blue-500 text-xs text-white py-2 px-4 rounded-lg hover:bg-blue-600"
         >
           {t("Save")}
         </button>
