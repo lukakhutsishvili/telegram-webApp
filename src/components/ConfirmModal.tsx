@@ -16,6 +16,7 @@ import OtpOrIdInput from "./confirmModalsComponents/OtpOrIdInput";
 import FooterButtons from "./confirmModalsComponents/FooterButtons";
 import SignatureCapture from "./confirmModalsComponents/SignatureCapture";
 import ReturnDeclineModal from "./returnDeclineModal";
+import SignatureThirdPerson from "./confirmModalsComponents/SignatureThirdPerson";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -46,17 +47,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const { userInfo } = useContext(Context);
   const [returnedParcelError, setReturnedParcelError] = useState("");
-  
+
   const [returnDeclineModalOpen, setReturnDeclineModalOpen] = useState(false);
 
   const PARCEL_WITH_RETURN = order.parcel_with_return;
   const PARCEL_WITHOUT_RETURN_BARCODE = order.parcel_with_return_barcode == "";
 
   useEffect(() => {
-  if (PARCEL_WITHOUT_RETURN_BARCODE) {
-    setReturnOrder("no");
-  }
-}, [PARCEL_WITHOUT_RETURN_BARCODE]);
+    if (PARCEL_WITHOUT_RETURN_BARCODE) {
+      setReturnOrder("no");
+    }
+  }, [PARCEL_WITHOUT_RETURN_BARCODE]);
 
   const { addParcel } = useRequestLogs();
 
@@ -104,15 +105,20 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     selectedReturnReason,
     selectedReturnReasonText,
     setSignatureDataUrl,
-    signatureDataUrl
+    signatureDataUrl,
+    setSignatureThirdPersonName,
+    setSignatureThirdPersonSurname,
+    signatureThirdPersonName,
+    signatureThirdPersonSurname,
+    isThirdPersonOnSignature,
+    setIsThirdPersonOnSignature,
   } = useClientConfirmation(
     selectedOrders,
     totalSum,
     sendingOrder,
     receiptOrder,
     selectedOrdersList,
-    returnOrder,
-
+    returnOrder
   );
   const initialState = {
     otherClientName: "",
@@ -179,67 +185,28 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   }, [otpCooldown]);
 
   const onConfirm = async () => {
-  setLoading(true);
-  setReturnedParcelError("");
-  try {
-    if (receiptOrder) {
-      await confirmDelivery();
-      addParcel(
-        order.tracking_code,
-        confirmationValue,
-        order.client_name,
-        "completed"
-      );
-      setConfirmationMessage(t("Receipt order confirmed!"));
-      setStartTimer(true);
-      await fetchUpdatedOrderList();
-    } else if (returnedParcel == true && returnOrder == "") {
-      setReturnedParcelError(
-        t("Please select if the parcel is returnable or not.")
-      );
-      return;
-    } else if (confirmationMethod === "OTP") {
-      try {
-        await checkClientOtp();
-      } catch (error) {
+    setLoading(true);
+    setReturnedParcelError("");
+    try {
+      if (receiptOrder) {
+        await confirmDelivery();
         addParcel(
           order.tracking_code,
           confirmationValue,
           order.client_name,
-          "failed"
+          "completed"
         );
-        console.log(error);
-      }
-      await fetchUpdatedOrderList();
-    } else if (confirmationMethod === "ID Number") {
-      if (order.client_id) {
-        if (order.client_id === confirmationValue) {
-          await confirmDelivery();
-          addParcel(
-            order.tracking_code,
-            confirmationValue,
-            order.client_name,
-            "completed"
-          );
-          setConfirmationMessage(t("ID Number confirmed!"));
-          setStartTimer(true);
-          await fetchUpdatedOrderList();
-        } else {
-          setErrorMessage(
-            t(
-              "The ID Number does not match the client's ID. Please try again."
-            )
-          );
-          addParcel(
-            order.tracking_code,
-            confirmationValue,
-            order.client_name,
-            "failed"
-          );
-        }
-      } else {
+        setConfirmationMessage(t("Receipt order confirmed!"));
+        setStartTimer(true);
+        await fetchUpdatedOrderList();
+      } else if (returnedParcel == true && returnOrder == "") {
+        setReturnedParcelError(
+          t("Please select if the parcel is returnable or not.")
+        );
+        return;
+      } else if (confirmationMethod === "OTP") {
         try {
-          await postClientID();
+          await checkClientOtp();
         } catch (error) {
           addParcel(
             order.tracking_code,
@@ -247,173 +214,220 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             order.client_name,
             "failed"
           );
+          console.log(error);
         }
         await fetchUpdatedOrderList();
-      }
-    } else if (confirmationMethod === "Other") {
-      if (otherPersonInfo) {
-        if (errors.connection !== "" || errors.additionalComment !== "") {
-          setErrorMessage(t("Input relationship type"));
+      } else if (confirmationMethod === "ID Number") {
+        if (order.client_id) {
+          if (order.client_id === confirmationValue) {
+            await confirmDelivery();
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "completed"
+            );
+            setConfirmationMessage(t("ID Number confirmed!"));
+            setStartTimer(true);
+            await fetchUpdatedOrderList();
+          } else {
+            setErrorMessage(
+              t(
+                "The ID Number does not match the client's ID. Please try again."
+              )
+            );
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "failed"
+            );
+          }
+        } else {
+          try {
+            await postClientID();
+          } catch (error) {
+            addParcel(
+              order.tracking_code,
+              confirmationValue,
+              order.client_name,
+              "failed"
+            );
+          }
+          await fetchUpdatedOrderList();
+        }
+      } else if (confirmationMethod === "Other") {
+        if (otherPersonInfo) {
+          if (errors.connection !== "" || errors.additionalComment !== "") {
+            setErrorMessage(t("Input relationship type"));
+            return;
+          }
+          await confirmDelivery();
+          addParcel(
+            order.tracking_code,
+            confirmationValue,
+            order.client_name,
+            "completed"
+          );
+          setConfirmationMessage(t("Other person confirmed!"));
+          setStartTimer(true);
+          await fetchUpdatedOrderList();
+        } else {
+          await addOtherClient(otherClientName, otherClientSurname);
+          if (errors.connection !== "" || errors.additionalComment !== "") {
+            setErrorMessage(t("Input relationship type"));
+            return;
+          }
+          await confirmDelivery();
+          addParcel(
+            order.tracking_code,
+            confirmationValue,
+            order.client_name,
+            "completed"
+          );
+          setConfirmationMessage(t("Other person posted!"));
+          setStartTimer(true);
+          await fetchUpdatedOrderList();
+        }
+      } else if (confirmationMethod === "Signature") {
+        if (!signatureDataUrl) {
+          setErrorMessage(t("Please provide a signature"));
           return;
         }
         await confirmDelivery();
         addParcel(
           order.tracking_code,
-          confirmationValue,
+          signatureDataUrl ? "ხელმოწერა" : confirmationValue,
           order.client_name,
           "completed"
         );
-        setConfirmationMessage(t("Other person confirmed!"));
+        setConfirmationMessage(t("signature posted!"));
         setStartTimer(true);
         await fetchUpdatedOrderList();
-      } else {
-        await addOtherClient(otherClientName, otherClientSurname);
-        if (errors.connection !== "" || errors.additionalComment !== "") {
-          setErrorMessage(t("Input relationship type"));
-          return;
-        }
-        await confirmDelivery();
-        addParcel(
-          order.tracking_code,
-          confirmationValue,
-          order.client_name,
-          "completed"
-        );
-        setConfirmationMessage(t("Other person posted!"));
-        setStartTimer(true);
-        await fetchUpdatedOrderList();
+        console.log(signatureDataUrl);
       }
-    } else if (confirmationMethod === "Signature") {
-      if (!signatureDataUrl) {
-        setErrorMessage(t("Please provide a signature"));
-        return;
-      }
-      await confirmDelivery();
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setErrorMessage(t("An error occurred while verifying the signature"));
       addParcel(
-          order.tracking_code,
-          signatureDataUrl? "ხელმოწერა" : confirmationValue,
-          order.client_name,
-          "completed"
-        );
-      setConfirmationMessage(t("signature posted!"));
-      setStartTimer(true);
-      await fetchUpdatedOrderList();
-      console.log(signatureDataUrl)
+        order.tracking_code,
+        confirmationValue,
+        order.client_name,
+        "failed"
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("An error occurred:", error);
-    setErrorMessage(
-      t("An error occurred while verifying the signature")
-    );
-    addParcel(
-      order.tracking_code,
-      confirmationValue,
-      order.client_name,
-      "failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-      <ModalHeader sendingOrder={!!sendingOrder} />
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <ModalHeader sendingOrder={!!sendingOrder} />
 
-      {confirmationMessage ? (
-        <ConfirmationMessageBox
+        {confirmationMessage ? (
+          <ConfirmationMessageBox
+            confirmationMessage={confirmationMessage}
+            timer={timer}
+          />
+        ) : (
+          <>
+            {(order.sum != 0 || parseFloat(totalSum) != 0) && (
+              <PaymentMethodSelector
+                paymentMethod={paymentMethod ?? ""}
+                setPaymentMethod={setPaymentMethod}
+              />
+            )}
+
+            {sendingOrder && (
+              <>
+                <ConfirmationMethodSelector
+                  confirmationMethod={confirmationMethod}
+                  onChange={handleConfirmationMethodChange}
+                />
+
+                <OtpOrIdInput
+                  confirmationMethod={confirmationMethod}
+                  confirmationValue={confirmationValue}
+                  setConfirmationValue={setConfirmationValue}
+                  errorMessage={errorMessage}
+                  sendOtp={sendOtp}
+                  otpCooldown={otpCooldown}
+                  isOtpSending={isOtpSending}
+                  otpSent={otpSent}
+                  checkOtherClient={checkOtherClient}
+                />
+
+                {openThirdPersonModal && (
+                  <ThirdPerson
+                    otherClientName={otherClientName}
+                    otherClientSurname={otherClientSurname}
+                    setOtherClientName={setOtherClientName}
+                    setOtherClientSurname={setOtherClientSurname}
+                    connection={connection}
+                    additionalComment={additionalComment}
+                    setConnection={setConnection}
+                    setAdditionalComment={setAdditionalComment}
+                    errors={errors}
+                    setErrors={setErrors}
+                    otherPersonInfo={otherPersonInfo}
+                  />
+                )}
+
+                {confirmationMethod === "Signature" && (
+                  <>
+                    <SignatureThirdPerson
+                      setSignatureThirdPersonName={setSignatureThirdPersonName}
+                      setSignatureThirdPersonSurname={
+                        setSignatureThirdPersonSurname
+                      }
+                      signatureThirdPersonName={signatureThirdPersonName}
+                      signatureThirdPersonSurname={signatureThirdPersonSurname}
+                      isThirdPersonOnSignature={isThirdPersonOnSignature}
+                      setIsThirdPersonOnSignature={setIsThirdPersonOnSignature}
+                    />
+                    <SignatureCapture
+                      setSignatureDataUrl={setSignatureDataUrl}
+                    />
+                  </>
+                )}
+
+                {PARCEL_WITH_RETURN && !PARCEL_WITHOUT_RETURN_BARCODE && (
+                  <CustomDropdown
+                    returnOrder={returnOrder}
+                    setReturnOrder={setReturnOrder}
+                    returnedParcelError={returnedParcelError}
+                    setReturnDeclineModalOpen={setReturnDeclineModalOpen}
+                    setSelectedReturnReason={setSelectedReturnReason}
+                    setSelectedReturnReasonText={setSelectedReturnReasonText}
+                  />
+                )}
+
+                {returnDeclineModalOpen && (
+                  <ReturnDeclineModal
+                    setReturnDeclineModalOpen={setReturnDeclineModalOpen}
+                    selectedReturnReason={selectedReturnReason}
+                    setSelectedReturnReason={setSelectedReturnReason}
+                    selectedReturnReasonText={selectedReturnReasonText}
+                    setSelectedReturnReasonText={setSelectedReturnReasonText}
+                    setReturnOrder={setReturnOrder}
+                  />
+                )}
+              </>
+            )}
+          </>
+        )}
+
+        <FooterButtons
           confirmationMessage={confirmationMessage}
-          timer={timer}
+          navigationfunction={navigationfunction}
+          closeModal={closeModal}
+          onConfirm={onConfirm}
+          loading={loading}
         />
-      ) : (
-        <>
-          {(order.sum != 0 || parseFloat(totalSum) != 0) && (
-            <PaymentMethodSelector
-              paymentMethod={paymentMethod ?? ""}
-              setPaymentMethod={setPaymentMethod}
-            />
-          )}
-
-          {sendingOrder && (
-            <>
-              <ConfirmationMethodSelector
-                confirmationMethod={confirmationMethod}
-                onChange={handleConfirmationMethodChange}
-              />
-
-              <OtpOrIdInput
-                confirmationMethod={confirmationMethod}
-                confirmationValue={confirmationValue}
-                setConfirmationValue={setConfirmationValue}
-                errorMessage={errorMessage}
-                sendOtp={sendOtp}
-                otpCooldown={otpCooldown}
-                isOtpSending={isOtpSending}
-                otpSent={otpSent}
-                checkOtherClient={checkOtherClient}
-              />
-
-              {openThirdPersonModal && (
-                <ThirdPerson
-                  otherClientName={otherClientName}
-                  otherClientSurname={otherClientSurname}
-                  setOtherClientName={setOtherClientName}
-                  setOtherClientSurname={setOtherClientSurname}
-                  connection={connection}
-                  additionalComment={additionalComment}
-                  setConnection={setConnection}
-                  setAdditionalComment={setAdditionalComment}
-                  errors={errors}
-                  setErrors={setErrors}
-                  otherPersonInfo={otherPersonInfo}
-                />
-              )}
-
-              {confirmationMethod === "Signature" && (
-                <SignatureCapture
-                  setSignatureDataUrl={setSignatureDataUrl}
-                />
-              )}
-
-
-              {(PARCEL_WITH_RETURN && !PARCEL_WITHOUT_RETURN_BARCODE) && (
-                <CustomDropdown
-                  returnOrder={returnOrder}
-                  setReturnOrder={setReturnOrder}
-                  returnedParcelError={returnedParcelError}
-                  setReturnDeclineModalOpen={setReturnDeclineModalOpen}
-                  setSelectedReturnReason={setSelectedReturnReason}
-                  setSelectedReturnReasonText={setSelectedReturnReasonText}
-                />
-              )}
-
-              {returnDeclineModalOpen && (
-                <ReturnDeclineModal
-                  setReturnDeclineModalOpen={setReturnDeclineModalOpen}
-                  selectedReturnReason={selectedReturnReason}
-                  setSelectedReturnReason={setSelectedReturnReason}
-                  selectedReturnReasonText={selectedReturnReasonText}
-                  setSelectedReturnReasonText={setSelectedReturnReasonText}
-                  setReturnOrder={setReturnOrder}
-                />
-              )}
-            </>
-          )}
-        </>
-      )}
-
-      <FooterButtons
-        confirmationMessage={confirmationMessage}
-        navigationfunction={navigationfunction}
-        closeModal={closeModal}
-        onConfirm={onConfirm}
-        loading={loading}
-      />
+      </div>
     </div>
-  </div>
   );
-}
+};
 
 export default ConfirmModal;

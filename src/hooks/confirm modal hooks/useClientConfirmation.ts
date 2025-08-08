@@ -50,6 +50,12 @@ const useClientConfirmation = (
   const [selectedReturnReason, setSelectedReturnReason] = useState<string>("");
   const [selectedReturnReasonText, setSelectedReturnReasonText] = useState<string>("");
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
+  const [signatureThirdPersonName , setSignatureThirdPersonName] = useState<string>("");
+  const [signatureThirdPersonSurname , setSignatureThirdPersonSurname] = useState<string>("");
+   const [isThirdPersonOnSignature, setIsThirdPersonOnSignature] =
+      useState(false);
+  
+
 
 
       const path = location.pathname;
@@ -194,6 +200,8 @@ const useClientConfirmation = (
       relationship_code: connection,
       relationship_commentary: additionalComment,
       IsReturn: returnOrder === "yes" ? true : false,
+      thirdPersonSignatureName: isThirdPersonOnSignature ? signatureThirdPersonName : "",
+      thirdPersonSignatureSurname: isThirdPersonOnSignature ? signatureThirdPersonSurname : "",
     };
    
       try {
@@ -402,6 +410,12 @@ const useClientConfirmation = (
     setSelectedReturnReasonText,
     signatureDataUrl,
     setSignatureDataUrl,
+    setSignatureThirdPersonName,
+    setSignatureThirdPersonSurname,
+    signatureThirdPersonName,
+    signatureThirdPersonSurname,
+    isThirdPersonOnSignature,
+    setIsThirdPersonOnSignature,
   };
 };
 
