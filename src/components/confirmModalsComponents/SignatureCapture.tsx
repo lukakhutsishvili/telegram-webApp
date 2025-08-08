@@ -1,4 +1,4 @@
-import React, { useRef, useState, } from "react";
+import React, { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { useTranslation } from "react-i18next";
 
@@ -11,15 +11,6 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  // რეალური ზომები
-  const baseWidth = 272.02; 
-  const baseHeight = 300;
-  const ratio =
-    typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
-
-  // ერთი trick: სიგანე და სიმაღლე state-ში თუ დაგჭირდება responsive
-  // მაგრამ აქ ჩვეულებრივ ფიქსირებული ზომებია
 
   const clearSignature = () => {
     signatureCanvasRef.current?.clear();
@@ -38,9 +29,8 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       return;
     }
 
-    setErrorMessage(null);
+    setErrorMessage(null); // Clear any existing error
 
-    // canvasRef.getCanvas() ზომები უკვე შეცვლილია dpi-ს გათვალისწინებით
     const canvas = canvasRef.getCanvas();
     const context = canvas.getContext("2d", { willReadFrequently: true });
     if (!context) return;
@@ -68,9 +58,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
     const trimmedHeight = endY - startY + 1;
 
     const trimmedCanvas = document.createElement("canvas");
-    const trimmedContext = trimmedCanvas.getContext("2d", {
-      willReadFrequently: true,
-    });
+    const trimmedContext = trimmedCanvas.getContext("2d", { willReadFrequently: true });
     if (!trimmedContext) return;
 
     trimmedCanvas.width = trimmedWidth;
@@ -85,14 +73,14 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   return (
     <div>
       <div className="border-2 border-gray-300 rounded-md overflow-hidden mb-2">
-        <SignatureCanvas
+          <SignatureCanvas
           ref={signatureCanvasRef}
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: baseWidth * ratio,
-            height: baseHeight * ratio,
-            style: { width: baseWidth, height: baseHeight },
+            width: 500,
+            height: 300,
+            style: { width: 500, height: 300 },
           }}
         />
       </div>
