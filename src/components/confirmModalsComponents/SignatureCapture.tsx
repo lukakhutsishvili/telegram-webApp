@@ -14,16 +14,33 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const resizeCanvasForDPR = (width: number, height: number) => {
+    const ratio = window.devicePixelRatio || 1;
+    const canvas = signatureCanvasRef.current?.getCanvas();
+    const context = canvas?.getContext("2d");
+
+    if (canvas && context) {
+      // Resize canvas with DPR consideration
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+
+      // Scale drawing operations to match CSS pixels
+      context.scale(ratio, ratio);
+    }
+  };
+
   useEffect(() => {
     const updateCanvasSize = () => {
-      const padding = 40; // Padding inside modal or layout
+      const padding = 40;
       const screenWidth = window.innerWidth;
       const maxWidth = 500;
-
       const width = Math.min(screenWidth - padding, maxWidth);
-      const height = Math.floor((width * 3) / 5); // Maintain 5:3 aspect ratio
+      const height = Math.floor((width * 3) / 5);
 
       setCanvasSize({ width, height });
+
+      // Wait a bit to allow DOM to update before resizing canvas
+      setTimeout(() => resizeCanvasForDPR(width, height), 0);
     };
 
     updateCanvasSize();
