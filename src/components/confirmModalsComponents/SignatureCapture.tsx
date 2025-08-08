@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { useTranslation } from "react-i18next";
 
@@ -9,50 +9,8 @@ interface Props {
 const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const { t } = useTranslation();
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
-  const [canvasSize, setCanvasSize] = useState({ width: 300, height: 200 });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  // Resize canvas with DPI correction
-  const updateCanvasSize = () => {
-    const padding = 40;
-    const screenWidth = window.innerWidth;
-    const maxWidth = 500;
-    const width = Math.min(screenWidth - padding, maxWidth);
-    const height = Math.floor((width * 3) / 5);
-
-    setCanvasSize({ width, height });
-
-    // Fix canvas scaling issue on high DPI screens (like iPhones)
-    setTimeout(() => {
-      const canvasRef = signatureCanvasRef.current;
-      if (!canvasRef) return;
-
-      const canvas = canvasRef.getCanvas();
-      const ratio = window.devicePixelRatio || 1;
-
-      // Save existing signature
-      const data = canvasRef.toDataURL();
-
-      // Resize canvas
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-
-      const context = canvas.getContext("2d");
-      if (context) context.scale(ratio, ratio);
-
-      // Restore signature (optional)
-      canvasRef.fromDataURL(data);
-    }, 0);
-  };
-
-  useEffect(() => {
-    updateCanvasSize();
-    window.addEventListener("resize", updateCanvasSize);
-    return () => window.removeEventListener("resize", updateCanvasSize);
-  }, []);
 
   const clearSignature = () => {
     signatureCanvasRef.current?.clear();
@@ -71,7 +29,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       return;
     }
 
-    setErrorMessage(null);
+    setErrorMessage(null); // Clear any existing error
 
     const canvas = canvasRef.getCanvas();
     const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -122,14 +80,9 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: canvasSize.width,
-            height: canvasSize.height,
-            style: {
-              width: `${canvasSize.width}px`,
-              height: `${canvasSize.height}px`,
-              display: "block",
-              touchAction: "none",
-            },
+            width: 500,
+            height: 300,
+            style: { width: 500, height: 300 },
           }}
         />
       </div>
