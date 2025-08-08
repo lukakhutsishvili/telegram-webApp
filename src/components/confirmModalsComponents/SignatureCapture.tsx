@@ -71,6 +71,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
     setSignatureDataUrl(base64Data);
     setSuccessMessage(t("Signature saved successfully"));
   };
+  const ratio = window.devicePixelRatio || 1;
 
   return (
     <div>
@@ -80,9 +81,15 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: 272.02,
-            height: 300,
+            width: 272.02 * ratio,
+            height: 300 * ratio,
             style: { width: 272.02, height: 300 },
+          }}
+          onBegin={(e) => {
+            console.log("Begin event", e);
+          }}
+          onEnd={() => {
+            console.log("End drawing");
           }}
         />
       </div>
