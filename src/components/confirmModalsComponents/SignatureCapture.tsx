@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { useTranslation } from "react-i18next";
 
@@ -11,6 +11,15 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // რეალური ზომები
+  const baseWidth = 272.02; 
+  const baseHeight = 300;
+  const ratio =
+    typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
+
+  // ერთი trick: სიგანე და სიმაღლე state-ში თუ დაგჭირდება responsive
+  // მაგრამ აქ ჩვეულებრივ ფიქსირებული ზომებია
 
   const clearSignature = () => {
     signatureCanvasRef.current?.clear();
@@ -36,7 +45,6 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
     if (!context) return;
 
     const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-
     let startX = canvas.width,
       startY = canvas.height,
       endX = 0,
@@ -78,9 +86,9 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: 500,
-            height: 300,
-            style: { width: 500, height: 300 },
+            width: baseWidth * ratio,
+            height: baseHeight * ratio,
+            style: { width: baseWidth, height: baseHeight },
           }}
         />
       </div>
