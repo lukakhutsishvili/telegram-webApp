@@ -13,7 +13,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // რეალური ზომები
-  const baseWidth = 500;
+  const baseWidth = 272.02; 
   const baseHeight = 300;
   const ratio =
     typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
