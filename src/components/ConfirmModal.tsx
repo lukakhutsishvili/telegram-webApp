@@ -9,7 +9,7 @@ import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./ThirdPerson";
 import { Context } from "../App";
 import CustomDropdown from "./CustomDropDown";
-import ReturnDeclineModal from "./returnDeclineModal";
+import ReturnDeclineModal from "./ReturnDeclineModal";
 
 interface ConfirmModalProps {
   closeModal: () => void;
