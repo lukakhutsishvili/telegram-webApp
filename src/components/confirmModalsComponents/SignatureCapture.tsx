@@ -46,13 +46,17 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            className: "w-full h-full",
+            className: "w-full h-[50%]",
           }}
         />
       </div>
 
-      {errorMessage && <p className="text-red-600 text-sm mb-2">{errorMessage}</p>}
-      {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}
+      {errorMessage && (
+        <p className="text-red-600 text-sm mb-2">{errorMessage}</p>
+      )}
+      {successMessage && (
+        <p className="text-green-600 text-sm mb-2">{successMessage}</p>
+      )}
 
       <div className="flex justify-between gap-4 mb-6">
         <button
@@ -68,7 +72,6 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           {t("Save")}
         </button>
       </div>
-
     </div>
   );
 };
