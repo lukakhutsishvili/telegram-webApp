@@ -80,9 +80,9 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: 500,
+            width: 272.02,
             height: 300,
-            style: { width: 500, height: 300 },
+            style: { width: 272.02, height: 300 },
           }}
         />
       </div>
