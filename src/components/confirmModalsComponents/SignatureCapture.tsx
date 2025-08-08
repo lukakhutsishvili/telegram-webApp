@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { useTranslation } from "react-i18next";
 
@@ -11,6 +11,24 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [canvasWidth, setCanvasWidth] = useState(500); // Default width
+
+  // Responsive width calculation
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      const padding = 32; // adjust for some padding/margins
+      const maxWidth = 600; // optional max width limit
+      setCanvasWidth(Math.min(screenWidth - padding, maxWidth));
+    };
+
+    handleResize(); // Set initial width
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const clearSignature = () => {
     signatureCanvasRef.current?.clear();
@@ -29,14 +47,13 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       return;
     }
 
-    setErrorMessage(null); // Clear any existing error
+    setErrorMessage(null);
 
     const canvas = canvasRef.getCanvas();
     const context = canvas.getContext("2d", { willReadFrequently: true });
     if (!context) return;
 
     const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-
     let startX = canvas.width,
       startY = canvas.height,
       endX = 0,
@@ -80,9 +97,13 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: 500,
+            width: canvasWidth,
             height: 300,
-            style: { width: 500, height: 300 },
+            style: {
+              width: `${canvasWidth}px`,
+              height: "300px",
+              touchAction: "none", // helps on mobile devices
+            },
           }}
         />
       </div>
