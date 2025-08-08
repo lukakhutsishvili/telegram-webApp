@@ -11,23 +11,24 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [canvasWidth, setCanvasWidth] = useState(500); // Default width
 
-  // Responsive width calculation
+  const [canvasSize, setCanvasSize] = useState({ width: 300, height: 200 });
+
+  // განაახლებს canvas-ის ზომას ეკრანის ზომის შესაბამისად
   useEffect(() => {
-    const handleResize = () => {
+    const updateCanvasSize = () => {
       const screenWidth = window.innerWidth;
-      const padding = 32; // adjust for some padding/margins
-      const maxWidth = 600; // optional max width limit
-      setCanvasWidth(Math.min(screenWidth - padding, maxWidth));
+      const padding = 40; // მოდალის მარჯვენა და მარცხენა საზღვარი
+      const maxWidth = 500;
+      const width = Math.min(screenWidth - padding, maxWidth);
+      const height = Math.floor((width * 3) / 5); // პროპორციული სიმაღლე
+
+      setCanvasSize({ width, height });
     };
 
-    handleResize(); // Set initial width
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    updateCanvasSize();
+    window.addEventListener("resize", updateCanvasSize);
+    return () => window.removeEventListener("resize", updateCanvasSize);
   }, []);
 
   const clearSignature = () => {
@@ -47,13 +48,14 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       return;
     }
 
-    setErrorMessage(null);
+    setErrorMessage(null); // Clear any existing error
 
     const canvas = canvasRef.getCanvas();
     const context = canvas.getContext("2d", { willReadFrequently: true });
     if (!context) return;
 
     const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+
     let startX = canvas.width,
       startY = canvas.height,
       endX = 0,
@@ -97,12 +99,13 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: canvasWidth,
-            height: 300,
+            width: canvasSize.width,
+            height: canvasSize.height,
             style: {
-              width: `${canvasWidth}px`,
-              height: "300px",
-              touchAction: "none", // helps on mobile devices
+              width: `${canvasSize.width}px`,
+              height: `${canvasSize.height}px`,
+              touchAction: "none",
+              display: "block",
             },
           }}
         />
