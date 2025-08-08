@@ -11,15 +11,24 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [canvasWidth, setCanvasWidth] = useState(500); // Default width
 
-  // რეალური ზომები
-  const baseWidth = 272.02; 
-  const baseHeight = 300;
-  const ratio =
-    typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
+  // Responsive width calculation
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      const padding = 32; // adjust for some padding/margins
+      const maxWidth = 600; // optional max width limit
+      setCanvasWidth(Math.min(screenWidth - padding, maxWidth));
+    };
 
-  // ერთი trick: სიგანე და სიმაღლე state-ში თუ დაგჭირდება responsive
-  // მაგრამ აქ ჩვეულებრივ ფიქსირებული ზომებია
+    handleResize(); // Set initial width
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const clearSignature = () => {
     signatureCanvasRef.current?.clear();
@@ -38,7 +47,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       return;
     }
 
-    setErrorMessage(null); // Clear any existing error
+    setErrorMessage(null);
 
     const canvas = canvasRef.getCanvas();
     const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -66,7 +75,9 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
     const trimmedHeight = endY - startY + 1;
 
     const trimmedCanvas = document.createElement("canvas");
-    const trimmedContext = trimmedCanvas.getContext("2d", { willReadFrequently: true });
+    const trimmedContext = trimmedCanvas.getContext("2d", {
+      willReadFrequently: true,
+    });
     if (!trimmedContext) return;
 
     trimmedCanvas.width = trimmedWidth;
@@ -81,14 +92,18 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   return (
     <div>
       <div className="border-2 border-gray-300 rounded-md overflow-hidden mb-2">
-          <SignatureCanvas
+        <SignatureCanvas
           ref={signatureCanvasRef}
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            width: baseWidth * ratio,
-            height: baseHeight * ratio,
-            style: { width: baseWidth, height: baseHeight },
+            width: canvasWidth,
+            height: 300,
+            style: {
+              width: `${canvasWidth}px`,
+              height: "300px",
+              touchAction: "none", // helps on mobile devices
+            },
           }}
         />
       </div>
