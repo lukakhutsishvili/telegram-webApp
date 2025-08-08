@@ -9,40 +9,46 @@ interface Props {
 const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const { t } = useTranslation();
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 300, height: 200 });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const resizeCanvasForDPR = (width: number, height: number) => {
-    const ratio = window.devicePixelRatio || 1;
-    const canvas = signatureCanvasRef.current?.getCanvas();
-    const context = canvas?.getContext("2d");
+  // Resize canvas with DPI correction
+  const updateCanvasSize = () => {
+    const padding = 40;
+    const screenWidth = window.innerWidth;
+    const maxWidth = 500;
+    const width = Math.min(screenWidth - padding, maxWidth);
+    const height = Math.floor((width * 3) / 5);
 
-    if (canvas && context) {
-      // Resize canvas with DPR consideration
+    setCanvasSize({ width, height });
+
+    // Fix canvas scaling issue on high DPI screens (like iPhones)
+    setTimeout(() => {
+      const canvasRef = signatureCanvasRef.current;
+      if (!canvasRef) return;
+
+      const canvas = canvasRef.getCanvas();
+      const ratio = window.devicePixelRatio || 1;
+
+      // Save existing signature
+      const data = canvasRef.toDataURL();
+
+      // Resize canvas
       canvas.width = width * ratio;
       canvas.height = height * ratio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
 
-      // Scale drawing operations to match CSS pixels
-      context.scale(ratio, ratio);
-    }
+      const context = canvas.getContext("2d");
+      if (context) context.scale(ratio, ratio);
+
+      // Restore signature (optional)
+      canvasRef.fromDataURL(data);
+    }, 0);
   };
 
   useEffect(() => {
-    const updateCanvasSize = () => {
-      const padding = 40;
-      const screenWidth = window.innerWidth;
-      const maxWidth = 500;
-      const width = Math.min(screenWidth - padding, maxWidth);
-      const height = Math.floor((width * 3) / 5);
-
-      setCanvasSize({ width, height });
-
-      // Wait a bit to allow DOM to update before resizing canvas
-      setTimeout(() => resizeCanvasForDPR(width, height), 0);
-    };
-
     updateCanvasSize();
     window.addEventListener("resize", updateCanvasSize);
     return () => window.removeEventListener("resize", updateCanvasSize);
@@ -109,7 +115,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   };
 
   return (
-    <div ref={containerRef}>
+    <div>
       <div className="border-2 border-gray-300 rounded-md overflow-hidden mb-2">
         <SignatureCanvas
           ref={signatureCanvasRef}
