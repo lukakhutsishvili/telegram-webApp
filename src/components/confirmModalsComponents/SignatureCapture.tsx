@@ -9,19 +9,19 @@ interface Props {
 const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const { t } = useTranslation();
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [canvasSize, setCanvasSize] = useState({ width: 300, height: 200 });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const [canvasSize, setCanvasSize] = useState({ width: 300, height: 200 });
-
-  // განაახლებს canvas-ის ზომას ეკრანის ზომის შესაბამისად
   useEffect(() => {
     const updateCanvasSize = () => {
+      const padding = 40; // Padding inside modal or layout
       const screenWidth = window.innerWidth;
-      const padding = 40; // მოდალის მარჯვენა და მარცხენა საზღვარი
       const maxWidth = 500;
+
       const width = Math.min(screenWidth - padding, maxWidth);
-      const height = Math.floor((width * 3) / 5); // პროპორციული სიმაღლე
+      const height = Math.floor((width * 3) / 5); // Maintain 5:3 aspect ratio
 
       setCanvasSize({ width, height });
     };
@@ -48,7 +48,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       return;
     }
 
-    setErrorMessage(null); // Clear any existing error
+    setErrorMessage(null);
 
     const canvas = canvasRef.getCanvas();
     const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -92,7 +92,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   };
 
   return (
-    <div>
+    <div ref={containerRef}>
       <div className="border-2 border-gray-300 rounded-md overflow-hidden mb-2">
         <SignatureCanvas
           ref={signatureCanvasRef}
@@ -104,8 +104,8 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
             style: {
               width: `${canvasSize.width}px`,
               height: `${canvasSize.height}px`,
-              touchAction: "none",
               display: "block",
+              touchAction: "none",
             },
           }}
         />
