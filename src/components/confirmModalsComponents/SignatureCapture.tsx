@@ -11,12 +11,10 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
   const signatureCanvasRef = useRef<SignatureCanvas>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [trimmedDataUrl, setTrimmedDataUrl] = useState<string | null>(null);
 
   const clearSignature = () => {
     signatureCanvasRef.current?.clear();
     setSignatureDataUrl(null);
-    setTrimmedDataUrl(null);
     setErrorMessage(null);
     setSuccessMessage(null);
   };
@@ -36,8 +34,6 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
     // Trim the canvas using getTrimmedCanvas
     const trimmedCanvas = canvasRef.getTrimmedCanvas();
     const base64Data = trimmedCanvas.toDataURL("image/png");
-
-    setTrimmedDataUrl(base64Data);
     setSignatureDataUrl(base64Data);
     setSuccessMessage(t("Signature saved successfully"));
   };
