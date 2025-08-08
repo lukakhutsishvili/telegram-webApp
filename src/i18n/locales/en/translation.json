@@ -137,5 +137,6 @@
   "Please provide a signature":"Please provide a signature.",
   "Please provide a signature before saving": "Please provide a signature before saving",
   "Signature saved successfully":"Signature saved successfully",
-  "An error occurred while verifying the signature":"An error occurred while verifying the signature"
+  "An error occurred while verifying the signature":"An error occurred while verifying the signature",
+  "Signature posted!": "Signature posted!"
 }

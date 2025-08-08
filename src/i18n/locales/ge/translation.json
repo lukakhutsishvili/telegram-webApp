@@ -137,5 +137,6 @@
   "Please provide a signature": "გთხოვთ, მოაწეროთ ხელი.",
   "Please provide a signature before saving": "შენახვამდე გთხოვთ, მოაწეროთ ხელი",
   "Signature saved successfully": "ხელმოწერა წარმატებით შენახულია",
-  "An error occurred while verifying the signature": "შეცდომა მოხდა ხელმოწერის გადამოწმებისას"
+  "An error occurred while verifying the signature": "შეცდომა მოხდა ხელმოწერის გადამოწმებისას",
+  "Signature posted!": "ხელმოწერა დადასტურდა!"
 }
