@@ -137,5 +137,6 @@
   "Please provide a signature": "Пожалуйста, предоставьте подпись.",
   "Please provide a signature before saving": "Пожалуйста, предоставьте подпись перед сохранением",
   "Signature saved successfully": "Подпись успешно сохранена",
-  "An error occurred while verifying the signature": "Произошла ошибка при проверке подписи"
+  "An error occurred while verifying the signature": "Произошла ошибка при проверке подписи",
+  "Signature posted!": "Подпись отправлена!"
 }

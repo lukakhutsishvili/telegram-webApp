@@ -103,6 +103,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     setSelectedReturnReasonText,
     selectedReturnReason,
     selectedReturnReasonText,
+    setSignatureDataUrl,
+    signatureDataUrl
   } = useClientConfirmation(
     selectedOrders,
     totalSum,
@@ -110,6 +112,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     receiptOrder,
     selectedOrdersList,
     returnOrder,
+
   );
   const initialState = {
     otherClientName: "",
@@ -174,8 +177,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       return () => clearInterval(interval);
     }
   }, [otpCooldown]);
-
-  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
 
   const onConfirm = async () => {
   setLoading(true);
@@ -287,7 +288,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         setErrorMessage(t("Please provide a signature"));
         return;
       }
-      // აქ უნდა დაემატოს დაკონფირმება ხელმოწერისთვის
+      await confirmDelivery();
+      addParcel(
+          order.tracking_code,
+          signatureDataUrl? "ხელმოწერა" : confirmationValue,
+          order.client_name,
+          "completed"
+        );
+      setConfirmationMessage(t("signature posted!"));
+      setStartTimer(true);
+      await fetchUpdatedOrderList();
       console.log(signatureDataUrl)
     }
   } catch (error) {
