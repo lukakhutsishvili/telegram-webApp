@@ -8,7 +8,6 @@ import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./confirmModalsComponents/ThirdPerson";
 import { Context } from "../App";
 import CustomDropdown from "./CustomDropDown";
-import ReturnDeclineModal from "./returnDeclineModal";
 import ModalHeader from "./confirmModalsComponents/ModalHeader";
 import ConfirmationMessageBox from "./confirmModalsComponents/ConfirmationMessageBox";
 import PaymentMethodSelector from "./confirmModalsComponents/PaymentMethodSelector";
@@ -16,6 +15,7 @@ import ConfirmationMethodSelector from "./confirmModalsComponents/ConfirmationMe
 import OtpOrIdInput from "./confirmModalsComponents/OtpOrIdInput";
 import FooterButtons from "./confirmModalsComponents/FooterButtons";
 import SignatureCapture from "./confirmModalsComponents/SignatureCapture";
+import ReturnDeclineModal from "./returnDeclineModal";
 
 interface ConfirmModalProps {
   closeModal: () => void;
