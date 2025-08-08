@@ -8,7 +8,7 @@ import useRequestLogs from "../hooks/useRequestLogs";
 import ThirdPerson from "./confirmModalsComponents/ThirdPerson";
 import { Context } from "../App";
 import CustomDropdown from "./CustomDropDown";
-import ReturnDeclineModal from "./returnDeclineModal";
+import ReturnDeclineModal from "./ReturnDeclineModal";
 import ModalHeader from "./confirmModalsComponents/ModalHeader";
 import ConfirmationMessageBox from "./confirmModalsComponents/ConfirmationMessageBox";
 import PaymentMethodSelector from "./confirmModalsComponents/PaymentMethodSelector";

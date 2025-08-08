@@ -58,7 +58,9 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
     const trimmedHeight = endY - startY + 1;
 
     const trimmedCanvas = document.createElement("canvas");
-    const trimmedContext = trimmedCanvas.getContext("2d", { willReadFrequently: true });
+    const trimmedContext = trimmedCanvas.getContext("2d", {
+      willReadFrequently: true,
+    });
     if (!trimmedContext) return;
 
     trimmedCanvas.width = trimmedWidth;
@@ -80,7 +82,7 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
           canvasProps={{
             width: 500,
             height: 300,
-            className: "w-full h-auto",
+            style: { width: 500, height: 300 },
           }}
         />
       </div>
