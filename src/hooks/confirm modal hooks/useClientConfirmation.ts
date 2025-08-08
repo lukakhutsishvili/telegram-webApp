@@ -48,8 +48,9 @@ const useClientConfirmation = (
     useState<boolean>(false);
   const order = sendingOrder || receiptOrder;
   const [selectedReturnReason, setSelectedReturnReason] = useState<string>("");
-  const [selectedReturnReasonText, setSelectedReturnReasonText] =
-    useState<string>("");
+  const [selectedReturnReasonText, setSelectedReturnReasonText] = useState<string>("");
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
+
 
       const path = location.pathname;
     const orderId = path.split("/").pop();
@@ -168,6 +169,9 @@ const useClientConfirmation = (
       case "Other":
         confirmationType = 3;
         break;
+      case "Signature":
+        confirmationType = 4;
+      break;
       default:
         confirmationType = 1;
     }
@@ -186,6 +190,7 @@ const useClientConfirmation = (
       payment_type: parseFloat(totalSum) === 0 ? null : paymentMethod,
       orders: matchedOrder ? componentParcel : checkedOrders,
       other_recipient: confirmationMethod === "Other" ? confirmationValue : "",
+      signature: confirmationMethod === "Signature" ? signatureDataUrl : "",
       relationship_code: connection,
       relationship_commentary: additionalComment,
       IsReturn: returnOrder === "yes" ? true : false,
@@ -395,6 +400,8 @@ const useClientConfirmation = (
     setSelectedReturnReason,
     selectedReturnReasonText,
     setSelectedReturnReasonText,
+    signatureDataUrl,
+    setSignatureDataUrl,
   };
 };
 

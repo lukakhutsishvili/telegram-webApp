@@ -128,6 +128,15 @@
   "Returnable barcode": "Returnable barcode",
   "yes": "Yes",
   "no": "No",
-  "Please select if the parcel is returnable or not.": "Please select if the parcel is returnable or not."
-  
+  "Please select if the parcel is returnable or not.": "Please select if the parcel is returnable or not.",
+  "Other Person":"Other Person",
+  "Signature":"Signature",
+  "Sign_it": "Sign it",
+  "Clear":"Clear",
+  "Save":"Save",
+  "Please provide a signature":"Please provide a signature.",
+  "Please provide a signature before saving": "Please provide a signature before saving",
+  "Signature saved successfully":"Signature saved successfully",
+  "An error occurred while verifying the signature":"An error occurred while verifying the signature",
+  "Signature posted!": "Signature posted!"
 }
