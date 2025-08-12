@@ -138,5 +138,8 @@
   "Please provide a signature before saving": "შენახვამდე გთხოვთ, მოაწეროთ ხელი",
   "Signature saved successfully": "ხელმოწერა წარმატებით შენახულია",
   "An error occurred while verifying the signature": "შეცდომა მოხდა ხელმოწერის გადამოწმებისას",
-  "Signature posted!": "ხელმოწერა დადასტურდა!"
+  "Signature posted!": "ხელმოწერა დადასტურდა!",
+  "Sign as third person": "ხელმოწერა მესამე პირისთვის",
+  "full_name": "სრული სახელი",
+  "full_Surname": "სრული გვარი"
 }

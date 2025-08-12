@@ -40,13 +40,13 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <div className="bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden w-full h-[300px] mb-4">
+      <div className="bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden w-full h-[200px] mb-4">
         <SignatureCanvas
           ref={signatureCanvasRef}
           backgroundColor="white"
           penColor="black"
           canvasProps={{
-            className: "w-full h-[50%]",
+            className: "w-full h-full",
           }}
         />
       </div>
@@ -61,13 +61,13 @@ const SignatureCapture: React.FC<Props> = ({ setSignatureDataUrl }) => {
       <div className="flex justify-between gap-4 mb-6">
         <button
           onClick={clearSignature}
-          className="w-full sm:w-1/2 bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-sm"
+          className="w-full sm:w-1/2 bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-xs"
         >
           {t("Clear")}
         </button>
         <button
           onClick={saveSignature}
-          className="w-full sm:w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md text-sm"
+          className="w-full sm:w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md text-xs"
         >
           {t("Save")}
         </button>

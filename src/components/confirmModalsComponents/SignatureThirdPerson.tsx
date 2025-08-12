@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface SignatureThirdPersonProps {
   signatureThirdPersonName: string;
   signatureThirdPersonSurname: string;
@@ -19,6 +21,8 @@ const SignatureThirdPerson: React.FC<SignatureThirdPersonProps> = ({
     setIsThirdPersonOnSignature(e.target.checked);
   };
 
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-3 mb-3">
       <label className="flex items-center gap-2">
@@ -27,24 +31,24 @@ const SignatureThirdPerson: React.FC<SignatureThirdPersonProps> = ({
           checked={isThirdPersonOnSignature}
           onChange={handleCheckboxChange}
         />
-        <span>Sign as third person</span>
+        <span className="text-xs">{t("Sign as third person")}</span>
       </label>
 
       {isThirdPersonOnSignature && (
         <div className="flex flex-col gap-2">
           <input
             type="text"
-            placeholder="Name"
+            placeholder={t("full_name")}
             value={signatureThirdPersonName}
             onChange={(e) => setSignatureThirdPersonName(e.target.value)}
-            className="border border-gray-300 rounded p-2"
+            className="border border-gray-300 rounded text-xs p-2"
           />
           <input
             type="text"
-            placeholder="Surname"
+            placeholder={t("full_Surname")}
             value={signatureThirdPersonSurname}
             onChange={(e) => setSignatureThirdPersonSurname(e.target.value)}
-            className="border border-gray-300 rounded p-2"
+            className="border border-gray-300 rounded text-xs p-2"
           />
         </div>
       )}
