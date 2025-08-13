@@ -301,7 +301,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           order.client_name,
           "completed"
         );
-        setConfirmationMessage(t("signature posted!"));
+        setConfirmationMessage(t("Signature posted!"));
         setStartTimer(true);
         await fetchUpdatedOrderList();
         console.log(signatureDataUrl);

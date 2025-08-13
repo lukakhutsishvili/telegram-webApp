@@ -141,5 +141,7 @@
   "Signature posted!": "Подпись отправлена!",
   "Sign as third person": "Подпишите от третьего лица",
   "full_name": "Полное имя",
-  "full_Surname": "Полная фамилия"
+  "full_Surname": "Полная фамилия",
+  "This message will disappear in": "Это сообщение исчезнет через",
+  "seconds": "секунд"
 }
