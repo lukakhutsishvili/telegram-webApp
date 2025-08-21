@@ -138,5 +138,10 @@
   "Please provide a signature before saving": "Пожалуйста, предоставьте подпись перед сохранением",
   "Signature saved successfully": "Подпись успешно сохранена",
   "An error occurred while verifying the signature": "Произошла ошибка при проверке подписи",
-  "Signature posted!": "Подпись отправлена!"
+  "Signature posted!": "Подпись отправлена!",
+  "Sign as third person": "Подпишите от третьего лица",
+  "full_name": "Полное имя",
+  "full_Surname": "Полная фамилия",
+  "This message will disappear in": "Это сообщение исчезнет через",
+  "seconds": "секунд"
 }

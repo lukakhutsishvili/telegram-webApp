@@ -138,5 +138,10 @@
   "Please provide a signature before saving": "Please provide a signature before saving",
   "Signature saved successfully":"Signature saved successfully",
   "An error occurred while verifying the signature":"An error occurred while verifying the signature",
-  "Signature posted!": "Signature posted!"
+  "Signature posted!": "Signature posted!",
+  "Sign as third person": "Sign as third person",
+  "full_name": "Full Name",
+  "full_Surname": "Full Surname",
+  "This message will disappear in": "This message will disappear in",
+  "seconds": "seconds"
 }
