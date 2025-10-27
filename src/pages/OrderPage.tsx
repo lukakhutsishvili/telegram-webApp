@@ -253,6 +253,21 @@ const OrderPage = () => {
                 </span>
               </div>
             )}
+            {order?.HeavyWeight && (
+              <div className="p-1 flex justify-between">
+                <span className="font-bold text-sm text-blue-600">
+                  {t("სართულზე მიწოდების საფასური")} :
+                </span>
+                <span
+                  onClick={() =>
+                    navigator.clipboard.writeText(order.tracking_code)
+                  }
+                  className="font-semibold text-blue-600"
+                >
+                  {order.HeavyWeightTotal} ₾
+                </span>
+              </div>
+            )}
           </div>
 
           {order?.with_places ? (
