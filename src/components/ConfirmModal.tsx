@@ -17,6 +17,7 @@ import FooterButtons from "./confirmModalsComponents/FooterButtons";
 import SignatureCapture from "./confirmModalsComponents/SignatureCapture";
 import ReturnDeclineModal from "./returnDeclineModal";
 import SignatureThirdPerson from "./confirmModalsComponents/SignatureThirdPerson";
+import HeavyWeightSelector from "./confirmModalsComponents/HeavyWeightSelector";
 
 interface ConfirmModalProps {
   closeModal: () => void;
@@ -112,6 +113,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     signatureThirdPersonSurname,
     isThirdPersonOnSignature,
     setIsThirdPersonOnSignature,
+    setFloorDeliveryMethod,
+    floorDeliveryMethod,
   } = useClientConfirmation(
     selectedOrders,
     totalSum,
@@ -357,6 +360,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   otpSent={otpSent}
                   checkOtherClient={checkOtherClient}
                 />
+
+                {
+                  order.HeavyWeight &&
+                  <HeavyWeightSelector
+                  floorDeliveryMethod={floorDeliveryMethod ?? ""}
+                  setFloorDeliveryMethod={setFloorDeliveryMethod}
+                />
+                }
 
                 {openThirdPersonModal && (
                   <ThirdPerson

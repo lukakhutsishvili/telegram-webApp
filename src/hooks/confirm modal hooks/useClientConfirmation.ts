@@ -44,18 +44,16 @@ const useClientConfirmation = (
   const [otherClientSurname, setOtherClientSurname] = useState<string>("");
   const [connection, setConnection] = useState("");
   const [additionalComment, setAdditionalComment] = useState("");
-  const [openThirdPersonModal, setOpenThirdPersonModal] =
-    useState<boolean>(false);
+  const [openThirdPersonModal, setOpenThirdPersonModal] = useState<boolean>(false);
   const order = sendingOrder || receiptOrder;
   const [selectedReturnReason, setSelectedReturnReason] = useState<string>("");
   const [selectedReturnReasonText, setSelectedReturnReasonText] = useState<string>("");
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [signatureThirdPersonName , setSignatureThirdPersonName] = useState<string>("");
   const [signatureThirdPersonSurname , setSignatureThirdPersonSurname] = useState<string>("");
-   const [isThirdPersonOnSignature, setIsThirdPersonOnSignature] =
-      useState(false);
+  const [isThirdPersonOnSignature, setIsThirdPersonOnSignature] = useState(false);
   
-
+  const [floorDeliveryMethod, setFloorDeliveryMethod] = useState<string | null>("");
 
 
       const path = location.pathname;
@@ -416,6 +414,8 @@ const useClientConfirmation = (
     signatureThirdPersonSurname,
     isThirdPersonOnSignature,
     setIsThirdPersonOnSignature,
+    floorDeliveryMethod,
+    setFloorDeliveryMethod,
   };
 };
 

@@ -96,14 +96,18 @@ const SortableItem = ({
             )
           }
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-1">
             <FontAwesomeIcon icon={faBarcode} />
-            <p className="text-xs">{task.tracking_code}</p>
+            <p>{task.tracking_code}</p>
           </div>
+            {
+              task.HeavyWeight && 
+              <h2 className="text-red-600">{t("სართულზე ასატანი")}</h2>
+            }
           <div className="flex items-center gap-1">
             <FontAwesomeIcon icon={faPhone} />
-            <p className="text-xs">{task.client_phone}</p>
+            <p >{task.client_phone}</p>
           </div>
         </div>
         { task.places?.length > 0 && (
@@ -112,7 +116,6 @@ const SortableItem = ({
             <p className="text-xs">{task.places.length}</p>
           </div>
         )}
-       
         <h2 className="text-xs">{task.client_address}</h2>
       </div>
     </div>
