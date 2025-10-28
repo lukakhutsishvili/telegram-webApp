@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
 
 interface Props {
     order: {
@@ -9,10 +9,9 @@ interface Props {
 function FloorDeliverySelector({order}: Props) {
     
     const [deliveryMethod, setDeliveryMethod] = useState('');
-    const handleMethodChange = (event) => {
+    const handleMethodChange = (event: ChangeEvent<HTMLInputElement>) => {
         setDeliveryMethod(event.target.value);
     };
-
   return (
     <div>
         {order?.HeavyWeight && (
