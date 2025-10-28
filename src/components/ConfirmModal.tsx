@@ -113,8 +113,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     signatureThirdPersonSurname,
     isThirdPersonOnSignature,
     setIsThirdPersonOnSignature,
-    setFloorDeliveryMethod,
-    floorDeliveryMethod,
+    // setFloorDeliveryMethod,
+    // floorDeliveryMethod,
   } = useClientConfirmation(
     selectedOrders,
     totalSum,

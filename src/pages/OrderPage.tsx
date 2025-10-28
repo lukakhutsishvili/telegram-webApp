@@ -17,6 +17,7 @@ import {
   FaViber,
   FaTelegramPlane,
 } from "react-icons/fa";
+import { Order } from "../types/order";
 // import FloorDeliverySelector from "../components/order page components/FloorDeliverySelector";
 
 const OrderPage = () => {
@@ -62,7 +63,7 @@ const OrderPage = () => {
   const orderId = path.split("/").pop();
 
   const matchedOrder = selectedOrdersList.find(
-    (order: any) =>
+    (order: Order) => 
       order.tracking_code === orderId && order.places && order.places.length > 0
   );
   const allTrue = Object.values(selectedOrders).every(
