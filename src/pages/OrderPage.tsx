@@ -17,6 +17,7 @@ import {
   FaViber,
   FaTelegramPlane,
 } from "react-icons/fa";
+// import FloorDeliverySelector from "../components/order page components/FloorDeliverySelector";
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -71,6 +72,7 @@ const OrderPage = () => {
   const handleScanerChange = () => {
     setIsScanning(!isScanning);
   };
+
 
   return (
     <div className="min-h-screen bg-white px-4 pt-24 h-sm:pt-12">
@@ -256,7 +258,7 @@ const OrderPage = () => {
             {order?.HeavyWeight && (
               <div className="p-1 flex justify-between">
                 <span className="font-bold text-sm text-blue-600">
-                  {t("სართულზე მიწოდების საფასური")} :
+                  {t("სართულზე მიწოდება")} :
                 </span>
                 <span
                   onClick={() =>
@@ -264,10 +266,14 @@ const OrderPage = () => {
                   }
                   className="font-semibold text-blue-600"
                 >
-                  {order.HeavyWeightTotal} ₾
+                  {order.HeavyWeight ? t("yes") : t("no")}
                 </span>
               </div>
             )}
+            {/* {order?.HeavyWeight && (
+              <FloorDeliverySelector order={order}/>
+            )}
+             */}
           </div>
 
           {order?.with_places ? (
