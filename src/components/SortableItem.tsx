@@ -103,7 +103,7 @@ const SortableItem = ({
           </div>
             {
               task.HeavyWeight && 
-              <h2 className="text-red-600">{t("სართულზე ასატანი")}</h2>
+              <h2 className="text-red-600">{t("Floordelivery")}</h2>
             }
           <div className="flex items-center gap-1">
             <FontAwesomeIcon icon={faPhone} />

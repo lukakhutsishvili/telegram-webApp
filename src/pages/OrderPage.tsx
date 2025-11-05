@@ -259,7 +259,7 @@ const OrderPage = () => {
             {order?.HeavyWeight && (
               <div className="p-1 flex justify-between">
                 <span className="font-bold text-sm text-blue-600">
-                  {t("სართულზე მიწოდება")} :
+                  {t("Floordelivery")} :
                 </span>
                 <span
                   onClick={() =>
